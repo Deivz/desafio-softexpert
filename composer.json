@@ -1,0 +1,19 @@
+{
+    "name": "deivz/calculadora-ir",
+    "description": "\"Calculadora para imposto de rende sob operações financeiras em bolsa\"",
+    "license": "MIT",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Deivz\\CalculadoraIr\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Davi"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.4"
+    }
+}
