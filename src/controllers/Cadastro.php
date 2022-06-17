@@ -20,16 +20,23 @@ class Cadastro extends Renderizador implements IRequisicao
         }
     }
 
+    private $mensagensDeErro = [
+        'nome' => [
+            'vazio' => 'O campo nome não pode estar vazio!',
+            'invalido' => 'O campo nome não pode conter números e/ou caracteres matemáticos!',
+            'minimo' => 'O campo nome não pode ter menos que 2 caracteres!',
+            'maximo' => 'O campo nome não pode ter mais que 100 caracteres!'
+        ],
+    ];
+
     public function realizarCadastro()
     {
         if($this->validarNome($_POST['nome'])){
             $nome = $_POST['nome'];
-            // unset($_SESSION['nome']);
         }
 
         if($this->validarCpf($_POST['cpf'])){
             $cpf = $_POST['cpf'];
-            // unset($_SESSION['cpf']);
         }
 
         if($this->validarSenha($_POST['senha'])){
@@ -38,7 +45,6 @@ class Cadastro extends Renderizador implements IRequisicao
 
         if($this->validarEmail($_POST['email'])){
             $email = $_POST['email'];
-            // unset($_SESSION['email']);
         }
 
         $user = new Usuario($nome, $cpf, $senha, $email);
@@ -54,17 +60,17 @@ class Cadastro extends Renderizador implements IRequisicao
     public function validarNome(string $nome): bool
     {
         if($nome === "" || $nome === null){
-            echo "</br>O campo nome não pode estar vazio!";
-                return false;
+            echo "</br>";
+            return false;
         }
                 
         if(strlen($nome) > 100){
-            echo "</br>O campo nome não pode ter mais que 100 caracteres!";
+            echo "</br>";
             return false;
         }
                 
         if(!preg_match("/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/", $nome, $nomeValidado)){
-            echo "</br>O campo nome não pode conter números e/ou caracteres matemáticos!";
+            echo "</br>";
             return false;
         }
         return true;

@@ -1,6 +1,13 @@
 <?php
     require 'topo.php';
 ?>
+<?php
+    $erros = require '../helpers/erros.php';
+    foreach($erros as $erro) : ?>
+        <div class="container mt-3 alert alert-danger">
+            Mensagem
+        </div>
+<?php endforeach ?>
 
 <form class="mt-3 container" action="cadastro" method="post">
     <div class="mb-3">
