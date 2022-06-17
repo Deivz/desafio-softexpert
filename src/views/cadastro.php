@@ -1,38 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+    require 'topo.php';
+?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <title>Document</title>
-</head>
+<form class="mt-3 container" action="cadastro" method="post">
+    <div class="mb-3">
+        <label for="nome" class="form-label">Nome completo*</label>
+        <input name="nome" type="text" class="form-control" id="nome" placeholder="Nome completo" maxlength="100" value="<?= $_SESSION['nome']?>">
+    </div>
+    <div class="mb-3">
+        <label for="cpf" class="form-label">CPF*</label>
+        <input name="cpf" type="text" class="form-control" id="cpf" placeholder="CPF somente números" maxlength="14" value="<?= $_SESSION['cpf'] ?>">
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email*</label>
+        <input name="email" type="email" class="form-control" id="email" placeholder="nome@exemplo.com" maxlength="50" value="<?= $_SESSION['email'] ?>">
+    </div>
+    <div class="mb-3">
+        <label for="senha" class="form-label">Senha*</label>
+        <input name="senha" type="password" class="form-control" id="senha" maxlength="50">
+    </div>
+    <div class="mb-3">
+        <label for="confirmaSenha" class="form-label">Confirmar senha*</label>
+        <input name="confirmaSenha" type="password" class="form-control" id="confirmaSenha" maxlength="50">
+    </div>
+    <button type="submit" id="submit" class="btn btn-primary">Cadastrar</button>
+    <?php 
+        unset($_SESSION['nome']);
+        unset($_SESSION['cpf']);
+        unset($_SESSION['email']);
+    ?>
+</form>
 
-<body>
-    <form class="mt-3 container" action="../controllers/Cadastrar.php" method="post">
-        <div class="mb-3">
-            <label for="nome" class="form-label">Nome completo*</label>
-            <input type="text" class="form-control" id="nome" placeholder="Nome completo">
-        </div>
-        <div class="mb-3">
-            <label for="cpf" class="form-label">CPF*</label>
-            <input type="text" class="form-control" id="cpf" placeholder="CPF somente números">
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email*</label>
-            <input type="email" class="form-control" id="email" placeholder="nome@exemplo.com">
-        </div>
-        <div class="mb-3">
-            <label for="senha" class="form-label">Senha*</label>
-            <input type="password" class="form-control" id="senha">
-        </div>
-        <button type="submit" class="btn btn-primary">Cadastrar</button>
-    </form>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
-</body>
-
-</html>
+<?php
+    require 'rodape.php';
+?>

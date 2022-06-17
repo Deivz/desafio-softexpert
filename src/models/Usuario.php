@@ -13,53 +13,59 @@ class Usuario
     {
         if ($this->validarNome($nome)) {
             $this->nome = $nome;
-        } else {
-            echo "Nome inválido! \n";
-            exit;
-        }
+        };
 
-        if ($this->validarCpf($cpf)){
+        if ($this->validarCpf($cpf)) {
             $this->cpf = $cpf;
-        }else{
-            echo "CPF Inválido \n";
-            exit;
-        }
-        
-        $this->email = $email;
-        $this->senha = $senha = password_hash($senha, PASSWORD_BCRYPT);
-    }
+        };
 
-    public function __toString()
-    {
-        return "{$this->nome}\n{$this->cpf}\n{$this->email}";
+        if ($this->validarEmail($email)) {
+            $this->email = $email;
+        };
+
+        if ($this->validarSenha($senha)){
+            $this->senha = $senha = password_hash($senha, PASSWORD_BCRYPT);
+        }
     }
 
     public function __get($atributo)
     {
+        if($atributo === 'senha'){
+            exit();
+        }
         return $this->$atributo;
     }
 
     public function validarNome(string $nome): bool
     {
-        return preg_match(
-            "/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/",
-            $nome,
-            $nomeValidado
-        );
+        switch ($nome) {
+            case ($nome === "" || $nome === null):
+                echo "</br>O campo nome não pode estar vazio!";
+                return false;
+            case (strlen($nome) > 100):
+                echo "</br>O campo nome não pode ter mais que 100 caracteres!";
+                return false;
+            case (!preg_match("/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/", $nome, $nomeValidado)):
+                echo "</br>O campo nome não pode conter números e/ou caracteres matemáticos!";
+                return false;
+            default:
+                return true;
+        }
     }
 
     public function validarCpf(string $cpf): bool
     {
         // Extrai somente os números
         $cpf = preg_replace('/[^0-9]/is', '', $cpf);
-
-        // Verifica se foi informado todos os digitos corretamente
-        if (strlen($cpf) != 11) {
+        
+        if ($cpf === "" || $cpf === null){
+            echo "</br>O campo cpf não pode estar em branco!";
             return false;
         }
 
-        // Verifica se foi informada uma sequência de digitos repetidos. Ex: 111.111.111-11
-        if (preg_match('/(\d)\1{10}/', $cpf)) {
+        // Verifica se foi informado todos os digitos corretamente
+        if (strlen($cpf) !== 11 || preg_match('/(\d)\1{10}/', $cpf)){
+            echo "</br>CPF inválido!";
             return false;
         }
 
@@ -70,18 +76,47 @@ class Usuario
             }
             $d = ((10 * $d) % 11) % 10;
             if ($cpf[$c] != $d) {
+                echo "</br>CPF inválido!";
                 return false;
             }
         }
         return true;
     }
 
-    public function validarEmail(string $nome)
+    public function validarEmail(string $email): bool
     {
-        
+        if($email === "" || $email === null){
+            echo "</br>O campo email não pode estar vazio!";
+            return false;
+        }
+                
+        if($email !== filter_var($email, FILTER_VALIDATE_EMAIL)){
+            echo "</br>Email inválido!";
+            return false;
+        }
+        return true;
     }
 
-    public function validarSenha(string $nome)
+    public function validarSenha(string $senha): bool
     {
+        $confirmaSenha = $_POST['confirmaSenha'];
+
+        if($senha === "" || $senha === null){
+            echo "</br>O campo senha não pode estar vazio.";
+            return false;
+        }
+                
+        if(!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{6,}$/", $senha, $senhaValidada)){
+            echo "</br>A senha deve conter ao menos um número, uma letra maiúscula, uma minúscula, um dos caracteres especiais ($ * & @ #) e no mínimo 6 caracteres!";
+            return false;
+        }
+
+        if($senha !== $confirmaSenha){
+            echo "</br>A confirmação de senha difere da senha escolhida.";
+            
+            return false;
+        }
+
+        return true;
     }
 }
