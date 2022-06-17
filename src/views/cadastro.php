@@ -24,11 +24,7 @@
         <input name="confirmaSenha" type="password" class="form-control" id="confirmaSenha" maxlength="50">
     </div>
     <button type="submit" id="submit" class="btn btn-primary">Cadastrar</button>
-    <?php 
-        unset($_SESSION['nome']);
-        unset($_SESSION['cpf']);
-        unset($_SESSION['email']);
-    ?>
+    
 </form>
 
 <?php
