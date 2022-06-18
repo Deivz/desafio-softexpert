@@ -1,13 +1,17 @@
 <?php
     require 'topo.php';
 ?>
+
 <?php
-    $erros = require '../helpers/erros.php';
-    foreach($erros as $erro) : ?>
-        <div class="container mt-3 alert alert-danger">
-            Mensagem
-        </div>
+    if(isset($_SESSION['campos'])):
+        foreach ($_SESSION['campos'] as $campo) :
+?>
+    <div class="container mt-3 alert alert-danger">
+        <?= $_SESSION[$campo] ?>
+    </div>
 <?php endforeach ?>
+<?php endif ?>
+
 
 <form class="mt-3 container" action="cadastro" method="post">
     <div class="mb-3">
@@ -33,6 +37,13 @@
     <button type="submit" id="submit" class="btn btn-primary">Cadastrar</button>
     
 </form>
+
+<?php
+    unset($_SESSION['nome']);
+    unset($_SESSION['cpf']);
+    unset($_SESSION['email']);
+    unset($_SESSION['campos']);
+?>
 
 <?php
     require 'rodape.php';
