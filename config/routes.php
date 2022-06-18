@@ -6,6 +6,7 @@ use Deivz\CalculadoraIr\controllers\Logout;
 use Deivz\CalculadoraIr\controllers\operacoes;
 
 $rotas = [
+    '' => Login::class,
     '/cadastro' => Cadastro::class,
     '/login' => Login::class,
     '/operacoes' => Operacoes::class,

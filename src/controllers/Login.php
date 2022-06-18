@@ -30,12 +30,13 @@ class Login extends Renderizador implements IRequisicao
 
     public function buscarUsuario(string $user, string $password): bool
     {
+        $user = filter_var($user, FILTER_SANITIZE_SPECIAL_CHARS);
+
         $arquivo = '../src/repositorio/usuarios.txt';
         $stream = fopen($arquivo, 'r');
 
         while(!feof($stream)){
             $usuario = json_decode(fgets($stream));
-            // var_dump($usuario->{'email'});
             if($user === $usuario->{'email'}){
                 if(password_verify($password, $usuario->{'senha'})){
                     return true;

@@ -117,6 +117,8 @@ class Cadastro extends Renderizador implements IRequisicao
 
     public function validarEmail(string $email): bool
     {
+        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_SPECIAL_CHARS);
+
         if($email === "" || $email === null){
             $this->mostrarMensagensDeErro('campoEmail','O campo email não pode estar vazio!');
             return false;

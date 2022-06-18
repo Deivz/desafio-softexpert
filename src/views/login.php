@@ -21,7 +21,7 @@ endif ?>
 <form class="mt-3 container" action="login" method="POST">
     <div class="mb-3">
         <label for="email" class="form-label">Email:</label>
-        <input name="email" type="email" class="form-control" id="email" placeholder="nome@exemplo.com" value="<?= $_SESSION['email'] ?>">
+        <input name="email" type="email" class="form-control id="email" placeholder="nome@exemplo.com" value="<?= $_SESSION['email'] ?>">
     </div>
     <div class="mb-3">
         <label for="senha" class="form-label">Senha</label>
