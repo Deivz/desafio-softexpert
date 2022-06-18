@@ -43,18 +43,25 @@ class Cadastro extends Renderizador implements IRequisicao
         }
 
         try{
-            $user = new Usuario($nome, $cpf, $senha, $email);
+            $user = new Usuario($nome, $cpf, $email, $senha);
         }catch(Error $err){
             $this->definirSessoes();
             header('Location: /cadastro');
             exit();
         }
 
-        $req = [$user->nome, $user->cpf, $user->senha, $user->email];
+        $req = [
+            'nome' => $user->nome,
+            'cpf' => $user->cpf,
+            'senha' => $user->senha,
+            'email' => $user->email
+        ];
 
-        $arquivo = fopen('../src/repositorio/usuarios.csv', 'a');
-        fputcsv($arquivo, $req, ';');
+        $dados = "\n" . json_encode($req);
+        $arquivo = fopen('../src/repositorio/usuarios.txt', 'a');
+        fwrite($arquivo, $dados);
         fclose($arquivo);
+        $_SESSION['sucesso'] = 'Cadastro realizado com sucesso!';
         header('Location: /login');
     }
 

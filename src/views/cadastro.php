@@ -9,6 +9,7 @@
     <div class="container mt-3 alert alert-danger">
         <?= $_SESSION[$campo] ?>
     </div>
+    
 <?php endforeach ?>
 <?php endif ?>
 

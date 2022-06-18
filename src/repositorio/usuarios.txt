@@ -1,0 +1,3 @@
+{"nome":"Carlos Davi","cpf":"15689872423","senha":"$2y$10$1UOM39OpUnvxDEIRuw\/XEuibE5..87KY65Spn5i.zavfg2cosnpuO","email":"carlos@hotmail.com"}
+{"nome":"Davi","cpf":"15689872423","senha":"$2y$10$s9PfKts0NZJer4q2c4wPPe3F591iWP.4Hw0U1OYEAqA8WBAllcL1W","email":"davi@email.com"}
+{"nome":"Dav","cpf":"15689872423","senha":"$2y$10$Eg8a1rb5Et7zUna1Deooi.yGBsGLG.9wic7rB.XVL8ouEcZ6O\/rG6","email":"dav@email.com"}
