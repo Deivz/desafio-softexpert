@@ -1,1 +1,2 @@
 {"nome":"Carlos Davi","cpf":"15689872423","senha":"$2y$10$1UOM39OpUnvxDEIRuw\/XEuibE5..87KY65Spn5i.zavfg2cosnpuO","email":"carlos@hotmail.com"}
+{"nome":"Davi","cpf":"14163310509","senha":"$2y$10$COcXUazMN6W.FNifVpdEne2NmyQ4bI8zkniDDZG6Qvot5UaB68FZa","email":"aeae@email.com"}

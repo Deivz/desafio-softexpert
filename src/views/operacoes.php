@@ -2,7 +2,6 @@
 require 'topo.php';
 
 $aplicacoes = require __DIR__ . '/../helpers/arrayAplicacoes.php';
-$titulos = require __DIR__ . '/../helpers/labelTitulos.php';
 ?>
 <form class="mt-3 container" action="operacoes" method="post">
     <div class="mb-3">
@@ -24,39 +23,30 @@ $titulos = require __DIR__ . '/../helpers/labelTitulos.php';
     <div class="mb-3">
         <label class="form-label">Quantidade de operações:</label>
         <select name="quantidadeOperacoes" class="form-select" aria-label="Default select example">
-            <option selected>Selecione a quantidade de operações:</option>
+            <option hidden selected><?= $_SESSION['quantidadeOperacoes'] ?></option>
             <!-- Código para preencher o campo de quantidade de operações desejada -->
             <?php
-            for ($i = 1; $i < 11; $i++) : ?>
+            for ($i = 1; $i <= 10; $i++) : ?>
                 <option value="<?= $i ?>"><?= $i ?></option>
-            <?php
-            endfor;
-            $_SESSION['quantidadeOperacoes'] = $_POST['quantidadeOperacoes'];
-            ?>
+            <?php endfor ?>
             <!-- fim do preenchimento -->
         </select>
     </div>
+    <!-- Código para criar os campos na quantidade de operações desejadas -->
+    <?php
+        if ($_SESSION['quantidadeOperacoes']) :
+    ?> 
     <div class="mb-3">
-        
-            
-            
-        <!-- Código para criar os campos na quantidade de operações desejadas -->
-        <?php
-            if ($_SESSION['segundaEtapa']) :
-        ?> 
-            <div class="row">
-                <!-- Código para preencher os títulos das labels -->
-                <?php
-                    for ($i = 0; $i < count($titulos); $i++) :
-                ?>
-                    <label class="form-label col"><?= $titulos[$i] ?>:</label>
-                <?php endfor ?>
-                <!-- fim do preenchimento -->
-            </div>
-            
+        <div class="row">
+            <label class="form-label col">Ativo:</label>
+            <label class="form-label col">Operação:</label>
+            <label class="form-label col">Quantidade:</label>
+            <label class="form-label col">Preço:</label>
+            <label class="form-label col">Taxas:</label>
+        </div>
         <!-- Início do loop dos campos -->
         <?php
-            for ($i = 1; $i <= $_SESSION['quantidadeOperacoes']; $i++) :
+        for ($i = 1; $i <= $_SESSION['quantidadeOperacoes']; $i++) :
         ?>
             <div class="row">
                 <div class="col">
@@ -75,14 +65,13 @@ $titulos = require __DIR__ . '/../helpers/labelTitulos.php';
                     <input name="taxas<?= $i ?>" type="text" class="form-control mb-3 me-2 col id="taxas<?= $i ?>" placeholder="R$">
                 </div>
             </div>
-        <?php
-            endfor;
-        endif;
-        ?>
+        <?php endfor ?>
         <!-- fim da criação de inputs -->
     </div>
     <button type="submit" class="btn btn-primary">Enviar</button>
-    <?php unset($_SESSION['quantidadeOperacoes']) ?>
+    <?php else: ?>
+        <button type="submit" class="btn btn-primary">Próximo</button>
+    <?php endif ?>
 </form>
 
 <?php
