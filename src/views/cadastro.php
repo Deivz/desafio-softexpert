@@ -10,8 +10,10 @@
         <?= $_SESSION[$campo] ?>
     </div>
     
-<?php endforeach ?>
-<?php endif ?>
+<?php
+    endforeach;
+    endif;
+?>
 
 
 <form class="mt-3 container" action="cadastro" method="post">
