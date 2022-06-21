@@ -23,21 +23,37 @@ class Operacoes extends Renderizador implements IRequisicao, ISessoes
 
     private function realizarEnvio()
     {
-        if ($this->validarData($_POST['data'])){
+        if ($this->verificarData($_POST['data'])){
             $data = $_POST['data'];
         }
 
-        if ($this->validarAplicacao($_POST['aplicacao'])){
+        if ($this->verificarAplicacao($_POST['aplicacao'])){
             $aplicacao = $_POST['aplicacao'];
+        }
+
+        if ($_POST['quantidadeOperacoes'] === "" || $_POST['quantidadeOperacoes'] === null){
+            $this->mostrarMensagensDeErro('O campo quantidade de operações está vazio!');
         }
 
         for ($i = 0; $i < $_POST['quantidadeOperacoes']; $i++) {
             if(isset($_POST["ativo{$i}"])){
-                if ($this->validarNegociacao($_POST["ativo{$i}"], $_POST["ativo{$i}"], $_POST["quantidade{$i}"], $_POST["preco{$i}"], $_POST["taxa{$i}"])){
+                if ($this->verificarAtivo($_POST["ativo{$i}"])){
                     $ativo = $_POST["ativo{$i}"];
+                }
+                
+                if ($this->verificarOperacao($_POST["operacao{$i}"])){
                     $operacao = $_POST["operacao{$i}"];
+                }
+                
+                if ($this->verificarQuantidade($_POST["quantidade{$i}"])){
                     $quantidade = $_POST["quantidade{$i}"];
+                }
+                
+                if ($this->verificarPreco($_POST["preco{$i}"])){
                     $preco = $_POST["preco{$i}"];
+                }
+                
+                if ($this->verificarTaxa($_POST["taxa{$i}"])){
                     $taxa = $_POST["taxa{$i}"];
                 }
             }     
@@ -54,14 +70,14 @@ class Operacoes extends Renderizador implements IRequisicao, ISessoes
         $req = [
             'Data' => $negociacao->data,
             'Aplicação' => $negociacao->aplicacao,
-            'Ativos' => $negociacao->ativos,
-            'Operações' => $negociacao->operacoes,
-            'Quantidades' => $negociacao->quantidades,
-            'Preços' => $negociacao->precos,
-            'Taxas' => $negociacao->taxas
+            'Ativos' => $negociacao->ativo,
+            'Operações' => $negociacao->operacao,
+            'Quantidades' => $negociacao->quantidade,
+            'Preços' => $negociacao->preco,
+            'Taxas' => $negociacao->taxa
         ];
 
-        $dados = "\n" . json_encode($req);
+        $dados = "\n" . json_encode($req, JSON_UNESCAPED_UNICODE);
         $arquivo = fopen('../src/repositorio/negociacoes.txt', 'a');
         fwrite($arquivo, $dados);
         fclose($arquivo);
@@ -83,7 +99,7 @@ class Operacoes extends Renderizador implements IRequisicao, ISessoes
         }
     }
 
-    private function validarData(string $data): bool
+    private function verificarData(string $data): bool
     {
         if ($data === "" || $data === null){
             $this->mostrarMensagensDeErro('O campo data não pode estar em branco');
@@ -92,7 +108,7 @@ class Operacoes extends Renderizador implements IRequisicao, ISessoes
         return true;
     }
     
-    private function validarAplicacao(string $aplicacao): bool
+    private function verificarAplicacao(string $aplicacao): bool
     {
         if($aplicacao === "" || $aplicacao === null){
             $this->mostrarMensagensDeErro('O campo aplicação não pode estar em branco');
@@ -101,28 +117,55 @@ class Operacoes extends Renderizador implements IRequisicao, ISessoes
         return true;
     }
 
-    private function validarNegociacao(string $ativo, string $operacao, string $quantidade, string $preco, string $taxa):bool
+    private function verificarAtivo(string $ativo):bool
     {
         if($ativo === "" || $ativo = null){
             $this->mostrarMensagensDeErro('Os campos de ativos não podem estar vazios');
+            return false;
         }
-        
+
+        // if (intval(substr($_POST['ativo0'], 0, 4)) !== 0){
+        //     echo $_POST['ativo0'];
+        //     $this->mostrarMensagensDeErro('Os quatro primeiros caracteres de um ativo devem ser somente letras.');
+        //     return false;
+        // }
+
+        return true;
+    }
+
+    private function verificarOperacao(string $operacao):bool
+    {
         if($operacao === "" || $operacao = null){
             $this->mostrarMensagensDeErro('Os campos de operações não podem estar vazios');
+            return false;
         }
+        return true;
+    }
 
+    private function verificarQuantidade(string $quantidade):bool
+    {
         if($quantidade === "" || $quantidade = null){
             $this->mostrarMensagensDeErro('Os campos de quantidades não podem estar vazios');
+            return false;
         }
+        return true;
+    }
 
+    private function verificarPreco(string $preco):bool
+    {
         if($preco === "" || $preco = null){
             $this->mostrarMensagensDeErro('Os campos de preços não podem estar vazios');
+            return false;
         }
+        return true;
+    }
 
+    private function verificarTaxa(string $taxa):bool
+    {
         if($taxa === "" || $taxa = null){
             $this->mostrarMensagensDeErro('Os campos de taxas não podem estar vazios');
+            return false;
         }
-
         return true;
     }
 }

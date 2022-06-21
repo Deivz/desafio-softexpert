@@ -6,6 +6,8 @@ use Deivz\CalculadoraIr\helpers\TMensagensDeErro;
 
 class Negociacao
 {
+    use TMensagensDeErro;
+
     private $data;
     private $aplicacao;
     private $ativo;
@@ -14,7 +16,8 @@ class Negociacao
     private $preco;
     private $taxa;
 
-    public function __construct(string $data, string $aplicacao, string $ativo, string $operacao, int $quantidade, float $preco, float $taxa) {
+    public function __construct(string $data, string $aplicacao, string $ativo, string $operacao, int $quantidade, float $preco, float $taxa)
+    {
         $this->data = $data;
         $this->aplicacao = $aplicacao;
         $this->ativo = $ativo;
@@ -29,4 +32,3 @@ class Negociacao
         return $this->$atributo;
     }
 }
-

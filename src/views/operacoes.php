@@ -5,6 +5,17 @@ $aplicacoes = require __DIR__ . '/../helpers/arrayAplicacoes.php';
 ?>
 
 <?php
+    if(isset($_SESSION['sucesso'])):
+?>
+    <div class="container mt-3 alert alert-success">
+        <?= $_SESSION['sucesso'] ?>
+    </div>
+    
+<?php
+    endif;
+?>
+
+<?php
     if(isset($_SESSION['mensagens'])):
         foreach ($_SESSION['mensagens'] as $mensagem) :
 ?>
@@ -92,15 +103,9 @@ $aplicacoes = require __DIR__ . '/../helpers/arrayAplicacoes.php';
 <?php
     unset($_SESSION['data']);
     unset($_SESSION['aplicacao']);
-    // for ($i = 0; $i < $_SESSION['quantidadeOperacoes']; $i++) {
-    //     unset($_SESSION["ativo{$i}"]);
-    //     unset($_SESSION["operacao{$i}"]);
-    //     unset($_SESSION["quantidade{$i}"]);
-    //     unset($_SESSION["preco{$i}"]);
-    //     unset($_SESSION["taxa{$i}"]);
-    // }
     unset($_SESSION['quantidadeOperacoes']);
     unset($_SESSION['mensagens']);
+    unset($_SESSION['sucesso']);
 ?>
 </form>
 

@@ -1,2 +1,1 @@
-
-{"Data":"2022-06-10","Aplica\u00e7\u00e3o":"A\u00e7\u00f5es","Ativos":null,"Opera\u00e7\u00f5es":null,"Quantidades":null,"Pre\u00e7os":null,"Taxas":null}
+{"Data":"Exemplo","Aplicação":"Exemplo","Ativos":"Exemplo","Operações":"Exemplo","Quantidades":Exemplo,"Preços":Exemplo,"Taxas":Exemplo}
