@@ -10,7 +10,6 @@ class Login extends Renderizador implements IRequisicao
     {
         echo $this->renderizarPagina('/login');
         $this->realizarLogin();
-        // $this->buscarUsuario('Davi');
     }
 
     public function realizarLogin()

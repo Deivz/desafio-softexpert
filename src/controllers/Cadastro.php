@@ -2,12 +2,16 @@
 
 namespace Deivz\CalculadoraIr\controllers;
 
+use Deivz\CalculadoraIr\helpers\TMensagensDeErro;
 use Deivz\CalculadoraIr\interfaces\IRequisicao;
+use Deivz\CalculadoraIr\interfaces\ISessoes;
 use Deivz\CalculadoraIr\models\Usuario;
 use Error;
 
-class Cadastro extends Renderizador implements IRequisicao
+class Cadastro extends Renderizador implements IRequisicao, ISessoes
 {
+    use TMensagensDeErro;
+
     public function processarRequisicao(): void
     {
         echo $this->renderizarPagina('/cadastro');
@@ -15,13 +19,6 @@ class Cadastro extends Renderizador implements IRequisicao
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $this->realizarCadastro();
         }
-    }
-
-    public function definirSessoes()
-    {
-        $_SESSION['nome'] = $_POST['nome'];
-        $_SESSION['cpf'] = $_POST['cpf'];
-        $_SESSION['email'] = $_POST['email'];
     }
 
     public function realizarCadastro()
@@ -65,20 +62,27 @@ class Cadastro extends Renderizador implements IRequisicao
         header('Location: /login');
     }
 
+    public function definirSessoes()
+    {
+        $_SESSION['nome'] = $_POST['nome'];
+        $_SESSION['cpf'] = $_POST['cpf'];
+        $_SESSION['email'] = $_POST['email'];
+    }
+
     public function validarNome(string $nome): bool
     {
         if($nome === "" || $nome === null){
-            $this->mostrarMensagensDeErro('campoNome', 'O campo nome não pode estar vazio!');
+            $this->mostrarMensagensDeErro('O campo nome não pode estar vazio!');
             return false;
         }
                 
         if(strlen($nome) > 100){
-            $this->mostrarMensagensDeErro('campoNome', 'O campo nome pode possuir mais que 100 caracteres!');
+            $this->mostrarMensagensDeErro('O campo nome pode possuir mais que 100 caracteres!');
             return false;
         }
                 
         if(!preg_match("/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/", $nome, $nomeValidado)){
-            $this->mostrarMensagensDeErro('campoNome', 'O campo nome não pode conter números e/ou caracteres matemáticos!');
+            $this->mostrarMensagensDeErro('O campo nome não pode conter números e/ou caracteres matemáticos!');
             return false;
         }
         return true;
@@ -91,13 +95,13 @@ class Cadastro extends Renderizador implements IRequisicao
         
         if ($cpf === "" || $cpf === null){
             // $_SESSION['erro'] = 'O campo CPF não pode estar vazio!';
-            $this->mostrarMensagensDeErro('campoCpf','O campo CPF não pode estar vazio!');
+            $this->mostrarMensagensDeErro('O campo CPF não pode estar vazio!');
             return false;
         }
 
         // Verifica se foi informado todos os digitos corretamente
         if (strlen($cpf) !== 11 || preg_match('/(\d)\1{10}/', $cpf)){
-            $this->mostrarMensagensDeErro('campoCpf','CPF inválido!');
+            $this->mostrarMensagensDeErro('CPF inválido!');
             return false;
         }
 
@@ -108,7 +112,7 @@ class Cadastro extends Renderizador implements IRequisicao
             }
             $d = ((10 * $d) % 11) % 10;
             if ($cpf[$c] != $d) {
-                $this->mostrarMensagensDeErro('campoCpf','CPF inválido!');
+                $this->mostrarMensagensDeErro('CPF inválido!');
                 return false;
             }
         }
@@ -120,12 +124,12 @@ class Cadastro extends Renderizador implements IRequisicao
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_SPECIAL_CHARS);
 
         if($email === "" || $email === null){
-            $this->mostrarMensagensDeErro('campoEmail','O campo email não pode estar vazio!');
+            $this->mostrarMensagensDeErro('O campo email não pode estar vazio!');
             return false;
         }
                 
         if($email !== filter_var($email, FILTER_VALIDATE_EMAIL)){
-            $this->mostrarMensagensDeErro('campoEmail','Email inválido!');
+            $this->mostrarMensagensDeErro('Email inválido!');
             return false;
         }
         return true;
@@ -136,29 +140,20 @@ class Cadastro extends Renderizador implements IRequisicao
         $confirmaSenha = $_POST['confirmaSenha'];
 
         if($senha === "" || $senha === null){
-            $this->mostrarMensagensDeErro('campoSenha','O campo senha não pode estar vazio.');
+            $this->mostrarMensagensDeErro('O campo senha não pode estar vazio.');
             return false;
         }
                 
         if(!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{6,}$/", $senha, $senhaValidada)){
-            $this->mostrarMensagensDeErro('campoSenha','A senha deve conter ao menos um número, uma letra maiúscula, uma minúscula, um dos caracteres especiais ($ * & @ #) e no mínimo 6 caracteres!');
+            $this->mostrarMensagensDeErro('A senha deve conter ao menos um número, uma letra maiúscula, uma minúscula, um dos caracteres especiais ($ * & @ #) e no mínimo 6 caracteres!');
             return false;
         }
 
         if($senha !== $confirmaSenha){
-            $this->mostrarMensagensDeErro('campoSenha','A confirmação de senha difere da senha escolhida.');
+            $this->mostrarMensagensDeErro('A confirmação de senha difere da senha escolhida.');
             return false;
         }
 
         return true;
-    }
-
-    public function mostrarMensagensDeErro(string $campo, string $mensagem)
-    {   
-        static $campos = [];
-        array_push($campos, $campo);
-        $_SESSION['campos'] = $campos;
-        $_SESSION[$campo] = $mensagem;
-
     }
 }

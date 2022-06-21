@@ -3,11 +3,11 @@
 ?>
 
 <?php
-    if(isset($_SESSION['campos'])):
-        foreach ($_SESSION['campos'] as $campo) :
+    if(isset($_SESSION['mensagens'])):
+        foreach ($_SESSION['mensagens'] as $mensagem) :
 ?>
     <div class="container mt-3 alert alert-danger">
-        <?= $_SESSION[$campo] ?>
+        <?= $mensagem ?>
     </div>
     
 <?php
@@ -45,7 +45,7 @@
     unset($_SESSION['nome']);
     unset($_SESSION['cpf']);
     unset($_SESSION['email']);
-    unset($_SESSION['campos']);
+    unset($_SESSION['mensagens']);
 ?>
 
 <?php
