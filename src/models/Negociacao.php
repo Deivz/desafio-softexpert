@@ -20,7 +20,10 @@ class Negociacao
     {
         $this->data = $data;
         $this->aplicacao = $aplicacao;
-        $this->ativo = $ativo;
+        if($this->validarAtivo($ativo)){
+            $this->ativo = $ativo;
+        }
+        
         $this->operacao = $operacao;
         $this->quantidade = $quantidade;
         $this->preco = $preco;
@@ -30,5 +33,17 @@ class Negociacao
     public function __get($atributo)
     {
         return $this->$atributo;
+    }
+
+    private function validarAtivo($ativo): string
+    {
+        $quatroCaracteresIniciais = substr($ativo, 0 ,4);
+        $filtrarNumeros = filter_var($quatroCaracteresIniciais, FILTER_SANITIZE_NUMBER_INT);
+
+        if(is_numeric($filtrarNumeros)){
+            $this->mostrarMensagensDeErro('Os quatro primeiros caracteres de um ativo devem ser somente letras.');
+            return $ativo = null;
+        }
+        return $ativo = $ativo;
     }
 }

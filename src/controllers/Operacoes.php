@@ -8,7 +8,6 @@ use Deivz\CalculadoraIr\interfaces\ISessoes;
 use Deivz\CalculadoraIr\models\Negociacao;
 use Error;
 
-
 class Operacoes extends Renderizador implements IRequisicao, ISessoes
 {
     use TMensagensDeErro;
@@ -119,17 +118,10 @@ class Operacoes extends Renderizador implements IRequisicao, ISessoes
 
     private function verificarAtivo(string $ativo):bool
     {
-        if($ativo === "" || $ativo = null){
+        if($ativo === "" || $ativo === null){
             $this->mostrarMensagensDeErro('Os campos de ativos não podem estar vazios');
             return false;
         }
-
-        // if (intval(substr($_POST['ativo0'], 0, 4)) !== 0){
-        //     echo $_POST['ativo0'];
-        //     $this->mostrarMensagensDeErro('Os quatro primeiros caracteres de um ativo devem ser somente letras.');
-        //     return false;
-        // }
-
         return true;
     }
 
