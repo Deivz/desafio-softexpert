@@ -1,1 +1,2 @@
 {"Data":"Exemplo","Aplicação":"Exemplo","Ativos":"Exemplo","Operações":"Exemplo","Quantidades":Exemplo,"Preços":Exemplo,"Taxas":Exemplo}
+{"Data":"2022-06-15","Aplicação":"Ações","Ativos":"PETR4","Operações":"as","Quantidades":"2","Preços":"1","Taxas":"2"}

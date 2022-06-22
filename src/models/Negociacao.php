@@ -16,7 +16,7 @@ class Negociacao
     private $preco;
     private $taxa;
 
-    public function __construct(string $data, string $aplicacao, string $ativo, string $operacao, int $quantidade, float $preco, float $taxa)
+    public function __construct(string $data, string $aplicacao, string $ativo, string $operacao, string $quantidade, string $preco, string $taxa)
     {
         $this->data = $data;
         $this->aplicacao = $aplicacao;
@@ -25,7 +25,11 @@ class Negociacao
         }
         
         $this->operacao = $operacao;
-        $this->quantidade = $quantidade;
+        
+        if($this->validarQuantidade($quantidade)){
+            $this->quantidade = $quantidade;
+        }
+
         $this->preco = $preco;
         $this->taxa = $taxa;
     }
@@ -45,5 +49,29 @@ class Negociacao
             return $ativo = null;
         }
         return $ativo = $ativo;
+    }
+
+    private function validarQuantidade($quantidade): int
+    {
+        $procurarVirgula = strpos($quantidade, ',');
+        $procurarPonto = strpos($quantidade, '.');
+
+        if((intval($quantidade) === 0) || $procurarVirgula || $procurarPonto){
+            $this->mostrarMensagensDeErro('A quantidade deve ser um número e do tipo inteiro.');
+            return $quantidade = null;
+        }
+        return $quantidade = intval($quantidade);
+    }
+
+    private function validarPreco($preco): int
+    {
+        $procurarVirgula = strpos($preco, ',');
+        $procurarPonto = strpos($preco, '.');
+
+        if((intval($preco) === 0) || $procurarVirgula || $procurarPonto){
+            $this->mostrarMensagensDeErro('O preço do ativo deve ser um número.');
+            return $preco = null;
+        }
+        return $preco = intval($preco);
     }
 }
