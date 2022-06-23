@@ -46,6 +46,7 @@
     unset($_SESSION['cpf']);
     unset($_SESSION['email']);
     unset($_SESSION['mensagens']);
+    unset($_SESSION['erros']);
 ?>
 
 <?php

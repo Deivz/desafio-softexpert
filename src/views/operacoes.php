@@ -2,6 +2,7 @@
 require 'topo.php';
 
 $aplicacoes = require __DIR__ . '/../helpers/arrayAplicacoes.php';
+$operacoes = require __DIR__ . '/../helpers/arrayOperacoes.php';
 ?>
 
 <?php
@@ -30,6 +31,24 @@ $aplicacoes = require __DIR__ . '/../helpers/arrayAplicacoes.php';
 
 <form class="mt-3 container" action="operacoes" method="post">
     <div class="mb-3">
+        <label class="form-label">Quantidade de operações:</label>
+        <select name="quantidadeOperacoes" class="form-select" aria-label="Default select example">
+            <option hidden selected><?= $_SESSION['quantidadeOperacoes'] ?></option>
+            <!-- Código para preencher o campo de quantidade de operações desejada -->
+            <?php
+            for ($i = 1; $i <= 10; $i++) : ?>
+                <option value="<?= $i ?>"><?= $i ?></option>
+            <?php endfor ?>
+            <!-- fim do preenchimento -->
+        </select>
+    </div>
+    
+    
+    <?php
+        if ($_SESSION['quantidadeOperacoes']) :
+    ?> 
+    <!-- Código para criar os campos na quantidade de operações desejadas -->
+    <div class="mb-3">
         <label for="data" class="form-label">Data:</label>
         <input value="<?= $_SESSION['data'] ?>" name="data" type="date" class="form-control" id="data">
     </div>
@@ -45,22 +64,6 @@ $aplicacoes = require __DIR__ . '/../helpers/arrayAplicacoes.php';
             <!-- fim do preenchimento -->
         </select>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Quantidade de operações:</label>
-        <select name="quantidadeOperacoes" class="form-select" aria-label="Default select example">
-            <option hidden selected><?= $_SESSION['quantidadeOperacoes'] ?></option>
-            <!-- Código para preencher o campo de quantidade de operações desejada -->
-            <?php
-            for ($i = 1; $i <= 10; $i++) : ?>
-                <option value="<?= $i ?>"><?= $i ?></option>
-            <?php endfor ?>
-            <!-- fim do preenchimento -->
-        </select>
-    </div>
-    <!-- Código para criar os campos na quantidade de operações desejadas -->
-    <?php
-        if ($_SESSION['quantidadeOperacoes']) :
-    ?> 
     <div class="mb-3">
         <div class="row">
             <label class="form-label col">Ativo:</label>
@@ -78,7 +81,15 @@ $aplicacoes = require __DIR__ . '/../helpers/arrayAplicacoes.php';
                     <input value="<?= $_SESSION["ativo{$i}"] ?>" name="ativo<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="ativo<?= $i ?>" placeholder="Ex: PETR4">
                 </div>
                 <div class="col">
-                    <input value="<?= $_SESSION["operacao{$i}"] ?>" name="operacao<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="operacao<?= $i ?>" placeholder="Ex: Compra">
+                    <select name="operacao<?= $i ?>" class="form-select" aria-label="Default select example">
+                        <option hidden selected><?= $_SESSION["operacao"] ?></option>
+                        <!-- Código para preencher o campo de aplicações -->
+                        <?php
+                        for ($j = 0; $j < count($operacoes); $j++) : ?>
+                            <option value="<?= $operacoes[$j] ?>"><?= $operacoes[$j] ?></option>
+                        <?php endfor ?>
+                        <!-- fim do preenchimento -->
+                    </select>
                 </div>
                 <div class="col">
                     <input value="<?= $_SESSION["quantidade{$i}"] ?>" name="quantidade<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="quantidade<?= $i ?>" placeholder="Ex: 100...">
@@ -101,11 +112,13 @@ $aplicacoes = require __DIR__ . '/../helpers/arrayAplicacoes.php';
     ?>
 
 <?php
-    unset($_SESSION['data']);
-    unset($_SESSION['aplicacao']);
-    unset($_SESSION['quantidadeOperacoes']);
+    $removerSessoes = require __DIR__ . '/../helpers/removerSessoes.php';
+
+    $removerSessoes($_SESSION['quantidadeOperacoes']);
+
     unset($_SESSION['mensagens']);
     unset($_SESSION['sucesso']);
+    unset($_SESSION['erros']);
 ?>
 </form>
 

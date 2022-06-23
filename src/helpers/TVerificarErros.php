@@ -2,14 +2,18 @@
 
 namespace Deivz\CalculadoraIr\helpers;
 
-trait TMensagensDeErro
+trait TVerificarErros
 {
-    public function mostrarMensagensDeErro(string $mensagem)
+    private function mostrarMensagensDeErro(string $mensagem)
     {   
         static $mensagens = [];
         if(!in_array($mensagem, $mensagens)){
             array_push($mensagens, $mensagem);
             $_SESSION['mensagens'] = $mensagens;
+        }
+
+        if(count($mensagens) !== 0){
+            $_SESSION['erros'] = 1;
         }
     }
 }
