@@ -48,22 +48,25 @@ $operacoes = require __DIR__ . '/../helpers/arrayOperacoes.php';
         if ($_SESSION['quantidadeOperacoes']) :
     ?> 
     <!-- Código para criar os campos na quantidade de operações desejadas -->
-    <div class="mb-3">
-        <label for="data" class="form-label">Data:</label>
-        <input value="<?= $_SESSION['data'] ?>" name="data" type="date" class="form-control" id="data">
+    <div class="d-flex justify-content-between">
+        <div class="mb-3 me-2 col">
+            <label for="data" class="form-label">Data:</label>
+            <input value="<?= $_SESSION['data'] ?>" name="data" type="date" class="form-control" id="data" maxlength="10">
+        </div>
+        <div class="mb-3 ms-2 col">
+            <label class="form-label">Aplicação:</label>
+            <select name="aplicacao" class="form-select" aria-label="Default select example">
+                <option hidden selected><?= $_SESSION['aplicacao'] ?></option>
+                <!-- Código para preencher o campo de aplicações -->
+                <?php
+                for ($i = 0; $i < count($aplicacoes); $i++) : ?>
+                    <option value="<?= $aplicacoes[$i] ?>"><?= $aplicacoes[$i] ?></option>
+                <?php endfor ?>
+                <!-- fim do preenchimento -->
+            </select>
+        </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Aplicação:</label>
-        <select name="aplicacao" class="form-select" aria-label="Default select example">
-            <option hidden selected><?= $_SESSION['aplicacao'] ?></option>
-            <!-- Código para preencher o campo de aplicações -->
-            <?php
-            for ($i = 0; $i < count($aplicacoes); $i++) : ?>
-                <option value="<?= $aplicacoes[$i] ?>"><?= $aplicacoes[$i] ?></option>
-            <?php endfor ?>
-            <!-- fim do preenchimento -->
-        </select>
-    </div>
+    
     <div class="mb-3">
         <div class="row">
             <label class="form-label col">Ativo:</label>
@@ -78,7 +81,7 @@ $operacoes = require __DIR__ . '/../helpers/arrayOperacoes.php';
         ?>
             <div class="row">
                 <div class="col">
-                    <input value="<?= $_SESSION["ativo{$i}"] ?>" name="ativo<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="ativo<?= $i ?>" placeholder="Ex: PETR4">
+                    <input value="<?= $_SESSION["ativo{$i}"] ?>" name="ativo<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="ativo<?= $i ?>" placeholder="Ex: PETR4" maxlength="7">
                 </div>
                 <div class="col">
                     <select name="operacao<?= $i ?>" class="form-select" aria-label="Default select example">
@@ -92,13 +95,13 @@ $operacoes = require __DIR__ . '/../helpers/arrayOperacoes.php';
                     </select>
                 </div>
                 <div class="col">
-                    <input value="<?= $_SESSION["quantidade{$i}"] ?>" name="quantidade<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="quantidade<?= $i ?>" placeholder="Ex: 100...">
+                    <input value="<?= $_SESSION["quantidade{$i}"] ?>" name="quantidade<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="quantidade<?= $i ?>" placeholder="Ex: 100..." maxlength="7">
                 </div>
                 <div class="col">
-                    <input value="<?= $_SESSION["preco{$i}"] ?>" name="preco<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="preco<?= $i ?>" placeholder="R$">
+                    <input value="<?= $_SESSION["preco{$i}"] ?>" name="preco<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="preco<?= $i ?>" placeholder="R$" maxlength="7">
                 </div>
                 <div class="col">
-                    <input value="<?= $_SESSION["taxa{$i}"] ?>" name="taxa<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="taxa<?= $i ?>" placeholder="R$">
+                    <input value="<?= $_SESSION["taxa{$i}"] ?>" name="taxa<?= $i ?>" type="text" class="form-control mb-3 me-2 col" id="taxa<?= $i ?>" placeholder="R$" maxlength="5">
                 </div>
             </div>
         <?php endfor ?>

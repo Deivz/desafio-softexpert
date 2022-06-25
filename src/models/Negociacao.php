@@ -4,6 +4,7 @@ namespace Deivz\CalculadoraIr\models;
 
 use Deivz\CalculadoraIr\helpers\TVerificarErros;
 use Deivz\CalculadoraIr\interfaces\IValidacao;
+use Error;
 
 class Negociacao implements IValidacao
 {
@@ -51,10 +52,18 @@ class Negociacao implements IValidacao
         }
 
         if($this->validarPreco($preco)){
+            $procurarVirgula = strpos($preco, ',');
+            if($procurarVirgula){
+                $this->preco = $preco = str_replace(',', '.', $preco);
+            }
             $this->preco = $preco;
         }
 
         if($this->validarTaxa($taxa)){
+            $procurarVirgula = strpos($taxa, ',');
+            if($procurarVirgula){
+                $this->taxa = $taxa = str_replace(',', '.', $taxa);
+            }
             $this->taxa = $taxa;
         }
 
@@ -69,25 +78,50 @@ class Negociacao implements IValidacao
     private function validarData($data): bool
     {
         if ($data === "" || $data === null){
-            $this->mostrarMensagensDeErro('O campo data não pode estar em branco');
+            $this->mostrarMensagensDeErro('O campo data não pode estar em branco.');
             return false;
         }
+
+        $validarData = explode( '-', $data );
+        try{
+            if(!checkdate($validarData[1], $validarData[2], $validarData[0])){
+                $this->mostrarMensagensDeErro('A data informada não corresponde a um valor válido para dd/mm/aaaa.');
+                return false;
+            }
+        }catch(Error $err){
+            $err->getMessage();
+            $this->mostrarMensagensDeErro('A data informada não corresponde a um valor válido para dd/mm/aaaa.');
+            return false;
+        }
+
         return true;
     }
 
     private function validarAplicacao($aplicacao):bool
     {
         if($aplicacao === "" || $aplicacao === null){
-            $this->mostrarMensagensDeErro('O campo aplicação não pode estar em branco');
+            $this->mostrarMensagensDeErro('O campo aplicação não pode estar em branco.');
             return false;
         }
+
+        $aplicacoes = require __DIR__ . '/../helpers/arrayAplicacoes.php';
+        if(!in_array($aplicacao, $aplicacoes)){
+            $this->mostrarMensagensDeErro('A aplicação informada não existe no nosso sistema.');
+            return false;
+        }
+
         return true;
     }
 
     private function validarAtivo($ativo): bool
     {
         if($ativo === "" || $ativo === null){
-            $this->mostrarMensagensDeErro('Os campos de ativos não podem estar vazios');
+            $this->mostrarMensagensDeErro('Os campos de ativos não podem estar vazios.');
+            return false;
+        }
+
+        if (strlen($ativo) > 7){
+            $this->mostrarMensagensDeErro('O campo ativo não pode conter mais que 7 caracteres.');
             return false;
         }
         
@@ -98,15 +132,23 @@ class Negociacao implements IValidacao
             $this->mostrarMensagensDeErro('Os quatro primeiros caracteres de um ativo devem ser somente letras.');
             return false;
         }
+
         return true;
     }
 
     private function validarOperacao($operacao):bool
     {
         if($operacao === "" || $operacao === null){
-            $this->mostrarMensagensDeErro('Os campos de operações não podem estar vazios');
+            $this->mostrarMensagensDeErro('Os campos de operações não podem estar vazios.');
             return false;
         }
+
+        $operacoes = require __DIR__ . '/../helpers/arrayOperacoes.php';
+        if(!in_array($operacao, $operacoes)){
+            $this->mostrarMensagensDeErro('A operação informada não existe no nosso sistema.');
+            return false;
+        }
+
         return true;
     }
 
@@ -116,7 +158,12 @@ class Negociacao implements IValidacao
         $procurarPonto = strpos($quantidade, '.');
 
         if($quantidade === "" || $quantidade === null){
-            $this->mostrarMensagensDeErro('Os campos de quantidades não podem estar vazios');
+            $this->mostrarMensagensDeErro('Os campos de quantidades não podem estar vazios.');
+            return false;
+        }
+
+        if (strlen($quantidade) > 7){
+            $this->mostrarMensagensDeErro('O campo quantidade não pode conter mais que 7 caracteres.');
             return false;
         }
 
@@ -130,7 +177,12 @@ class Negociacao implements IValidacao
     private function validarPreco($preco): bool
     {
         if($preco === "" || $preco === null){
-            $this->mostrarMensagensDeErro('Os campos de preços não podem estar vazios');
+            $this->mostrarMensagensDeErro('Os campos de preços não podem estar vazios.');
+            return false;
+        }
+
+        if (strlen($preco) > 7){
+            $this->mostrarMensagensDeErro('O campo preço não pode conter mais que 7 caracteres.');
             return false;
         }
 
@@ -138,13 +190,19 @@ class Negociacao implements IValidacao
             $this->mostrarMensagensDeErro('O preço do ativo deve ser um número.');
             return false;
         }
+
         return true;
     }
 
     private function validarTaxa($taxa): bool
     {
         if($taxa === "" || $taxa === null){
-            $this->mostrarMensagensDeErro('Os campos de taxas não podem estar vazios');
+            $this->mostrarMensagensDeErro('Os campos de taxas não podem estar vazios.');
+            return false;
+        }
+
+        if (strlen($taxa) > 5){
+            $this->mostrarMensagensDeErro('O campo taxa não pode conter mais que 5 caracteres.');
             return false;
         }
 
@@ -152,6 +210,7 @@ class Negociacao implements IValidacao
             $this->mostrarMensagensDeErro('A taxa da negociação deve ser um número.');
             return false;
         }
+
         return true;
     }
 

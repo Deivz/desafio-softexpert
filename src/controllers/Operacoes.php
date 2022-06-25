@@ -17,7 +17,7 @@ class Operacoes extends Renderizador implements IRequisicao
     {
         echo $this->renderizarPagina('/operacoes');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->realizarEnvio($_POST['quantidadeOperacoes']);
+            $this->realizarEnvio(filter_input(INPUT_POST, 'quantidadeOperacoes', FILTER_SANITIZE_NUMBER_INT));
         }
     }
 
@@ -35,13 +35,13 @@ class Operacoes extends Renderizador implements IRequisicao
 
         for ($i = 0; $i < $quantidadeOperacoes; $i++) {
             if(isset($_POST["ativo{$i}"])){
-                $data = $_POST['data'];
-                $aplicacao = $_POST['aplicacao']; 
-                $ativo = $_POST["ativo{$i}"];
-                $operacao = $_POST["operacao{$i}"];
-                $quantidade = $_POST["quantidade{$i}"];
-                $preco = $_POST["preco{$i}"];
-                $taxa = $_POST["taxa{$i}"];
+                $data = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_SPECIAL_CHARS);
+                $aplicacao = filter_input(INPUT_POST, 'aplicacao', FILTER_SANITIZE_SPECIAL_CHARS); 
+                $ativo = filter_input(INPUT_POST, "ativo{$i}", FILTER_SANITIZE_SPECIAL_CHARS);
+                $operacao = filter_input(INPUT_POST, "operacao{$i}", FILTER_SANITIZE_SPECIAL_CHARS);
+                $quantidade = filter_input(INPUT_POST, "quantidade{$i}", FILTER_SANITIZE_NUMBER_INT);
+                $preco = filter_input(INPUT_POST, "preco{$i}", FILTER_SANITIZE_SPECIAL_CHARS);
+                $taxa = filter_input(INPUT_POST, "taxa{$i}", FILTER_SANITIZE_SPECIAL_CHARS);
             }
         }
 
