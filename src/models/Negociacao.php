@@ -12,25 +12,23 @@ class Negociacao implements IValidacao
 
     private $data;
     private $aplicacao;
-    private $ativo;
-    private $operacao;
-    private $quantidade;
-    private $preco;
-    private $taxa;
+    private array $ativos;
+    private array $operacoes;
+    private array $quantidades;
+    private array $precos;
+    private array $taxas;
 
-    public function __construct(string $data, string $aplicacao, int $quantidadeOperacoes, string $ativo, string $operacao, string $quantidade, string $preco, string $taxa)
+    public function __construct(string $data, string $aplicacao, array $ativos, array $operacoes, array $quantidades, array $precos, array $taxas)
     {
         $_SESSION['data'] = $data;
         $_SESSION['aplicacao'] = $aplicacao;
-        $_SESSION['quantidadeOperacoes'] = $quantidadeOperacoes;
-        for ($i = 0; $i < $quantidadeOperacoes; $i++) {
-            $_SESSION["ativo{$i}"] = $ativo;
-            $_SESSION["operacao{$i}"] = $operacao;
-            $_SESSION["quantidade{$i}"] = $quantidade;
-            $_SESSION["preco{$i}"] = $preco;
-            $_SESSION["taxa{$i}"] = $taxa;
+        for ($i=0; $i < count($ativos); $i++) { 
+            $_SESSION["ativo{$i}"] = $ativos[$i];
+            $_SESSION["operacao{$i}"] = $operacoes[$i];
+            $_SESSION["quantidade{$i}"] = $quantidades[$i];
+            $_SESSION["preco{$i}"] = $precos[$i];
+            $_SESSION["taxa{$i}"] = $taxas[$i];
         }
-
         if($this->validarData($data)){
             $this->data = $data;
         }
@@ -39,32 +37,36 @@ class Negociacao implements IValidacao
             $this->aplicacao = $aplicacao;
         }
         
-        if($this->validarAtivo($ativo)){
-            $this->ativo = $ativo;
+        if($this->validarAtivo($ativos)){
+            $this->ativos = $ativos;
         }
         
-        if($this->validarOperacao($operacao)){
-            $this->operacao = $operacao;
+        if($this->validarOperacao($operacoes)){
+            $this->operacoes = $operacoes;
         }
         
-        if($this->validarQuantidade($quantidade)){
-            $this->quantidade = $quantidade;
+        if($this->validarQuantidade($quantidades)){
+            $this->quantidades = $quantidades;
         }
 
-        if($this->validarPreco($preco)){
-            $procurarVirgula = strpos($preco, ',');
-            if($procurarVirgula){
-                $this->preco = $preco = str_replace(',', '.', $preco);
+        if($this->validarPreco($precos)){
+            for($i = 0; $i < count($precos); $i++) {
+                $procurarVirgula = strpos($precos[$i], ',');
+                if($procurarVirgula){
+                    $precos[$i] = str_replace(',', '.', $precos[$i]);
+                }
             }
-            $this->preco = $preco;
+            $this->precos = $precos;
         }
 
-        if($this->validarTaxa($taxa)){
-            $procurarVirgula = strpos($taxa, ',');
-            if($procurarVirgula){
-                $this->taxa = $taxa = str_replace(',', '.', $taxa);
+        if($this->validarTaxa($taxas)){
+            for($i = 0; $i < count($taxas); $i++) {
+                $procurarVirgula = strpos($taxas[$i], ',');
+                if($procurarVirgula){
+                    $taxas[$i] = str_replace(',', '.', $taxas[$i]);
+                }
             }
-            $this->taxa = $taxa;
+            $this->taxas = $taxas;
         }
 
         $this->verificarValidacao();
@@ -113,104 +115,110 @@ class Negociacao implements IValidacao
         return true;
     }
 
-    private function validarAtivo($ativo): bool
+    private function validarAtivo($ativos): bool
     {
-        if($ativo === "" || $ativo === null){
-            $this->mostrarMensagensDeErro('Os campos de ativos não podem estar vazios.');
-            return false;
-        }
-
-        if (strlen($ativo) > 7){
-            $this->mostrarMensagensDeErro('O campo ativo não pode conter mais que 7 caracteres.');
-            return false;
-        }
-        
-        $quatroCaracteresIniciais = substr($ativo, 0 ,4);
-        $filtrarNumeros = filter_var($quatroCaracteresIniciais, FILTER_SANITIZE_NUMBER_INT);
-
-        if(is_numeric($filtrarNumeros)){
-            $this->mostrarMensagensDeErro('Os quatro primeiros caracteres de um ativo devem ser somente letras.');
-            return false;
-        }
-
-        return true;
-    }
-
-    private function validarOperacao($operacao):bool
-    {
-        if($operacao === "" || $operacao === null){
-            $this->mostrarMensagensDeErro('Os campos de operações não podem estar vazios.');
-            return false;
-        }
-
-        $operacoes = require __DIR__ . '/../helpers/arrayOperacoes.php';
-        if(!in_array($operacao, $operacoes)){
-            $this->mostrarMensagensDeErro('A operação informada não existe no nosso sistema.');
-            return false;
-        }
-
-        return true;
-    }
-
-    private function validarQuantidade($quantidade): bool
-    {
-        $procurarVirgula = strpos($quantidade, ',');
-        $procurarPonto = strpos($quantidade, '.');
-
-        if($quantidade === "" || $quantidade === null){
-            $this->mostrarMensagensDeErro('Os campos de quantidades não podem estar vazios.');
-            return false;
-        }
-
-        if (strlen($quantidade) > 7){
-            $this->mostrarMensagensDeErro('O campo quantidade não pode conter mais que 7 caracteres.');
-            return false;
-        }
-
-        if((intval($quantidade) === 0) || $procurarVirgula || $procurarPonto){
-            $this->mostrarMensagensDeErro('A quantidade deve ser um número e do tipo inteiro.');
-            return false;
+        foreach ($ativos as $ativo) {
+            if($ativo === "" || $ativo === null){
+                $this->mostrarMensagensDeErro('Os campos de ativos não podem estar vazios.');
+                return false;
+            }
+    
+            if (strlen($ativo) > 7){
+                $this->mostrarMensagensDeErro('O campo ativo não pode conter mais que 7 caracteres.');
+                return false;
+            }
+            
+            $quatroCaracteresIniciais = substr($ativo, 0 ,4);
+            $filtrarNumeros = filter_var($quatroCaracteresIniciais, FILTER_SANITIZE_NUMBER_INT);
+    
+            if(is_numeric($filtrarNumeros)){
+                $this->mostrarMensagensDeErro('Os quatro primeiros caracteres de um ativo devem ser somente letras.');
+                return false;
+            }
         }
         return true;
     }
 
-    private function validarPreco($preco): bool
+    private function validarOperacao($operacoes):bool
     {
-        if($preco === "" || $preco === null){
-            $this->mostrarMensagensDeErro('Os campos de preços não podem estar vazios.');
-            return false;
-        }
+        foreach ($operacoes as $operacao) {
+            if($operacao === "" || $operacao === null){
+                $this->mostrarMensagensDeErro('Os campos de operações não podem estar vazios.');
+                return false;
+            }
 
-        if (strlen($preco) > 7){
-            $this->mostrarMensagensDeErro('O campo preço não pode conter mais que 7 caracteres.');
-            return false;
+            $operacoes = require __DIR__ . '/../helpers/arrayOperacoes.php';
+            if(!in_array($operacao, $operacoes)){
+                $this->mostrarMensagensDeErro('A operação informada não existe no nosso sistema.');
+                return false;
+            }
         }
-
-        if((intval($preco) === 0)){
-            $this->mostrarMensagensDeErro('O preço do ativo deve ser um número.');
-            return false;
-        }
-
         return true;
     }
 
-    private function validarTaxa($taxa): bool
+    private function validarQuantidade($quantidades): bool
     {
-        if($taxa === "" || $taxa === null){
-            $this->mostrarMensagensDeErro('Os campos de taxas não podem estar vazios.');
-            return false;
-        }
+        foreach ($quantidades as $quantidade) {
+            $procurarVirgula = strpos($quantidade, ',');
+            $procurarPonto = strpos($quantidade, '.');
 
-        if (strlen($taxa) > 5){
-            $this->mostrarMensagensDeErro('O campo taxa não pode conter mais que 5 caracteres.');
-            return false;
-        }
+            if($quantidade === "" || $quantidade === null){
+                $this->mostrarMensagensDeErro('Os campos de quantidades não podem estar vazios.');
+                return false;
+            }
 
-        if((intval($taxa) === 0)){
-            $this->mostrarMensagensDeErro('A taxa da negociação deve ser um número.');
-            return false;
-        }
+            if (strlen($quantidade) > 7){
+                $this->mostrarMensagensDeErro('O campo quantidade não pode conter mais que 7 caracteres.');
+                return false;
+            }
 
+            if((intval($quantidade) === 0) || $procurarVirgula || $procurarPonto){
+                $this->mostrarMensagensDeErro('A quantidade deve ser um número e do tipo inteiro.');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function validarPreco($precos): bool
+    {
+        foreach ($precos as $preco) {
+            if($preco === "" || $preco === null){
+                $this->mostrarMensagensDeErro('Os campos de preços não podem estar vazios.');
+                return false;
+            }
+
+            if (strlen($preco) > 7){
+                $this->mostrarMensagensDeErro('O campo preço não pode conter mais que 7 caracteres.');
+                return false;
+            }
+
+            if((intval($preco) === 0)){
+                $this->mostrarMensagensDeErro('O preço do ativo deve ser um número.');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function validarTaxa($taxas): bool
+    {
+        foreach ($taxas as $taxa) {
+            if($taxa === "" || $taxa === null){
+                $this->mostrarMensagensDeErro('Os campos de taxas não podem estar vazios.');
+                return false;
+            }
+
+            if (strlen($taxa) > 5){
+                $this->mostrarMensagensDeErro('O campo taxa não pode conter mais que 5 caracteres.');
+                return false;
+            }
+
+            if((intval($taxa) === 0)){
+                $this->mostrarMensagensDeErro('A taxa da negociação deve ser um número.');
+                return false;
+            }
+        }
         return true;
     }
 

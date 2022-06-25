@@ -32,29 +32,34 @@ class Operacoes extends Renderizador implements IRequisicao
         }
 
         $_SESSION['quantidadeOperacoes'] = $quantidadeOperacoes;
+        static $ativos = [];
+        static $operacoes = [];
+        static $quantidades = [];
+        static $precos = [];
+        static $taxas = [];
 
         for ($i = 0; $i < $quantidadeOperacoes; $i++) {
             if(isset($_POST["ativo{$i}"])){
                 $data = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_SPECIAL_CHARS);
                 $aplicacao = filter_input(INPUT_POST, 'aplicacao', FILTER_SANITIZE_SPECIAL_CHARS); 
-                $ativo = filter_input(INPUT_POST, "ativo{$i}", FILTER_SANITIZE_SPECIAL_CHARS);
-                $operacao = filter_input(INPUT_POST, "operacao{$i}", FILTER_SANITIZE_SPECIAL_CHARS);
-                $quantidade = filter_input(INPUT_POST, "quantidade{$i}", FILTER_SANITIZE_NUMBER_INT);
-                $preco = filter_input(INPUT_POST, "preco{$i}", FILTER_SANITIZE_SPECIAL_CHARS);
-                $taxa = filter_input(INPUT_POST, "taxa{$i}", FILTER_SANITIZE_SPECIAL_CHARS);
+                array_push($ativos, filter_input(INPUT_POST, "ativo{$i}", FILTER_SANITIZE_SPECIAL_CHARS));
+                array_push($operacoes, filter_input(INPUT_POST, "operacao{$i}", FILTER_SANITIZE_SPECIAL_CHARS));
+                array_push($quantidades, filter_input(INPUT_POST, "quantidade{$i}", FILTER_SANITIZE_NUMBER_INT));
+                array_push($precos, filter_input(INPUT_POST, "preco{$i}", FILTER_SANITIZE_SPECIAL_CHARS));
+                array_push($taxas, filter_input(INPUT_POST, "taxa{$i}", FILTER_SANITIZE_SPECIAL_CHARS));
             }
         }
 
-        $negociacao = new Negociacao($data, $aplicacao, $quantidadeOperacoes, $ativo, $operacao, $quantidade, $preco, $taxa);
+        $negociacao = new Negociacao($data, $aplicacao, $ativos, $operacoes, $quantidades, $precos, $taxas);
 
         $req = [
             'Data' => $negociacao->data,
             'Aplicação' => $negociacao->aplicacao,
-            'Ativos' => $negociacao->ativo,
-            'Operações' => $negociacao->operacao,
-            'Quantidades' => $negociacao->quantidade,
-            'Preços' => $negociacao->preco,
-            'Taxas' => $negociacao->taxa
+            'Ativos' => $negociacao->ativos,
+            'Operações' => $negociacao->operacoes,
+            'Quantidades' => $negociacao->quantidades,
+            'Preços' => $negociacao->precos,
+            'Taxas' => $negociacao->taxas
         ];
 
         $dados = "\n" . json_encode($req, JSON_UNESCAPED_UNICODE);

@@ -85,7 +85,7 @@ $operacoes = require __DIR__ . '/../helpers/arrayOperacoes.php';
                 </div>
                 <div class="col">
                     <select name="operacao<?= $i ?>" class="form-select" aria-label="Default select example">
-                        <option hidden selected><?= $_SESSION["operacao"] ?></option>
+                        <option hidden selected><?= $_SESSION["operacao{$i}"] ?></option>
                         <!-- Código para preencher o campo de aplicações -->
                         <?php
                         for ($j = 0; $j < count($operacoes); $j++) : ?>
