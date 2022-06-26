@@ -16,10 +16,6 @@ class Usuario implements IValidacao
 
     public function __construct(string $nome, string $cpf, string $email, string $senha)
     {   
-        $_SESSION['nome'] = $_POST['nome'];
-        $_SESSION['cpf'] = $_POST['cpf'];
-        $_SESSION['email'] = $_POST['email'];
-
         if($this->validarNome($nome)){
             $this->nome = $nome;
         }

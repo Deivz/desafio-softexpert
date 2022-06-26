@@ -53,12 +53,13 @@ class Operacoes extends Renderizador implements IRequisicao
         $negociacao = new Negociacao($data, $aplicacao, $ativos, $operacoes, $quantidades, $precos, $taxas);
 
         $req = [
+            'Usuario' => $_SESSION['cpf'],
             'Data' => $negociacao->data,
-            'Aplicação' => $negociacao->aplicacao,
+            'Aplicacao' => $negociacao->aplicacao,
             'Ativos' => $negociacao->ativos,
-            'Operações' => $negociacao->operacoes,
+            'Operacoes' => $negociacao->operacoes,
             'Quantidades' => $negociacao->quantidades,
-            'Preços' => $negociacao->precos,
+            'Precos' => $negociacao->precos,
             'Taxas' => $negociacao->taxas
         ];
 

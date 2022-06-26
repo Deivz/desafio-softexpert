@@ -3,41 +3,43 @@
 namespace Deivz\CalculadoraIr\controllers;
 
 use Deivz\CalculadoraIr\interfaces\IRequisicao;
+use Deivz\CalculadoraIr\models\Usuario;
 
 class Login extends Renderizador implements IRequisicao
 {
     public function processarRequisicao(): void
     {
         echo $this->renderizarPagina('/login');
-        $this->realizarLogin();
+        $this->realizarLogin(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_SPECIAL_CHARS), $_POST['senha']);
     }
 
-    public function realizarLogin()
+    public function realizarLogin(string $email, string $senha)
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            if(!$this->buscarUsuario($_POST['email'], $_POST['senha'])){
+            if(!$this->buscarUsuario($email, $senha)){
                 $_SESSION['tipoMensagem'] = 'danger';
-                $_SESSION['email'] = $_POST['email'];
+                $_SESSION['email'] = $email;
                 header('Location: /login');
                 exit();
             }
 
             $_SESSION['logado'] = true;
+            
             header('Location: /operacoes');
         }
     }
 
-    public function buscarUsuario(string $user, string $password): bool
+    public function buscarUsuario(string $email, string $senha): bool
     {
-        $user = filter_var($user, FILTER_SANITIZE_SPECIAL_CHARS);
-
         $arquivo = '../src/repositorio/usuarios.txt';
         $stream = fopen($arquivo, 'r');
 
         while(!feof($stream)){
             $usuario = json_decode(fgets($stream));
-            if($user === $usuario->{'email'}){
-                if(password_verify($password, $usuario->{'senha'})){
+            if($email === $usuario->{'email'}){
+                if(password_verify($senha, $usuario->{'senha'})){
+                    $_SESSION['nomeUsuario'] = $usuario->{'nome'};
+                    $_SESSION['cpf'] = $usuario->{'cpf'};
                     return true;
                 }
                 $_SESSION['mensagem'] = "Senha inválida!";
