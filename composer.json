@@ -1,11 +1,11 @@
 {
-    "name": "deivz/calculadora-ir",
-    "description": "\"Calculadora para imposto de rende sob operações financeiras em bolsa\"",
+    "name": "deivz/desafio-softexpert",
+    "description": "\"Desafio técnico para vaga de desenvolvedor na Softexpert\"",
     "license": "MIT",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Deivz\\CalculadoraIr\\": "src/"
+            "Deivz\\DesafioSoftexpert\\": "src/"
         }
     },
     "authors": [

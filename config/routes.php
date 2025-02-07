@@ -1,12 +1,9 @@
 <?php
 
-use Deivz\CalculadoraIr\controllers\Cadastro;
-
+use Deivz\DesafioSoftexpert\controllers\Cadastro;
 
 $rotas = [
-    '/cadastro-tipos' => Cadastro::class,
-    '/cadastro-produtos' => Cadastro::class,
-    '/cadastro-impostos' => Cadastro::class,
+	'/cadastro-tipos' => Cadastro::class,
 ];
 
 return $rotas;

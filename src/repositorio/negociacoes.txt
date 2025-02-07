@@ -1,3 +1,0 @@
-{"Usuario":"Exemplo","Data":"Exemplo","Aplicacao":"Exemplo","Ativos":["Exemplo"],"Operacoes":["Exemplo"],"Quantidades":["Exemplo"],"Precos":["Exemplo"],"Taxas":["Exemplo"]}
-{"Usuario":"04163310509","Data":"2022-06-15","Aplicacao":"Ações","Ativos":["PETR4","VIIA3"],"Operacoes":["Compra","Venda"],"Quantidades":["200","1600"],"Precos":["22.32","15.60"],"Taxas":["2.45","4.58"]}
-{"Usuario":"14163310509","Data":"2022-06-13","Aplicacao":"Ações","Ativos":["PETR4"],"Operacoes":["Compra"],"Quantidades":["100"],"Precos":["26.45"],"Taxas":["1.48"]}

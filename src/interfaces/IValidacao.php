@@ -1,8 +1,8 @@
 <?php
 
-namespace Deivz\CalculadoraIr\interfaces;
+namespace Deivz\DesafioSoftexpert\interfaces;
 
 interface IValidacao
 {
-    public function verificarValidacao();
+	public function verificarValidacao();
 }

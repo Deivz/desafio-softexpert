@@ -1,8 +1,8 @@
 <?php
 
-namespace Deivz\CalculadoraIr\interfaces;
+namespace Deivz\DesafioSoftexpert\interfaces;
 
 interface IRequisicao
 {
-    public function processarRequisicao(): void;
+	public function processarRequisicao(): void;
 }

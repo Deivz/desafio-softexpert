@@ -1,3 +1,0 @@
-{"nome":"Exemplo","cpf":"Exemplo","email":"Exemplo","senha":"Exemplo"}
-{"nome":"Davi","cpf":"14163310509","email":"davi@email.com","senha":"$2y$10$q9LH9PNJ\/oZUDr\/fKaGNruZlZTNZc1ofhrP\/48DsI9qp4ZL8kd2qC"}
-{"nome":"Deivz","cpf":"04163310509","email":"dav@email.com","senha":"$2y$10$Zyt5VT2PVSAD.cDnQHifFuvJR2sKhDF1.\/IoHfux1DKxgKVWOwntS"}
