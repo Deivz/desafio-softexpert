@@ -4,5 +4,5 @@ namespace Deivz\DesafioSoftexpert\interfaces;
 
 interface IRequisicao
 {
-	public function processarRequisicao(): void;
+	public function processRequest(string $method, string $resource = null): void;
 }

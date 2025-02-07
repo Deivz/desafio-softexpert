@@ -8,17 +8,25 @@ use Deivz\DesafioSoftexpert\interfaces\IValidacao;
 use Deivz\DesafioSoftexpert\models\Usuario;
 use Error;
 
-class Cadastro extends Renderizador implements IRequisicao, IValidacao
+class Cadastro implements IRequisicao, IValidacao
 {
 	use TVerificarErros;
 
-	public function processarRequisicao(): void
-	{
-		echo $this->renderizarPagina('/cadastro');
+	protected string $route;
 
-		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			$this->realizarCadastro($_POST['nome'], $_POST['cpf'], $_POST['email'], $_POST['senha']);
-		}
+	public function __construct(string $route = '')
+	{
+		$this->route = '/' . $route;
+	}
+
+	public function processRequest(string $method, string $resource = null): void
+	{
+		echo "Rota: {$this->route}";
+		// echo $this->renderPage($this->route);
+
+		// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		// 	$this->realizarCadastro($_POST['nome'], $_POST['cpf'], $_POST['email'], $_POST['senha']);
+		// }
 	}
 
 	private function realizarCadastro($nome, $cpf, $email, $senha)
