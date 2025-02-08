@@ -31,6 +31,7 @@ class Product implements ModelInterface
 			'active',
 			'name',
 			'price',
+			'amount',
 			'product_type',
 			'created_at',
 			'updated_at',
@@ -59,15 +60,17 @@ class Product implements ModelInterface
         {$this->columns[4]},
         {$this->columns[5]},
         {$this->columns[6]},
-        {$this->columns[7]}
+        {$this->columns[7]},
+        {$this->columns[8]}
       )
-      VALUES(:uuid, :deleted, :active, :name, :price, :product_type, :createdAt);";
+      VALUES(:uuid, :deleted, :active, :name, :price, :amount, :product_type, :createdAt);";
 		$stmt = $this->connection->prepare($sql);
 		$stmt->bindValue(":uuid", $uuid, PDO::PARAM_STR);
 		$stmt->bindValue(":deleted", 0, PDO::PARAM_INT);
 		$stmt->bindValue(":active", 1, PDO::PARAM_INT);
 		$stmt->bindValue(":name", $request['name'], PDO::PARAM_STR);
 		$stmt->bindValue(":price", $request['price'], PDO::PARAM_INT);
+		$stmt->bindValue(":amount", $request['amount'], PDO::PARAM_INT);
 		$stmt->bindValue(":product_type", $request['product_type'], PDO::PARAM_INT);
 		$stmt->bindValue(":createdAt", $createdAt, PDO::PARAM_INT);
 

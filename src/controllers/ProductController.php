@@ -20,7 +20,7 @@ class ProductController implements ControllerInterface
 		try {
 			$request = (array) json_decode(file_get_contents("php://input"), true);
 
-			$errors = $this->validateRequestData($request['name'], $request['price'], $request['product_type']);
+			$errors = $this->validateRequest($request);
 
 			if (!empty($errors)) {
 				http_response_code(400);
@@ -84,9 +84,14 @@ class ProductController implements ControllerInterface
 		return $convertedPrice;
 	}
 
-	private function validateRequestData(string $name, string $price, string &$productType): array
+	private function validateRequest(array &$request): array
 	{
 		$errors = [];
+
+		$name = isset($request['name']) ? $request['name'] : null;
+		$price = isset($request['price']) ? $request['price'] : null;
+		$productType = isset($request['product_type']) ? intval($request['product_type']) : null;
+		$amount = isset($request['amount']) ? intval($request['amount']) : null;
 
 		if (empty($name)) {
 			array_push($errors, "Nome não informado.");
@@ -100,7 +105,7 @@ class ProductController implements ControllerInterface
 			array_push($errors, "Preço não informado.");
 		}
 
-		$price = $this->convertPrice($price);
+		$request['price'] = $this->convertPrice($price);
 		if ($price === -1) {
 			array_push($errors, "O preço precisa ser um número valido!");
 		}
@@ -113,9 +118,27 @@ class ProductController implements ControllerInterface
 			array_push($errors, "Não é possível cadastrar um produto com preço maior que R$1.000.000,00.");
 		}
 
-		$productType = intval($productType);
 		if ($productType <= 0) {
 			array_push($errors, "Informe um tipo de produto.");
+		}
+
+		if (empty($amount)) {
+			array_push($errors, "Quantidade não informada.");
+		}
+
+		
+
+		if (!is_int($amount)) {
+			array_push($errors, "Quantidade precisa ser um número inteiro.");
+		}
+
+
+		if ($amount <= 0) {
+			array_push($errors, "A quantidade do produto precisa ser maior que 0.");
+		}
+
+		if ($amount > 100000000) {
+			array_push($errors, "Não é possível cadastrar um produto com quantidade maior que 100.000.000.");
 		}
 
 		return $errors;
