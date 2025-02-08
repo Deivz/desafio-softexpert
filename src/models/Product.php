@@ -18,12 +18,15 @@ class Product implements ModelInterface
 	private ConnectionController $connectionController;
 	private PDO $connection;
 	private string $table;
+	private array $tableJoin = [];
 	private array $columns = [];
 
 	public function __construct(ConnectionController $connectionController)
 	{
 		$this->connectionController = $connectionController;
 		$this->table = $_ENV["TABLE_PRODUCTS"];
+		array_push($this->tableJoin, $_ENV["TABLE_PRODUCT_TYPES"]);
+		array_push($this->tableJoin, $_ENV["TABLE_TAXES"]);
 		$this->columns = [
 			'id',
 			'uuid',
@@ -95,22 +98,29 @@ class Product implements ModelInterface
 		$products = [];
 
 		$this->connection = $this->connectionController->connect();
-		$sql = "SELECT * FROM {$this->table} LIMIT {$limit} OFFSET {$offset};";
+
+		$sql = "SELECT p.uuid, p.name, p.price, p.amount, pt.product_type, t.tax
+			FROM {$this->table} p
+			INNER JOIN {$this->tableJoin[0]} pt
+			ON p.product_type = pt.id
+			INNER JOIN {$this->tableJoin[1]} t
+			ON pt.id = t.product_type
+			LIMIT {$limit}
+			OFFSET {$offset};";
+
 		$stmt = $this->connection->query($sql);
+
 		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$taxPrice = $row['price'] * ($row['tax'] / 10000);
+			$priceWithTax = $row['price'] + $taxPrice;
+			$row['total'] = ($priceWithTax/100) * $row['amount'];
 			$products[] = $row;
 		}
 
 		return $products;
 	}
 
-	public function update(): void
-	{
-		
-	}
+	public function update(): void {}
 
-	public function delete(): void
-	{
-
-	}
+	public function delete(): void {}
 }
