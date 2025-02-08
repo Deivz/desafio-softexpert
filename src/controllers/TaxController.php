@@ -4,7 +4,6 @@ namespace Deivz\DesafioSoftexpert\controllers;
 
 use Deivz\DesafioSoftexpert\interfaces\ControllerInterface;
 use Deivz\DesafioSoftexpert\models\Tax;
-use PDO;
 
 class TaxController implements ControllerInterface
 {
@@ -20,7 +19,7 @@ class TaxController implements ControllerInterface
 		try {
 			$request = (array) json_decode(file_get_contents("php://input"), true);
 
-			$errors = $this->validateRequestData($request['tax'], $request['product_type']);
+			$errors = $this->validateRequest($request);
 
 			if (!empty($errors)) {
 				http_response_code(400);
@@ -84,15 +83,18 @@ class TaxController implements ControllerInterface
 		return $convertedPrice;
 	}
 
-	private function validateRequestData(string $tax, string &$productType): array
+	private function validateRequest(array &$request): array
 	{
 		$errors = [];
 
-		if (empty($tax)) {
+		$tax = isset($request['tax']) ? $request['tax'] : null;
+		$productType = isset($request['product_type']) ? $request['product_type'] : null;
+
+		if (empty($tax) || !isset($tax)) {
 			array_push($errors, "Valor do imposto não informado.");
 		}
 
-		$tax = $this->convertTax($tax);
+		$request['tax'] = $this->convertTax($tax);
 		if ($tax === -1) {
 			array_push($errors, "O valor do imposto precisa ser um número valido!");
 		}
@@ -105,7 +107,7 @@ class TaxController implements ControllerInterface
 			array_push($errors, "Não é possível cadastrar um imposto superior a 200%.");
 		}
 
-		$productType = intval($productType);
+		$request['product_type'] = intval($productType);
 		if ($productType <= 0) {
 			array_push($errors, "Informe um tipo de produto.");
 		}

@@ -7,8 +7,6 @@ use Deivz\DesafioSoftexpert\helpers\UUIDGenerator;
 use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
 use PDO;
 
-use function Deivz\DesafioSoftexpert\helpers\uuidv4;
-
 class Tax implements ModelInterface
 {
 	private ConnectionController $connectionController;
@@ -19,7 +17,7 @@ class Tax implements ModelInterface
 	public function __construct(ConnectionController $connectionController)
 	{
 		$this->connectionController = $connectionController;
-		$this->table = $_ENV["TABLE_PRODUCTS"];
+		$this->table = $_ENV["TABLE_TAXES"];
 		$this->columns = [
 			'id',
 			'uuid',
@@ -53,7 +51,7 @@ class Tax implements ModelInterface
         {$this->columns[3]},
         {$this->columns[4]},
         {$this->columns[5]},
-        {$this->columns[6]},
+        {$this->columns[6]}
       )
       VALUES(:uuid, :deleted, :active, :tax, :product_type, :createdAt);";
 		$stmt = $this->connection->prepare($sql);
@@ -64,7 +62,7 @@ class Tax implements ModelInterface
 		$stmt->bindValue(":product_type", $request['product_type'], PDO::PARAM_INT);
 		$stmt->bindValue(":createdAt", $createdAt, PDO::PARAM_INT);
 
-		$stmt->execute();
+		$stmt->execute();		
 
 		if ($this->connection->lastInsertId() > 0) {
 			$this->connection->commit();
