@@ -1,22 +1,21 @@
 <?php
 
-// use Deivz\DesafioSoftexpert\controllers\Cadastro;
-
-// $rotas = [
-// 	'/cadastro-tipos' => Cadastro::class,
-// ];
-
-// return $rotas;
-
-use Deivz\DesafioSoftexpert\controllers\Cadastro;
-
 $routes = [
 	'GET' => [
-			'/cadastro' => Cadastro::class,
-			// '/' => 'HomeController@index',
-			// '/about' => 'AboutController@index',
-			// '/user/{id}' => 'UserController@show', // Rota dinâmica
-			// '/user/{id}/produtos' => 'UserController@prod', // Rota dinâmica
+		'/cadastro-produto' => 'ProductController@read',
+		// '/' => 'HomeController@index',
+		// '/about' => 'AboutController@index',
+		// '/user/{id}' => 'UserController@show', // Rota dinâmica
+		// '/user/{id}/produtos' => 'UserController@prod', // Rota dinâmica
+	],
+	'POST' => [
+		'/cadastro-produto' => 'ProductController@create',
+	],
+	'PATCH' => [
+		'/cadastro-produto' => 'ProductController@update',
+	],
+	'DELETE' => [
+		'/cadastro-produto' => 'ProductController@delete',
 	],
 ];
 
