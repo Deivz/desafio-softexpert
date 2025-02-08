@@ -101,7 +101,13 @@ class Product implements ModelInterface
 		return $products;
 	}
 
-	public function update(): void {}
+	public function update(): void
+	{
+		
+	}
 
-	public function delete(): void {}
+	public function delete(): void
+	{
+
+	}
 }

@@ -44,14 +44,27 @@ class ProductTypeController implements ControllerInterface
 			]);
 		}
 	}
+
 	public function read(array $params): void
 	{
-		echo "LENDO";
+		try {
+			$products = $this->model->get($params);
+			http_response_code(200);
+			echo json_encode($products);
+		} catch (\Throwable $th) {
+			http_response_code(500);
+			echo json_encode([
+				'erro' => $th->getMessage(),
+				'mensagem' => 'Não foi possível buscar os tipos de produto no sistema, entre em contato com o suporte.'
+			]);
+		}
 	}
+
 	public function update(): void
 	{
 		echo "ATUALIZANDO";
 	}
+
 	public function delete(): void
 	{
 		echo "DELETANDO";

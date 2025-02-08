@@ -73,10 +73,25 @@ class ProductType implements ModelInterface
     $this->connection->rollBack();
   }
 
-  public function get(array $params): array
-  {
-    return [];
-  }
+	public function get(array $params): array
+	{
+		$productsPerPage = 10;
+		$limit = isset($params["limit"]) ? $params["limit"] : $productsPerPage;
+		$page = isset($params["page"]) ? $params["page"] - 1 : 0;
+
+		$offset = $page * $limit;
+
+		$productTypes = [];
+
+		$this->connection = $this->connectionController->connect();
+		$sql = "SELECT * FROM {$this->table} LIMIT {$limit} OFFSET {$offset};";
+		$stmt = $this->connection->query($sql);
+		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$productTypes[] = $row;
+		}
+
+		return $productTypes;
+	}
 
   public function update(): void {}
 

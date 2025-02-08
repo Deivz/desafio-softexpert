@@ -8,7 +8,6 @@ class ConnectionController
 {
   public function __construct(
     private string $host,
-    private int $port,
     private string $user,
     private string $password,
     private string $name
@@ -16,16 +15,19 @@ class ConnectionController
 
   public function connect(): PDO
   {
-    return new PDO("pgsql:" . sprintf(
-      "host=%s;port=%d;user=%s;password=%s;dbname=%s",
+    $dbId = $_ENV['DB_ID'];
+
+    return new PDO(sprintf(
+      "pgsql:host=%s;dbname=%s;user=%s;password=%s;options='endpoint=%s'",
       $this->host,
-      $this->port,
+      $this->name,
       $this->user,
       $this->password,
-      $this->name
+      $dbId
     ), $this->user, $this->password, [
       PDO::ATTR_EMULATE_PREPARES => false,
-      PDO::ATTR_STRINGIFY_FETCHES => false
+      PDO::ATTR_STRINGIFY_FETCHES => false,
+      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
   }
 }

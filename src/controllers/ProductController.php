@@ -55,7 +55,7 @@ class ProductController implements ControllerInterface
 			http_response_code(500);
 			echo json_encode([
 				'erro' => $th->getMessage(),
-				'mensagem' => 'Não foi possível buscaro produtos no sistema, contacte o suporte.'
+				'mensagem' => 'Não foi possível buscar os produtos no sistema, entre em contato com o suporte.'
 			]);
 		}
 	}
