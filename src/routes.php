@@ -2,28 +2,28 @@
 
 $routes = [
 	'GET' => [
-		'/cadastro-produto' => 'ProductController@read',
-		'/cadastro-tipo-produto' => 'ProductTypeController@read',
-		'/cadastro-imposto' => 'TaxController@read',
+		'/produto' => 'ProductController@read',
+		'/tipo-produto' => 'ProductTypeController@read',
+		'/imposto' => 'TaxController@read',
 		// '/' => 'HomeController@index',
 		// '/about' => 'AboutController@index',
 		// '/user/{id}' => 'UserController@show', // Rota dinâmica
 		// '/user/{id}/produtos' => 'UserController@prod', // Rota dinâmica
 	],
 	'POST' => [
-		'/cadastro-produto' => 'ProductController@create',
-		'/cadastro-tipo-produto' => 'ProductTypeController@create',
-		'/cadastro-imposto' => 'TaxController@create',
+		'/produto' => 'ProductController@create',
+		'/tipo-produto' => 'ProductTypeController@create',
+		'/imposto' => 'TaxController@create',
 	],
 	'PATCH' => [
-		'/cadastro-produto' => 'ProductController@update',
-		'/cadastro-tipo-produto' => 'ProductTypeController@update',
-		'/cadastro-imposto' => 'TaxController@update',
+		'/produto' => 'ProductController@update',
+		'/tipo-produto' => 'ProductTypeController@update',
+		'/imposto' => 'TaxController@update',
 	],
 	'DELETE' => [
-		'/cadastro-produto' => 'ProductController@delete',
-		'/cadastro-tipo-produto' => 'ProductTypeController@delete',
-		'/cadastro-imposto' => 'TaxController@delete',
+		'/produto' => 'ProductController@delete',
+		'/tipo-produto' => 'ProductTypeController@delete',
+		'/imposto' => 'TaxController@delete',
 	],
 ];
 
