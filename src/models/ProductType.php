@@ -73,7 +73,10 @@ class ProductType implements ModelInterface
     $this->connection->rollBack();
   }
 
-  public function get(): void {}
+  public function get(array $params): array
+  {
+    return [];
+  }
 
   public function update(): void {}
 

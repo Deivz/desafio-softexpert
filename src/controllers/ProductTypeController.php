@@ -31,7 +31,7 @@ class ProductTypeController implements ControllerInterface
 				return;
 			}
 
-			$id = $this->model->save($request);
+			$this->model->save($request);
 			http_response_code(201);
 			echo json_encode([
 				'mensagem' => 'Tipo de produto cadastrado com sucesso!'
@@ -44,7 +44,7 @@ class ProductTypeController implements ControllerInterface
 			]);
 		}
 	}
-	public function read(): void
+	public function read(array $params): void
 	{
 		echo "LENDO";
 	}

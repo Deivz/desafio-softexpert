@@ -31,7 +31,7 @@ class ProductController implements ControllerInterface
 				return;
 			}
 
-			$id = $this->model->save($request);
+			$this->model->save($request);
 			http_response_code(201);
 			echo json_encode([
 				'mensagem' => 'Produto cadastrado com sucesso!'
@@ -44,14 +44,27 @@ class ProductController implements ControllerInterface
 			]);
 		}
 	}
-	public function read(): void
+
+	public function read(array $params): void
 	{
-		echo "LENDO";
+		try {
+			$products = $this->model->get($params);
+			http_response_code(200);
+			echo json_encode($products);
+		} catch (\Throwable $th) {
+			http_response_code(500);
+			echo json_encode([
+				'erro' => $th->getMessage(),
+				'mensagem' => 'Não foi possível buscaro produtos no sistema, contacte o suporte.'
+			]);
+		}
 	}
+
 	public function update(): void
 	{
 		echo "ATUALIZANDO";
 	}
+
 	public function delete(): void
 	{
 		echo "DELETANDO";
@@ -79,7 +92,7 @@ class ProductController implements ControllerInterface
 			array_push($errors, "Nome não informado.");
 		}
 
-		if(strlen($name) > 255) {
+		if (strlen($name) > 255) {
 			array_push($errors, "Nome do produto deve possuir no máximo 255 caracteres.");
 		}
 
@@ -101,7 +114,7 @@ class ProductController implements ControllerInterface
 		}
 
 		$productType = intval($productType);
-		if ($productType <=0) {
+		if ($productType <= 0) {
 			array_push($errors, "Informe um tipo de produto.");
 		}
 
