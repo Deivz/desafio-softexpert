@@ -5,38 +5,29 @@ namespace Deivz\DesafioSoftexpert\controllers;
 use Deivz\DesafioSoftexpert\helpers\Validator;
 use Deivz\DesafioSoftexpert\interfaces\ControllerInterface;
 use Deivz\DesafioSoftexpert\models\Tax;
+use Deivz\DesafioSoftexpert\repositories\TaxRepository;
+use Deivz\DesafioSoftexpert\services\TaxService;
 
 class TaxController implements ControllerInterface
 {
-	private $model;
+	private Tax $model;
+	private TaxService $service;
 
 	public function __construct(ConnectionController $connection)
 	{
-		$this->model = new Tax($connection);
+		$request = (array) json_decode(file_get_contents("php://input"), true);
+		$this->model = new Tax($request);
+		$repository = new TaxRepository($connection, $this->model);
+		$this->service = new TaxService($repository);
 	}
 
-	public function create(array $request): void
+	public function create(): void
 	{
 		try {
-			$request = (array) json_decode(file_get_contents("php://input"), true);
-			
-			$request['tax'] = $this->convertTax($request['tax']);
-			$request['product_type'] = intval($request['product_type']) ? intval($request['product_type']) : $request['product_type'];
+			$requestIsValid = $this->model->validate();
 
-			$validationRules = [
-				'tax' => [
-					'RequiredValidation',
-					'IntValidation',
-					'MaxTaxValidation',
-					'PositiveNumberValidation',
-					'PriceConvertionValidation',
-				],
-				'product_type' => ['RequiredValidation', 'IntValidation'],
-			];
-
-			$requestIsValid = Validator::validate($request, $validationRules);
 			if ($requestIsValid) {
-				$this->model->save($request);
+				$this->service->create($this->model);
 				http_response_code(201);
 				echo json_encode([
 					'mensagem' => 'Imposto cadastrado com sucesso!'
@@ -59,9 +50,13 @@ class TaxController implements ControllerInterface
 	public function read(array $params): void
 	{
 		try {
-			$taxes = $this->model->get($params);
+			$productsPerPage = 50;
+			$limit = isset($params["limit"]) ? $params["limit"] : $productsPerPage;
+			$page = isset($params["page"]) ? $params["page"] : 1;
+
+			$products = $this->service->getAll($page, $limit);
 			http_response_code(200);
-			echo json_encode($taxes);
+			echo json_encode($products);
 		} catch (\Throwable $th) {
 			http_response_code(500);
 			echo json_encode([
@@ -69,29 +64,5 @@ class TaxController implements ControllerInterface
 				'mensagem' => 'Não foi possível buscar os impostos no sistema, entre em contato com o suporte.'
 			]);
 		}
-	}
-
-	public function update(): void
-	{
-		echo "ATUALIZANDO";
-	}
-
-	public function delete(): void
-	{
-		echo "DELETANDO";
-	}
-
-	private function convertTax(&$tax): int
-	{
-		$tax = str_replace(',', '.', $tax);
-
-		if (!preg_match('/^\d+(\.\d{1,2})?$/', $tax)) {
-			return -1;
-		}
-
-		$taxFloat = floatval($tax);
-		$convertedPrice = intval(round($taxFloat * 100));
-
-		return $convertedPrice;
 	}
 }
