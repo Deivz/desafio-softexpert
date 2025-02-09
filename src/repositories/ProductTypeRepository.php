@@ -11,7 +11,6 @@ class ProductTypeRepository implements RepositoryInterface
 {
   private PDO $connection;
   private string $table;
-  private array $tableJoin = [];
   private ProductType $productType;
 
   public function __construct(ConnectionController $connectionController, ProductType $productType)
