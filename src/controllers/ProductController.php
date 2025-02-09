@@ -24,7 +24,7 @@ class ProductController implements ControllerInterface
 	public function create(): void
 	{
 		try {
-			$requestIsValid = $this->model->validateProduct();
+			$requestIsValid = $this->model->validate();
 
 			if ($requestIsValid) {
 				$this->service->create($this->model);

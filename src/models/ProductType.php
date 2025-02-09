@@ -58,9 +58,9 @@ class ProductType
 		return $this->updatedAt;
 	}
 
-	public function validateProductType(): bool
+	public function validate(): bool
 	{
-		$product = [
+		$productType = [
 			'product_type' => $this->productType,
 		];
 
@@ -68,6 +68,6 @@ class ProductType
 			'product_type' => ['RequiredValidation', 'MaxLengthValidation'],
 		];
 
-		return Validator::validate($product, $validationRules);
+		return Validator::validate($productType, $validationRules);
 	}
 }

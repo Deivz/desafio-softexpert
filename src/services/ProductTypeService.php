@@ -7,22 +7,22 @@ use Deivz\DesafioSoftexpert\repositories\ProductTypeRepository;
 
 class ProductTypeService implements ServiceInterface
 {
-  private ProductTypeRepository $productTypeRepository;
+  private ProductTypeRepository $repository;
 
-  public function __construct(ProductTypeRepository $productTypeRepository)
+  public function __construct(ProductTypeRepository $repository)
   {
-    $this->productTypeRepository = $productTypeRepository;
+    $this->repository = $repository;
   }
 
   public function create(): void
   {
-    $this->productTypeRepository->save();
+    $this->repository->save();
   }
 
   public function getAll(int $page, int $limit): array
   {
     $offset = ($page - 1) * $limit;
-    $productTypes = $this->productTypeRepository->findAll($limit, $offset);
+    $productTypes = $this->repository->findAll($limit, $offset);
 
     return $productTypes;
   }

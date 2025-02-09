@@ -100,7 +100,7 @@ class Product
 		return intval($numericalString) ? intval($numericalString) : -1;
 	}
 
-	public function validateProduct(): bool
+	public function validate(): bool
 	{
 		$product = [
 			'name' => $this->name,

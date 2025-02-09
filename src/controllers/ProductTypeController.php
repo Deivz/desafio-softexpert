@@ -5,32 +5,33 @@ namespace Deivz\DesafioSoftexpert\controllers;
 use Deivz\DesafioSoftexpert\helpers\Validator;
 use Deivz\DesafioSoftexpert\interfaces\ControllerInterface;
 use Deivz\DesafioSoftexpert\models\ProductType;
+use Deivz\DesafioSoftexpert\repositories\ProductTypeRepository;
+use Deivz\DesafioSoftexpert\services\ProductTypeService;
 use PDO;
 
 class ProductTypeController implements ControllerInterface
 {
-	private $model;
+	private ProductType $model;
+	private ProductTypeService $service;
 
 	public function __construct(ConnectionController $connection)
 	{
-		$this->model = new ProductType($connection);
+		$request = (array) json_decode(file_get_contents("php://input"), true);
+		$this->model = new ProductType($request);
+		$repository = new ProductTypeRepository($connection, $this->model);
+		$this->service = new ProductTypeService($repository);
 	}
 
-	public function create(array $request): void
+	public function create(): void
 	{
 		try {
-			$request = (array) json_decode(file_get_contents("php://input"), true);
+			$requestIsValid = $this->model->validate();
 
-			$validationRules = [
-				'product_type' => ['RequiredValidation', 'MaxLengthValidation'],
-			];
-
-			$requestIsValid = Validator::validate($request, $validationRules);
 			if ($requestIsValid) {
-				$this->model->save($request);
+				$this->service->create($this->model);
 				http_response_code(201);
 				echo json_encode([
-					'mensagem' => 'Tipo de produto cadastrado com sucesso!'
+					'mensagem' => 'Produto cadastrado com sucesso!'
 				]);
 
 				return;
@@ -50,7 +51,11 @@ class ProductTypeController implements ControllerInterface
 	public function read(array $params): void
 	{
 		try {
-			$products = $this->model->get($params);
+			$productsPerPage = 50;
+			$limit = isset($params["limit"]) ? $params["limit"] : $productsPerPage;
+			$page = isset($params["page"]) ? $params["page"] : 1;
+
+			$products = $this->service->getAll($page, $limit);
 			http_response_code(200);
 			echo json_encode($products);
 		} catch (\Throwable $th) {

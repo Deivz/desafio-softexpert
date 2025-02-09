@@ -7,22 +7,22 @@ use Deivz\DesafioSoftexpert\repositories\ProductRepository;
 
 class ProductService implements ServiceInterface
 {
-  private ProductRepository $productRepository;
+  private ProductRepository $repository;
 
-  public function __construct(ProductRepository $productRepository)
+  public function __construct(ProductRepository $repository)
   {
-    $this->productRepository = $productRepository;
+    $this->repository = $repository;
   }
 
   public function create(): void
   {
-    $this->productRepository->save();
+    $this->repository->save();
   }
 
   public function getAll(int $page, int $limit): array
   {
     $offset = ($page - 1) * $limit;
-    $products = $this->productRepository->findAll($limit, $offset);
+    $products = $this->repository->findAll($limit, $offset);
 
     return array_map(function ($product) {
       $taxPrice = $product['price'] * ($product['tax'] / 10000);
