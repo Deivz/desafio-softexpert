@@ -40,7 +40,8 @@ class ProductController implements ControllerInterface
 				'amount' => ['RequiredValidation', 'IntValidation'],
 			];
 
-			if (Validator::validate($request, $validationRules)) {
+			$requestIsValid = Validator::validate($request, $validationRules);
+			if ($requestIsValid) {
 				$this->model->save($request);
 				http_response_code(201);
 				echo json_encode([
