@@ -37,7 +37,12 @@ class ProductController implements ControllerInterface
 					'PriceConvertionValidation',
 				],
 				'product_type' => ['RequiredValidation', 'IntValidation'],
-				'amount' => ['RequiredValidation', 'IntValidation'],
+				'amount' => [
+					'RequiredValidation',
+					'IntValidation',
+					'MaxNumberValidation',
+					'PositiveNumberValidation',
+				],
 			];
 
 			$requestIsValid = Validator::validate($request, $validationRules);

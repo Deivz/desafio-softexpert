@@ -2,6 +2,7 @@
 
 namespace Deivz\DesafioSoftexpert\controllers;
 
+use Deivz\DesafioSoftexpert\helpers\Validator;
 use Deivz\DesafioSoftexpert\interfaces\ControllerInterface;
 use Deivz\DesafioSoftexpert\models\ProductType;
 use PDO;
@@ -20,22 +21,23 @@ class ProductTypeController implements ControllerInterface
 		try {
 			$request = (array) json_decode(file_get_contents("php://input"), true);
 
-			$errors = $this->validateRequestData($request['product_type']);
+			$validationRules = [
+				'product_type' => ['RequiredValidation', 'MaxLengthValidation'],
+			];
 
-			if (!empty($errors)) {
-				http_response_code(400);
+			$requestIsValid = Validator::validate($request, $validationRules);
+			if ($requestIsValid) {
+				$this->model->save($request);
+				http_response_code(201);
 				echo json_encode([
-					"erros" => $errors
+					'mensagem' => 'Tipo de produto cadastrado com sucesso!'
 				]);
 
 				return;
 			}
 
-			$this->model->save($request);
-			http_response_code(201);
-			echo json_encode([
-				'mensagem' => 'Tipo de produto cadastrado com sucesso!'
-			]);
+			http_response_code(400);
+			echo json_encode(['errors' => Validator::getErrors()]);
 		} catch (\Throwable $th) {
 			http_response_code(500);
 			echo json_encode([
@@ -68,20 +70,5 @@ class ProductTypeController implements ControllerInterface
 	public function delete(): void
 	{
 		echo "DELETANDO";
-	}
-
-	private function validateRequestData(string $productType): array
-	{
-		$errors = [];
-
-		if (empty($productType)) {
-			array_push($errors, "Tipo de produto não informado");
-		}
-
-		if(strlen($productType) > 255) {
-			array_push($errors, "Tipo de produto deve possuir no máximo 255 caracteres");
-		}
-
-		return $errors;
 	}
 }
