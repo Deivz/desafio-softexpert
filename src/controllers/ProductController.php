@@ -47,18 +47,22 @@ class ProductController implements ControllerInterface
 		}
 	}
 
-	// public function read(array $params): void
-	// {
-	// 	try {
-	// 		$products = $this->model->get($params);
-	// 		http_response_code(200);
-	// 		echo json_encode($products);
-	// 	} catch (\Throwable $th) {
-	// 		http_response_code(500);
-	// 		echo json_encode([
-	// 			'erro' => $th->getMessage(),
-	// 			'mensagem' => 'Não foi possível buscar os produtos no sistema, entre em contato com o suporte.'
-	// 		]);
-	// 	}
-	// }
+	public function read(array $params): void
+	{
+		try {
+			$productsPerPage = 50;
+			$limit = isset($params["limit"]) ? $params["limit"] : $productsPerPage;
+			$page = isset($params["page"]) ? $params["page"] : 1;
+
+			$products = $this->service->getAll($page, $limit);
+			http_response_code(200);
+			echo json_encode($products);
+		} catch (\Throwable $th) {
+			http_response_code(500);
+			echo json_encode([
+				'erro' => $th->getMessage(),
+				'mensagem' => 'Não foi possível buscar os produtos no sistema, entre em contato com o suporte.'
+			]);
+		}
+	}
 }
