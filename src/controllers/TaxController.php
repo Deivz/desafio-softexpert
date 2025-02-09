@@ -2,6 +2,7 @@
 
 namespace Deivz\DesafioSoftexpert\controllers;
 
+use Deivz\DesafioSoftexpert\helpers\Validator;
 use Deivz\DesafioSoftexpert\interfaces\ControllerInterface;
 use Deivz\DesafioSoftexpert\models\Tax;
 
@@ -18,23 +19,34 @@ class TaxController implements ControllerInterface
 	{
 		try {
 			$request = (array) json_decode(file_get_contents("php://input"), true);
+			
+			$request['tax'] = $this->convertTax($request['tax']);
+			$request['product_type'] = intval($request['product_type']) ? intval($request['product_type']) : $request['product_type'];
 
-			$errors = $this->validateRequest($request);
+			$validationRules = [
+				'tax' => [
+					'RequiredValidation',
+					'IntValidation',
+					'MaxTaxValidation',
+					'PositiveNumberValidation',
+					'PriceConvertionValidation',
+				],
+				'product_type' => ['RequiredValidation', 'IntValidation'],
+			];
 
-			if (!empty($errors)) {
-				http_response_code(400);
+			$requestIsValid = Validator::validate($request, $validationRules);
+			if ($requestIsValid) {
+				$this->model->save($request);
+				http_response_code(201);
 				echo json_encode([
-					"erros" => $errors
+					'mensagem' => 'Imposto cadastrado com sucesso!'
 				]);
 
 				return;
 			}
 
-			$this->model->save($request);
-			http_response_code(201);
-			echo json_encode([
-				'mensagem' => 'Imposto cadastrado com sucesso!'
-			]);
+			http_response_code(400);
+			echo json_encode(['errors' => Validator::getErrors()]);
 		} catch (\Throwable $th) {
 			http_response_code(500);
 			echo json_encode([
@@ -81,37 +93,5 @@ class TaxController implements ControllerInterface
 		$convertedPrice = intval(round($taxFloat * 100));
 
 		return $convertedPrice;
-	}
-
-	private function validateRequest(array &$request): array
-	{
-		$errors = [];
-
-		$tax = isset($request['tax']) ? $request['tax'] : null;
-		$productType = isset($request['product_type']) ? $request['product_type'] : null;
-
-		if (empty($tax) || !isset($tax)) {
-			array_push($errors, "Valor do imposto não informado.");
-		}
-
-		$request['tax'] = $this->convertTax($tax);
-		if ($tax === -1) {
-			array_push($errors, "O valor do imposto precisa ser um número valido!");
-		}
-
-		if ($tax <= 0) {
-			array_push($errors, "O valor do imposto não pode ser 0 ou negativo.");
-		}
-
-		if ($tax > 20000) {
-			array_push($errors, "Não é possível cadastrar um imposto superior a 200%.");
-		}
-
-		$request['product_type'] = intval($productType);
-		if ($productType <= 0) {
-			array_push($errors, "Informe um tipo de produto.");
-		}
-
-		return $errors;
 	}
 }

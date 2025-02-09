@@ -84,3 +84,11 @@ class MaxNumberValidation implements ValidationInterface
     return $value > 100000000 ? "Este campo não deve possuir valor maior que 100.000.000" : null;
   }
 }
+
+class MaxTaxValidation implements ValidationInterface
+{
+  public function validate(mixed $value): ?string
+  {
+    return $value > 20000 ? "Este campo não deve possuir valor maior que 200%" : null;
+  }
+}
