@@ -2,125 +2,135 @@
 
 namespace Deivz\DesafioSoftexpert\models;
 
-use DateInterval;
-use DateTime;
 use Deivz\DesafioSoftexpert\controllers\ConnectionController;
 use Deivz\DesafioSoftexpert\helpers\UUIDGenerator;
+use Deivz\DesafioSoftexpert\helpers\Validator;
 use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
-use PDO;
 
-use function Deivz\DesafioSoftexpert\helpers\uuidv4;
-
-class Product implements ModelInterface
+class Product
 {
-	// private string $name;
-	// private int $price;
-	private ConnectionController $connectionController;
-	private PDO $connection;
-	private string $table;
-	private array $tableJoin = [];
-	private array $columns = [];
+	private string $uuid;
+	private int $deleted;
+	private int $active;
+	private string $name;
+	private int $price;
+	private int $amount;
+	private int $productType;
+	private string $createdAt;
+	private string $updatedAt;
 
-	public function __construct(ConnectionController $connectionController)
+	public function __construct(array $request)
 	{
-		$this->connectionController = $connectionController;
-		$this->table = $_ENV["TABLE_PRODUCTS"];
-		array_push($this->tableJoin, $_ENV["TABLE_PRODUCT_TYPES"]);
-		array_push($this->tableJoin, $_ENV["TABLE_TAXES"]);
-		$this->columns = [
-			'id',
-			'uuid',
-			'deleted',
-			'active',
-			'name',
-			'price',
-			'amount',
-			'product_type',
-			'created_at',
-			'updated_at',
-		];
-	}
-
-	public function __get($attribute)
-	{
-		return $this->$attribute;
-	}
-
-	public function save(array $request)
-	{
-		$this->connection = $this->connectionController->connect();
-		$this->connection->beginTransaction();
 		date_default_timezone_set('America/Sao_Paulo');
-		$uuid = UUIDGenerator::uuidv4();
 		$createdAt = date('Y-m-d H:i:s');
+		$updatedAt = date('Y-m-d H:i:s');
 
-		$sql = "INSERT INTO
-      {$this->table}
-      (
-        {$this->columns[1]},
-        {$this->columns[2]},
-        {$this->columns[3]},
-        {$this->columns[4]},
-        {$this->columns[5]},
-        {$this->columns[6]},
-        {$this->columns[7]},
-        {$this->columns[8]}
-      )
-      VALUES(:uuid, :deleted, :active, :name, :price, :amount, :product_type, :createdAt);";
-		$stmt = $this->connection->prepare($sql);
-		$stmt->bindValue(":uuid", $uuid, PDO::PARAM_STR);
-		$stmt->bindValue(":deleted", 0, PDO::PARAM_INT);
-		$stmt->bindValue(":active", 1, PDO::PARAM_INT);
-		$stmt->bindValue(":name", $request['name'], PDO::PARAM_STR);
-		$stmt->bindValue(":price", $request['price'], PDO::PARAM_INT);
-		$stmt->bindValue(":amount", $request['amount'], PDO::PARAM_INT);
-		$stmt->bindValue(":product_type", $request['product_type'], PDO::PARAM_INT);
-		$stmt->bindValue(":createdAt", $createdAt, PDO::PARAM_INT);
-
-		$stmt->execute();
-
-		if ($this->connection->lastInsertId() > 0) {
-			$this->connection->commit();
-			return;
-		}
-
-		$this->connection->rollBack();
+		$this->uuid = UUIDGenerator::uuidv4();
+		$this->deleted = 0;
+		$this->active = 1;
+		$this->name = isset($request['name']) ? $request['name'] : "";
+		$this->price = isset($request['price']) ? $this->convertPrice($request['price']) : 0;
+		$this->productType = isset($request['product_type']) ? $this->convertInt($request['product_type']) : 0;
+		$this->amount = isset($request['amount']) ? $this->convertInt($request['amount']) : 0;
+		$this->createdAt = $createdAt;
+		$this->updatedAt = $updatedAt;
 	}
 
-	public function get(array $params): array
+	public function getUuid(): string
 	{
-		$productsPerPage = 10;
-		$limit = isset($params["limit"]) ? $params["limit"] : $productsPerPage;
-		$page = isset($params["page"]) ? $params["page"] - 1 : 0;
-
-		$offset = $page * $limit;
-
-		$products = [];
-
-		$this->connection = $this->connectionController->connect();
-
-		$sql = "SELECT p.uuid, p.name, p.price, p.amount, pt.product_type, t.tax
-			FROM {$this->table} p
-			INNER JOIN {$this->tableJoin[0]} pt
-			ON p.product_type = pt.id
-			INNER JOIN {$this->tableJoin[1]} t
-			ON pt.id = t.product_type
-			LIMIT {$limit}
-			OFFSET {$offset};";
-
-		$stmt = $this->connection->query($sql);
-
-		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			$taxPrice = $row['price'] * ($row['tax'] / 10000);
-			$priceWithTax = $row['price'] + $taxPrice;
-			$row['total'] = ($priceWithTax/100) * $row['amount'];
-			$products[] = $row;
-		}
-
-		return $products;
+		return $this->uuid;
 	}
 
-	public function update(): void {}
+	public function getDeleted(): bool
+	{
+		return $this->deleted;
+	}
 
-	public function delete(): void {}
+	public function getActive(): bool
+	{
+		return $this->active;
+	}
+
+	public function getName(): string
+	{
+		return $this->name;
+	}
+
+	public function getPrice(): int
+	{
+		return $this->price;
+	}
+
+	public function getAmount(): int
+	{
+		return $this->amount;
+	}
+
+	public function getProductType(): int
+	{
+		return $this->productType;
+	}
+
+	public function getCreatedAt(): string
+	{
+		return $this->createdAt;
+	}
+
+	public function getUpdatedAt(): string
+	{
+		return $this->updatedAt;
+	}
+
+	private function convertPrice($price): int
+	{
+		$price = str_replace(',', '.', $price);
+
+		if (!preg_match('/^\d+(\.\d{1,2})?$/', $price)) {
+			return -1;
+		}
+
+		$priceFloat = floatval($price);
+		$convertedPrice = intval(round($priceFloat * 100));
+
+		return $convertedPrice;
+	}
+
+	private function convertInt($numericalString): int
+	{
+		return intval($numericalString) ? intval($numericalString) : -1;
+	}
+
+	public function validateProduct(): bool
+	{
+		$product = [
+			'name' => $this->name,
+			'price' => $this->price,
+			'product_type' => $this->productType,
+			'amount' => $this->amount
+		];
+
+		$validationRules = [
+			'name' => ['RequiredValidation', 'MaxLengthValidation'],
+			'price' => [
+				'RequiredValidation',
+				'IntValidation',
+				'MaxNumberValidation',
+				'PositiveNumberValidation',
+				'PriceConvertionValidation',
+			],
+			'product_type' => [
+				'RequiredValidation',
+				'IntValidation',
+				'PositiveNumberValidation',
+			],
+			'amount' => [
+				'RequiredValidation',
+				'IntValidation',
+				'MaxNumberValidation',
+				'PositiveNumberValidation',
+			],
+		];
+
+		return Validator::validate($product, $validationRules);
+	}
 }

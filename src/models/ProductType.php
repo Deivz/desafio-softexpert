@@ -2,8 +2,6 @@
 
 namespace Deivz\DesafioSoftexpert\models;
 
-use DateInterval;
-use DateTime;
 use Deivz\DesafioSoftexpert\controllers\ConnectionController;
 use Deivz\DesafioSoftexpert\helpers\UUIDGenerator;
 use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
