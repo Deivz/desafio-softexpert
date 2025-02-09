@@ -2,103 +2,110 @@
 
 namespace Deivz\DesafioSoftexpert\models;
 
-use Deivz\DesafioSoftexpert\controllers\ConnectionController;
 use Deivz\DesafioSoftexpert\helpers\UUIDGenerator;
-use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
-use PDO;
+use Deivz\DesafioSoftexpert\helpers\Validator;
 
-class Tax implements ModelInterface
+class Tax
 {
-	private ConnectionController $connectionController;
-	private PDO $connection;
-	private string $table;
-	private array $columns = [];
+	private string $uuid;
+	private int $deleted;
+	private int $active;
+	private int $tax;
+	private int $productType;
+	private string $createdAt;
+	private string $updatedAt;
 
-	public function __construct(ConnectionController $connectionController)
+	public function __construct(array $request)
 	{
-		$this->connectionController = $connectionController;
-		$this->table = $_ENV["TABLE_TAXES"];
-		$this->columns = [
-			'id',
-			'uuid',
-			'deleted',
-			'active',
-			'tax',
-			'product_type',
-			'created_at',
-			'updated_at',
-		];
-	}
-
-	public function __get($attribute)
-	{
-		return $this->$attribute;
-	}
-
-	public function save(array $request)
-	{
-		$this->connection = $this->connectionController->connect();
-		$this->connection->beginTransaction();
 		date_default_timezone_set('America/Sao_Paulo');
-		$uuid = UUIDGenerator::uuidv4();
 		$createdAt = date('Y-m-d H:i:s');
+		$updatedAt = date('Y-m-d H:i:s');
 
-		$sql = "INSERT INTO
-      {$this->table}
-      (
-        {$this->columns[1]},
-        {$this->columns[2]},
-        {$this->columns[3]},
-        {$this->columns[4]},
-        {$this->columns[5]},
-        {$this->columns[6]}
-      )
-      VALUES(:uuid, :deleted, :active, :tax, :product_type, :createdAt);";
-		$stmt = $this->connection->prepare($sql);
-		$stmt->bindValue(":uuid", $uuid, PDO::PARAM_STR);
-		$stmt->bindValue(":deleted", 0, PDO::PARAM_INT);
-		$stmt->bindValue(":active", 1, PDO::PARAM_INT);
-		$stmt->bindValue(":tax", $request['tax'], PDO::PARAM_INT);
-		$stmt->bindValue(":product_type", $request['product_type'], PDO::PARAM_INT);
-		$stmt->bindValue(":createdAt", $createdAt, PDO::PARAM_INT);
+		$this->uuid = UUIDGenerator::uuidv4();
+		$this->deleted = 0;
+		$this->active = 1;
+		$this->tax = isset($request['tax']) ? $this->convertTax($request['tax']) : 0;
+		$this->productType = isset($request['product_type']) ? $this->convertInt($request['product_type']) : 0;
+		$this->createdAt = $createdAt;
+		$this->updatedAt = $updatedAt;
+	}
 
-		$stmt->execute();		
+	public function getUuid(): string
+	{
+		return $this->uuid;
+	}
 
-		if ($this->connection->lastInsertId() > 0) {
-			$this->connection->commit();
-			return;
+	public function getDeleted(): bool
+	{
+		return $this->deleted;
+	}
+
+	public function getActive(): bool
+	{
+		return $this->active;
+	}
+
+	public function getTax(): int
+	{
+		return $this->tax;
+	}
+
+	public function getProductType(): int
+	{
+		return $this->productType;
+	}
+
+	public function getCreatedAt(): string
+	{
+		return $this->createdAt;
+	}
+
+	public function getUpdatedAt(): string
+	{
+		return $this->updatedAt;
+	}
+
+	private function convertTax($tax): int
+	{
+		$tax = str_replace(',', '.', $tax);
+
+		if (!preg_match('/^\d+(\.\d{1,2})?$/', $tax)) {
+			return -1;
 		}
 
-		$this->connection->rollBack();
+		$taxFloat = floatval($tax);
+		$convertedTax = intval($taxFloat * 100);
+
+		return $convertedTax;
 	}
 
-	public function get(array $params): array
+	private function convertInt($numericalString): int
 	{
-		$taxesPerPage = 10;
-		$limit = isset($params["limit"]) ? $params["limit"] : $taxesPerPage;
-		$page = isset($params["page"]) ? $params["page"] - 1 : 0;
-
-		$offset = $page * $limit;
-
-		$taxes = [];
-
-		$this->connection = $this->connectionController->connect();
-		$sql = "SELECT * FROM {$this->table} LIMIT {$limit} OFFSET {$offset};";
-		$stmt = $this->connection->query($sql);
-		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			$taxes[] = $row;
-		}
-
-		return $taxes;
+		return intval($numericalString) ? intval($numericalString) : -1;
 	}
 
-	public function update(): void
+	public function validate(): bool
 	{
-		
-	}
+		$product = [
+			'product_type' => $this->productType,
+			'tax' => $this->tax,
+		];
 
-	public function delete(): void
-	{
+		$validationRules = [
+			'tax' => [
+				'RequiredValidation',
+				'IntValidation',
+				'MaxTaxValidation',
+				'PositiveNumberValidation',
+				'PriceConvertionValidation',
+			],
+			'product_type' => [
+				'RequiredValidation',
+				'IntValidation',
+				'PositiveNumberValidation',
+			],
+		];
 
+		return Validator::validate($product, $validationRules);
 	}
 }

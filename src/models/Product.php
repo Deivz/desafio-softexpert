@@ -90,7 +90,8 @@ class Product
 		}
 
 		$priceFloat = floatval($price);
-		$convertedPrice = intval(round($priceFloat * 100));
+		$convertedPrice = intval($priceFloat * 100);
+		// $convertedPrice = intval(round($priceFloat * 100));
 
 		return $convertedPrice;
 	}
