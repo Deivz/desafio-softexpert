@@ -25,8 +25,8 @@ class ProductTypeRepository implements RepositoryInterface
   {
     $this->connection->beginTransaction();
 
-    $sql = "INSERT INTO {$this->table} (uuid, deleted, active, name, price, amount, product_type, created_at)
-      VALUES (:uuid, :deleted, :active, :name, :price, :amount, :product_type, :created_at
+    $sql = "INSERT INTO {$this->table} (uuid, deleted, active, product_type, created_at)
+      VALUES (:uuid, :deleted, :active, :product_type, :created_at
     )";
     $stmt = $this->connection->prepare($sql);
     $stmt->execute([
