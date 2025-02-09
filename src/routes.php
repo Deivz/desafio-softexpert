@@ -2,28 +2,28 @@
 
 $routes = [
 	'GET' => [
-		'/produto' => 'ProductController@read',
-		'/tipo-produto' => 'ProductTypeController@read',
-		'/imposto' => 'TaxController@read',
+		'/produtos' => 'ProductController@read',
+		'/tipos-produto' => 'ProductTypeController@read',
+		'/impostos' => 'TaxController@read',
 		// '/' => 'HomeController@index',
 		// '/about' => 'AboutController@index',
 		// '/user/{id}' => 'UserController@show', // Rota dinâmica
 		// '/user/{id}/produtos' => 'UserController@prod', // Rota dinâmica
 	],
 	'POST' => [
-		'/produto' => 'ProductController@create',
-		'/tipo-produto' => 'ProductTypeController@create',
-		'/imposto' => 'TaxController@create',
+		'/produtos' => 'ProductController@create',
+		'/tipos-produto' => 'ProductTypeController@create',
+		'/impostos' => 'TaxController@create',
 	],
 	'PATCH' => [
-		'/produto' => 'ProductController@update',
-		'/tipo-produto' => 'ProductTypeController@update',
+		'/produtos' => 'ProductController@update',
+		'/tipos-produto' => 'ProductTypeController@update',
 		'/imposto' => 'TaxController@update',
 	],
 	'DELETE' => [
-		'/produto' => 'ProductController@delete',
-		'/tipo-produto' => 'ProductTypeController@delete',
-		'/imposto' => 'TaxController@delete',
+		'/produtos' => 'ProductController@delete',
+		'/tipos-produto' => 'ProductTypeController@delete',
+		'/impostos' => 'TaxController@delete',
 	],
 ];
 
