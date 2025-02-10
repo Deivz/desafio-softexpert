@@ -4,8 +4,9 @@ namespace Deivz\DesafioSoftexpert\models;
 
 use Deivz\DesafioSoftexpert\helpers\UUIDGenerator;
 use Deivz\DesafioSoftexpert\helpers\Validator;
+use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
 
-class ProductType
+class ProductType implements ModelInterface
 {
 	private string $uuid;
 	private int $deleted;
@@ -69,5 +70,10 @@ class ProductType
 		];
 
 		return Validator::validate($productType, $validationRules);
+	}
+
+	public function getSuccessMessage(): string
+	{
+		return 'Tipo de produto cadastrado com sucesso!';
 	}
 }

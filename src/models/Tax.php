@@ -4,8 +4,9 @@ namespace Deivz\DesafioSoftexpert\models;
 
 use Deivz\DesafioSoftexpert\helpers\UUIDGenerator;
 use Deivz\DesafioSoftexpert\helpers\Validator;
+use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
 
-class Tax
+class Tax implements ModelInterface
 {
 	private string $uuid;
 	private int $deleted;
@@ -107,5 +108,10 @@ class Tax
 		];
 
 		return Validator::validate($product, $validationRules);
+	}
+
+	public function getSuccessMessage(): string
+	{
+		return 'Imposto cadastrado com sucesso!';
 	}
 }

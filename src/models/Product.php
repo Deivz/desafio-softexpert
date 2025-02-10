@@ -2,12 +2,11 @@
 
 namespace Deivz\DesafioSoftexpert\models;
 
-use Deivz\DesafioSoftexpert\controllers\ConnectionController;
 use Deivz\DesafioSoftexpert\helpers\UUIDGenerator;
 use Deivz\DesafioSoftexpert\helpers\Validator;
 use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
 
-class Product
+class Product implements ModelInterface
 {
 	private string $uuid;
 	private int $deleted;
@@ -133,5 +132,10 @@ class Product
 		];
 
 		return Validator::validate($product, $validationRules);
+	}
+
+	public function getSuccessMessage(): string
+	{
+		return 'Produto cadastrado com sucesso!';
 	}
 }
