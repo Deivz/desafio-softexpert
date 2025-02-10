@@ -18,9 +18,10 @@ $routes = [
 		'/vendas' => 'SaleController@create',
 	],
 	'PATCH' => [
-		'/produtos' => 'ProductController@update',
-		'/tipos-produto' => 'ProductTypeController@update',
-		'/imposto' => 'TaxController@update',
+		'/produtos/{uuid}' => 'ProductController@update',
+		'/tipos-produto/{uuid}' => 'ProductTypeController@update',
+		'/impostos/{uuid}' => 'TaxController@update',
+		'/vendas/{uuid}' => 'SaleController@update',
 	],
 	'DELETE' => [
 		'/produtos' => 'ProductController@delete',

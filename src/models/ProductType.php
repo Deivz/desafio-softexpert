@@ -81,4 +81,9 @@ class ProductType implements ModelInterface
 	{
 		return 'Este tipo de produto já foi cadastrado!';
 	}
+
+	public function getNotFoundMessage(): string
+	{
+		return 'Tipo de produto não encontrado!';
+	}
 }

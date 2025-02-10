@@ -17,9 +17,19 @@ class BaseService implements ServiceInterface
     $this->repository->save();
   }
 
-  public function getByUniqueKey(): array
+  public function edit(): void
+  {
+    $this->repository->update();
+  }
+
+  public function getByUniqueKey(): int
   {
     return $this->repository->findByUniqueKey();
+  }
+
+  public function getByUuid(string $uuid): array
+  {
+    return $this->repository->findByUuid($uuid);
   }
 
   public function getAll(int $page, int $limit): array

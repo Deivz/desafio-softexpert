@@ -119,4 +119,9 @@ class Tax implements ModelInterface
 	{
 		return 'Já existe uma taxa cadastrada para este produto!';
 	}
+
+	public function getNotFoundMessage(): string
+	{
+		return 'Imposto não encontrado!';
+	}
 }

@@ -51,12 +51,7 @@ abstract class BaseController implements ControllerInterface
   public function checkExistance(): int
   {
     try {
-      $item = $this->service->getByUniqueKey($this->model);
-
-      if (empty($item)) {
-        return 0;
-      }
-      return 1;
+      return $this->service->getByUniqueKey($this->model);
     } catch (\Throwable $th) {
       http_response_code(500);
       echo json_encode([
@@ -81,6 +76,73 @@ abstract class BaseController implements ControllerInterface
       echo json_encode([
         'erro' => $th->getMessage(),
         'mensagem' => 'Não foi possível buscar os itens no sistema, entre em contato com o suporte.'
+      ]);
+    }
+  }
+
+  protected function readByUuid(string $uuid): array
+  {
+    try {
+      $item = $this->service->getByUuid($uuid);
+      if (empty($item)) {
+        return [];
+      }
+      return $item;
+    } catch (\Throwable $th) {
+      http_response_code(500);
+      echo json_encode([
+        'erro' => $th->getMessage(),
+        'mensagem' => 'Não foi possível buscar os itens no sistema, entre em contato com o suporte.'
+      ]);
+    }
+  }
+
+  public function update(array $params): void
+  {
+    try {
+      $uuid = $params["uuid"];
+
+      $item = $this->readByUuid($uuid);
+
+      if (empty($item)) {
+        http_response_code(404);
+        echo json_encode([
+          'mensagem' => $this->model->getNotFoundMessage()
+        ]);
+
+        return;
+      }
+
+      $this->model->setUuid($uuid);
+      $requestIsValid = $this->model->validate();
+
+      if ($requestIsValid) {
+        switch ($this->checkExistance()) {
+          case 0:
+            $this->service->edit($this->model);
+            http_response_code(200);
+            echo json_encode([
+              'mensagem' => $this->model->getSuccessMessage()
+            ]);
+            break;
+
+          default:
+            http_response_code(409);
+            echo json_encode([
+              'mensagem' => $this->model->getAlreadyExistsMessage()
+            ]);
+            break;
+        }
+        return;
+      }
+
+      http_response_code(400);
+      echo json_encode(['errors' => Validator::getErrors()]);
+    } catch (\Throwable $th) {
+      http_response_code(500);
+      echo json_encode([
+        'erro' => $th->getMessage(),
+        'mensagem' => 'Não foi possível realizar a inserção no sistema, contacte o suporte.'
       ]);
     }
   }

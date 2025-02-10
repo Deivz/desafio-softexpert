@@ -80,6 +80,11 @@ class Product implements ModelInterface
 		return $this->updatedAt;
 	}
 
+	public function setUuid(string $uuid): void
+	{
+		$this->uuid = $uuid;
+	}
+
 	private function convertPrice($price): int
 	{
 		$price = str_replace(',', '.', $price);
@@ -142,5 +147,10 @@ class Product implements ModelInterface
 	public function getAlreadyExistsMessage(): string
 	{
 		return 'Este produto já está cadastrado!';
+	}
+	
+	public function getNotFoundMessage(): string
+	{
+		return 'Produto não encontrado!';
 	}
 }

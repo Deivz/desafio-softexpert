@@ -48,26 +48,27 @@ class ProductRepository implements RepositoryInterface
       $this->connection->commit();
       return;
     }
-    
+
     $this->connection->rollBack();
   }
 
-  public function findByUniqueKey(): array
+  public function findByUniqueKey(): int
   {
     $sql = "SELECT id FROM {$this->table}
       WHERE name = :name AND deleted = :deleted
+      AND uuid != :uuid
       FOR UPDATE";
     $stmt = $this->connection->prepare($sql);
-    $stmt->execute([
-      ':deleted' => 0,
-      ':name' => $this->product->getName(),
-    ]);
+    $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
+    $stmt->bindValue(':name', $this->product->getName(), PDO::PARAM_STR);
+    $stmt->bindValue(':uuid', $this->product->getUuid(), PDO::PARAM_STR);
+    $stmt->execute();
 
-    if($stmt->fetch()){
-      return $stmt->fetch();
+    if ($stmt->fetch()) {
+      return 1;
     }
 
-    return [];
+    return 0;
   }
 
   public function findAll(int $limit, int $offset): array
@@ -85,5 +86,40 @@ class ProductRepository implements RepositoryInterface
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function findByUuid(string $uuid): array
+  {
+    $sql = "SELECT * FROM {$this->table} p
+    WHERE p.uuid = :uuid AND p.active = 1";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function update(): void
+  {
+    $this->connection->beginTransaction();
+
+    $sql = "UPDATE {$this->table}
+    SET price = :price, amount = :amount, product_type = :product_type, updated_at = :updated_at
+    WHERE uuid = :uuid AND active = 1";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->bindValue(':price', $this->product->getPrice(), PDO::PARAM_INT);
+    $stmt->bindValue(':amount', $this->product->getAmount(), PDO::PARAM_INT);
+    $stmt->bindValue(':product_type', $this->product->getProductType(), PDO::PARAM_INT);
+    $stmt->bindValue(':updated_at', $this->product->getUpdatedAt(), PDO::PARAM_STR);
+    $stmt->bindValue(':uuid', $this->product->getUuid(), PDO::PARAM_STR);
+
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      $this->connection->commit();
+      return;
+    }
+
+    $this->connection->rollBack();
   }
 }

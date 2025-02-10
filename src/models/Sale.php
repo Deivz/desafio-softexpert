@@ -133,4 +133,9 @@ class Sale implements ModelInterface
 	{
 		return 'Venda já registrada no sistema!';
 	}
+
+	public function getNotFoundMessage(): string
+	{
+		return 'Venda não encontrada!';
+	}
 }
