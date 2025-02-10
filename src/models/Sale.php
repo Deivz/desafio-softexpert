@@ -26,8 +26,6 @@ class Sale implements ModelInterface
 		$this->uuid = UUIDGenerator::uuidv4();
 		$this->deleted = 0;
 		$this->active = 1;
-		$this->sellPrice = isset($request['sell_price']) ? $this->convertPrice($request['sell_price']) : 0;
-		$this->productId = isset($request['product_id']) ? $this->convertInt($request['product_id']) : 0;
 		$this->amount = isset($request['amount']) ? $this->convertInt($request['amount']) : 0;
 		$this->createdAt = $createdAt;
 		$this->updatedAt = $updatedAt;
@@ -78,6 +76,16 @@ class Sale implements ModelInterface
 		$this->uuid = $uuid;
 	}
 
+	public function setProductId(int $productId): void
+	{
+		$this->productId = $productId;
+	}
+
+	public function setSellPrice(int $sellPrice): void
+	{
+		$this->sellPrice = $sellPrice;
+	}
+
 	private function convertPrice($price): int
 	{
 		$price = str_replace(',', '.', $price);
@@ -100,24 +108,10 @@ class Sale implements ModelInterface
 	public function validate(): bool
 	{
 		$sale = [
-			'product_id' => $this->productId,
-			'sell_price' => $this->sellPrice,
 			'amount' => $this->amount
 		];
 
 		$validationRules = [
-			'product_id' => [
-				'RequiredValidation',
-				'IntValidation',
-				'PositiveNumberValidation',
-			],
-			'sell_price' => [
-				'RequiredValidation',
-				'IntValidation',
-				'MaxNumberValidation',
-				'PositiveNumberValidation',
-				'PriceConvertionValidation',
-			],
 			'amount' => [
 				'RequiredValidation',
 				'IntValidation',

@@ -7,61 +7,41 @@ use Deivz\DesafioSoftexpert\interfaces\RepositoryInterface;
 use Deivz\DesafioSoftexpert\models\Sale;
 use PDO;
 
-class SaleRepository implements RepositoryInterface
+class SaleRepository
 {
   private PDO $connection;
   private string $table;
   private Sale $sale;
 
-  public function __construct(ConnectionController $connectionController, Sale $sale)
+  public function __construct(PDO $connection, Sale $sale)
   {
-    $this->connection = $connectionController->connect();
+    $this->connection = $connection;
     $this->sale = $sale;
     $this->table = $_ENV["TABLE_SALES"];
   }
 
-  public function save(): void
+  public function save(): bool
   {
-    $this->connection->beginTransaction();
-
     $sql = "INSERT INTO {$this->table} (uuid, deleted, active, id_product, sell_price, amount, created_at)
       VALUES (:uuid, :deleted, :active, :id_product, :sell_price, :amount, :created_at
     )";
     $stmt = $this->connection->prepare($sql);
-    $stmt->execute([
-      ':uuid' => $this->sale->getUuid(),
-      ':deleted' => 0,
-      ':active' => 1,
-      ':product_id' => $this->sale->getProductId(),
-      ':sell_price' => $this->sale->getSellPrice(),
-      ':amount' => $this->sale->getAmount(),
-      ':created_at' => $this->sale->getCreatedAt()
-    ]);
+    $stmt->bindValue(':uuid', $this->sale->getUuid(), PDO::PARAM_STR);
+    $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
+    $stmt->bindValue(':active', 1, PDO::PARAM_INT);
+    $stmt->bindValue(':product_id', $this->sale->getProductId(), PDO::PARAM_INT);
+    $stmt->bindValue(':sell_price', $this->sale->getSellPrice(), PDO::PARAM_INT);
+    $stmt->bindValue(':amount', $this->sale->getAmount(), PDO::PARAM_INT);
+    $stmt->bindValue(':created_at', $this->sale->getCreatedAt(), PDO::PARAM_STR);
+    $stmt->execute();
 
-    if ($this->connection->lastInsertId() > 0) {
-      $this->connection->commit();
-      return;
+    $insertedId = $this->connection->lastInsertId();
+
+    if ($insertedId > 0) {
+      return true;
     }
     
-    $this->connection->rollBack();
-  }
-
-  public function findByUniqueKey(): int
-  {
-    $sql = "SELECT id FROM {$this->table}
-      WHERE uuid = :uuid AND deleted = :deleted
-      FOR UPDATE";
-    $stmt = $this->connection->prepare($sql);
-    $stmt->execute([
-      ':deleted' => 0,
-      ':uuid' => $this->sale->getUuid(),
-    ]);
-
-    if($stmt->fetch()){
-      return 1;
-    }
-
-    return 0;
+    return false;
   }
 
   public function findAll(int $limit, int $offset): array
@@ -74,6 +54,10 @@ class SaleRepository implements RepositoryInterface
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
+
+    if ($stmt->rowCount() == 0) {
+      return [];
+    }
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }

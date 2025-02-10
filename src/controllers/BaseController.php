@@ -6,11 +6,18 @@ use Deivz\DesafioSoftexpert\helpers\Validator;
 use Deivz\DesafioSoftexpert\interfaces\ControllerInterface;
 use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
 use Deivz\DesafioSoftexpert\services\BaseService;
+use PDO;
 
 abstract class BaseController implements ControllerInterface
 {
   protected ModelInterface $model;
   protected BaseService $service;
+  protected PDO $connection;
+
+  public function __construct(ConnectionController $connection)
+  {
+    $this->connection = $connection->connect();
+  }
 
   public function create(): void
   {
@@ -20,7 +27,18 @@ abstract class BaseController implements ControllerInterface
       if ($requestIsValid) {
         switch ($this->checkExistance()) {
           case 0:
-            $this->service->create($this->model);
+            $this->connection->beginTransaction();
+            $itemCreated = $this->service->create($this->model);
+
+            if (!$itemCreated) {
+              $this->connection->rollBack();
+              http_response_code(500);
+              echo json_encode([
+                'errors' => 'Algo deu errado, contacte o suporte.'
+              ]);
+            }
+
+            $this->connection->commit();
             http_response_code(201);
             echo json_encode([
               'mensagem' => $this->model->getSuccessMessage()
@@ -119,7 +137,18 @@ abstract class BaseController implements ControllerInterface
       if ($requestIsValid) {
         switch ($this->checkExistance()) {
           case 0:
-            $this->service->edit($this->model);
+            $this->connection->beginTransaction();
+            $itemUpdated = $this->service->edit($this->model);
+
+            if (!$itemUpdated) {
+              $this->connection->rollBack();
+              http_response_code(500);
+              echo json_encode([
+                'errors' => 'Algo deu errado, contacte o suporte.'
+              ]);
+            }
+
+            $this->connection->commit();
             http_response_code(200);
             echo json_encode([
               'mensagem' => $this->model->getSuccessMessage()
@@ -129,7 +158,7 @@ abstract class BaseController implements ControllerInterface
           default:
             http_response_code(409);
             echo json_encode([
-              'mensagem' => $this->model->getAlreadyExistsMessage()
+              'erro' => $this->model->getAlreadyExistsMessage()
             ]);
             break;
         }

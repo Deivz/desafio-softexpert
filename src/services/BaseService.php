@@ -12,14 +12,14 @@ class BaseService implements ServiceInterface
     $this->repository = $repository;
   }
 
-  public function create(): void
+  public function create(): bool
   {
-    $this->repository->save();
+    return $this->repository->save();
   }
 
-  public function edit(): void
+  public function edit(): bool
   {
-    $this->repository->update();
+    return $this->repository->update();
   }
 
   public function getByUniqueKey(): int

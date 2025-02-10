@@ -12,9 +12,10 @@ class ProductTypeController extends BaseController
 {
 	public function __construct(ConnectionController $connection)
 	{
+		parent::__construct($connection);
 		$request = (array) json_decode(file_get_contents("php://input"), true);
 		$this->model = new ProductType($request);
-		$repository = new ProductTypeRepository($connection, $this->model);
+		$repository = new ProductTypeRepository($this->connection, $this->model);
 		$this->service = new ProductTypeService($repository);
 	}
 }

@@ -2,11 +2,17 @@
 
 namespace Deivz\DesafioSoftexpert\services;
 
-class SaleService extends BaseService
+use Deivz\DesafioSoftexpert\repositories\SaleRepository;
+
+class SaleService
 {
-  public function create(): void
+  public function __construct(protected SaleRepository $repository)
   {
-    // TO DO
-    $this->repository->save();
+    $this->repository = $repository;
+  }
+
+  public function create(): bool
+  {
+    return $this->repository->save();
   }
 }

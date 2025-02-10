@@ -13,17 +13,15 @@ class ProductTypeRepository implements RepositoryInterface
   private string $table;
   private ProductType $productType;
 
-  public function __construct(ConnectionController $connectionController, ProductType $productType)
+  public function __construct(PDO $connection, ProductType $productType)
   {
-    $this->connection = $connectionController->connect();
+    $this->connection = $connection;
     $this->productType = $productType;
     $this->table = $_ENV["TABLE_PRODUCT_TYPES"];
   }
 
-  public function save(): void
+  public function save(): bool
   {
-    $this->connection->beginTransaction();
-
     $sql = "INSERT INTO {$this->table} (uuid, deleted, active, product_type, created_at)
       VALUES (:uuid, :deleted, :active, :product_type, :created_at
     )";
@@ -36,12 +34,13 @@ class ProductTypeRepository implements RepositoryInterface
       ':created_at' => $this->productType->getCreatedAt()
     ]);
 
-    if ($this->connection->lastInsertId() > 0) {
-      $this->connection->commit();
-      return;
+    $insertedId = $this->connection->lastInsertId();
+
+    if ($insertedId > 0) {
+      return true;
     }
 
-    $this->connection->rollBack();
+    return false;
   }
 
   public function findByUniqueKey(): int
@@ -88,10 +87,8 @@ class ProductTypeRepository implements RepositoryInterface
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
-  public function update(): void
+  public function update(): bool
   {
-    $this->connection->beginTransaction();
-
     $sql = "UPDATE {$this->table}
     SET product_type = :product_type, updated_at = :updated_at
     WHERE uuid = :uuid AND active = 1";
@@ -103,10 +100,9 @@ class ProductTypeRepository implements RepositoryInterface
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-      $this->connection->commit();
-      return;
+      return true;
     }
 
-    $this->connection->rollBack();
+    return false;
   }
 }

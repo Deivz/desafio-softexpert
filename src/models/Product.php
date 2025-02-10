@@ -8,6 +8,7 @@ use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
 
 class Product implements ModelInterface
 {
+	private int $id;
 	private string $uuid;
 	private int $deleted;
 	private int $active;
@@ -78,6 +79,16 @@ class Product implements ModelInterface
 	public function getUpdatedAt(): string
 	{
 		return $this->updatedAt;
+	}
+
+	public function setId(int $id): void
+	{
+		$this->id = $id;
+	}
+
+	public function setAmount(int $amount): void
+	{
+		$this->amount = $amount;
 	}
 
 	public function setUuid(string $uuid): void

@@ -2,7 +2,6 @@
 
 namespace Deivz\DesafioSoftexpert\repositories;
 
-use Deivz\DesafioSoftexpert\controllers\ConnectionController;
 use Deivz\DesafioSoftexpert\interfaces\RepositoryInterface;
 use Deivz\DesafioSoftexpert\models\Product;
 use PDO;
@@ -14,9 +13,9 @@ class ProductRepository implements RepositoryInterface
   private array $tableJoin = [];
   private Product $product;
 
-  public function __construct(ConnectionController $connectionController, Product $product)
+  public function __construct(PDO $connection, Product $product)
   {
-    $this->connection = $connectionController->connect();
+    $this->connection = $connection;
     $this->product = $product;
     $this->table = $_ENV["TABLE_PRODUCTS"];
     $this->tableJoin = [
@@ -25,10 +24,8 @@ class ProductRepository implements RepositoryInterface
     ];
   }
 
-  public function save(): void
+  public function save(): bool
   {
-    $this->connection->beginTransaction();
-
     $sql = "INSERT INTO {$this->table} (uuid, deleted, active, name, price, amount, product_type, created_at)
       VALUES (:uuid, :deleted, :active, :name, :price, :amount, :product_type, :created_at
     )";
@@ -44,12 +41,13 @@ class ProductRepository implements RepositoryInterface
       ':created_at' => $this->product->getCreatedAt()
     ]);
 
-    if ($this->connection->lastInsertId() > 0) {
-      $this->connection->commit();
-      return;
+    $insertedId = $this->connection->lastInsertId();
+
+    if ($insertedId > 0) {
+      return true;
     }
 
-    $this->connection->rollBack();
+    return false;
   }
 
   public function findByUniqueKey(): int
@@ -90,8 +88,13 @@ class ProductRepository implements RepositoryInterface
 
   public function findByUuid(string $uuid): array
   {
-    $sql = "SELECT * FROM {$this->table} p
-    WHERE p.uuid = :uuid AND p.active = 1";
+    $sql = "SELECT p.id, p.uuid, p.name, p.price, p.amount, pt.product_type, t.tax
+    FROM {$this->table} p
+    INNER JOIN {$this->tableJoin[0]} pt ON p.product_type = pt.id
+    INNER JOIN {$this->tableJoin[1]} t ON pt.id = t.product_type
+    WHERE p.active = 1
+    AND p.uuid = :uuid";
+
     $stmt = $this->connection->prepare($sql);
     $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
     $stmt->execute();
@@ -99,10 +102,8 @@ class ProductRepository implements RepositoryInterface
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
-  public function update(): void
+  public function update(): bool
   {
-    $this->connection->beginTransaction();
-
     $sql = "UPDATE {$this->table}
     SET price = :price, amount = :amount, product_type = :product_type, updated_at = :updated_at
     WHERE uuid = :uuid AND active = 1";
@@ -116,10 +117,28 @@ class ProductRepository implements RepositoryInterface
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-      $this->connection->commit();
-      return;
+      return true;
     }
 
-    $this->connection->rollBack();
+    return false;
+  }
+
+  public function newAmount(int $productId, int $amount): bool
+  {
+    $sql = "UPDATE {$this->table}
+    SET amount = :amount, updated_at = :updated_at
+    WHERE id = :id AND active = 1";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->bindValue(':amount', $amount, PDO::PARAM_INT);
+    $stmt->bindValue(':updated_at', $this->product->getUpdatedAt(), PDO::PARAM_STR);
+    $stmt->bindValue(':id', $productId, PDO::PARAM_INT);
+
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return true;
+    }
+
+    return false;
   }
 }
