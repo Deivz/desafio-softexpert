@@ -20,13 +20,30 @@ class TaxRepository implements RepositoryInterface
     $this->table = $_ENV["TABLE_TAXES"];
   }
 
+  public function findByUniqueKey(): array
+  {
+    $sql = "SELECT id FROM {$this->table}
+      WHERE product_type = :product_type AND deleted = :deleted
+      FOR UPDATE";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->execute([
+      ':deleted' => 0,
+      ':product_type' => $this->tax->getProductType(),
+    ]);
+
+    if($stmt->fetch()){
+      return $stmt->fetch();
+    }
+
+    return [];
+  }
+
   public function save(): void
   {
     $this->connection->beginTransaction();
 
     $sql = "INSERT INTO {$this->table} (uuid, deleted, active, tax, product_type, created_at)
-      VALUES (:uuid, :deleted, :active, :tax, :product_type, :created_at
-    )";
+      VALUES (:uuid, :deleted, :active, :tax, :product_type, :created_at)";
     $stmt = $this->connection->prepare($sql);
     $stmt->execute([
       ':uuid' => $this->tax->getUuid(),
@@ -48,6 +65,7 @@ class TaxRepository implements RepositoryInterface
   public function findAll(int $limit, int $offset): array
   {
     $sql = "SELECT * FROM {$this->table} t
+    WHERE t.active = 1
     LIMIT :limit OFFSET :offset";
 
     $stmt = $this->connection->prepare($sql);

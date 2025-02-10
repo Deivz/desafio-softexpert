@@ -128,4 +128,9 @@ class Sale implements ModelInterface
 	{
 		return 'Venda registrada com sucesso!';
 	}
+
+	public function getAlreadyExistsMessage(): string
+	{
+		return 'Venda já registrada no sistema!';
+	}
 }

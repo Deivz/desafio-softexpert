@@ -46,9 +46,28 @@ class SaleRepository implements RepositoryInterface
     $this->connection->rollBack();
   }
 
+  public function findByUniqueKey(): array
+  {
+    $sql = "SELECT id FROM {$this->table}
+      WHERE uuid = :uuid AND deleted = :deleted
+      FOR UPDATE";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->execute([
+      ':deleted' => 0,
+      ':uuid' => $this->sale->getUuid(),
+    ]);
+
+    if($stmt->fetch()){
+      return $stmt->fetch();
+    }
+
+    return [];
+  }
+
   public function findAll(int $limit, int $offset): array
   {
     $sql = "SELECT * FROM {$this->table} s
+    WHERE s.active = 1
     LIMIT :limit OFFSET :offset";
 
     $stmt = $this->connection->prepare($sql);

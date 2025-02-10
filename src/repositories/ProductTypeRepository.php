@@ -44,9 +44,28 @@ class ProductTypeRepository implements RepositoryInterface
     $this->connection->rollBack();
   }
 
+  public function findByUniqueKey(): array
+  {
+    $sql = "SELECT id FROM {$this->table}
+      WHERE product_type = :product_type AND deleted = :deleted
+      FOR UPDATE";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->execute([
+      ':deleted' => 0,
+      ':product_type' => $this->productType->getProductType(),
+    ]);
+
+    if($stmt->fetch()){
+      return $stmt->fetch();
+    }
+
+    return [];
+  }
+
   public function findAll(int $limit, int $offset): array
   {
     $sql = "SELECT * FROM {$this->table} pt
+    WHERE pt.active = 1
     LIMIT :limit OFFSET :offset";
 
     $stmt = $this->connection->prepare($sql);

@@ -76,4 +76,9 @@ class ProductType implements ModelInterface
 	{
 		return 'Tipo de produto cadastrado com sucesso!';
 	}
+
+	public function getAlreadyExistsMessage(): string
+	{
+		return 'Este tipo de produto já foi cadastrado!';
+	}
 }

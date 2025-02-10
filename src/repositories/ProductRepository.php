@@ -52,12 +52,31 @@ class ProductRepository implements RepositoryInterface
     $this->connection->rollBack();
   }
 
+  public function findByUniqueKey(): array
+  {
+    $sql = "SELECT id FROM {$this->table}
+      WHERE name = :name AND deleted = :deleted
+      FOR UPDATE";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->execute([
+      ':deleted' => 0,
+      ':name' => $this->product->getName(),
+    ]);
+
+    if($stmt->fetch()){
+      return $stmt->fetch();
+    }
+
+    return [];
+  }
+
   public function findAll(int $limit, int $offset): array
   {
     $sql = "SELECT p.uuid, p.name, p.price, p.amount, pt.product_type, t.tax
     FROM {$this->table} p
     INNER JOIN {$this->tableJoin[0]} pt ON p.product_type = pt.id
     INNER JOIN {$this->tableJoin[1]} t ON pt.id = t.product_type
+    WHERE p.active = 1
     LIMIT :limit OFFSET :offset";
 
     $stmt = $this->connection->prepare($sql);

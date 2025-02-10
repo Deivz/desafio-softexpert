@@ -5,6 +5,7 @@ $routes = [
 		'/produtos' => 'ProductController@read',
 		'/tipos-produto' => 'ProductTypeController@read',
 		'/impostos' => 'TaxController@read',
+		'/vendas' => 'SaleController@read',
 		// '/' => 'HomeController@index',
 		// '/about' => 'AboutController@index',
 		// '/user/{id}' => 'UserController@show', // Rota dinâmica
@@ -14,6 +15,7 @@ $routes = [
 		'/produtos' => 'ProductController@create',
 		'/tipos-produto' => 'ProductTypeController@create',
 		'/impostos' => 'TaxController@create',
+		'/vendas' => 'SaleController@create',
 	],
 	'PATCH' => [
 		'/produtos' => 'ProductController@update',

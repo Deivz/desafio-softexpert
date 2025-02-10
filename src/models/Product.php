@@ -138,4 +138,9 @@ class Product implements ModelInterface
 	{
 		return 'Produto cadastrado com sucesso!';
 	}
+
+	public function getAlreadyExistsMessage(): string
+	{
+		return 'Este produto já está cadastrado!';
+	}
 }

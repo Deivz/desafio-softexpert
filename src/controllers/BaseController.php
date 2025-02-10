@@ -18,12 +18,22 @@ abstract class BaseController implements ControllerInterface
       $requestIsValid = $this->model->validate();
 
       if ($requestIsValid) {
-        $this->service->create($this->model);
-        http_response_code(201);
-        echo json_encode([
-          'mensagem' => $this->model->getSuccessMessage()
-        ]);
+        switch ($this->checkExistance()) {
+          case 0:
+            $this->service->create($this->model);
+            http_response_code(201);
+            echo json_encode([
+              'mensagem' => $this->model->getSuccessMessage()
+            ]);
+            break;
 
+          default:
+            http_response_code(409);
+            echo json_encode([
+              'mensagem' => $this->model->getAlreadyExistsMessage()
+            ]);
+            break;
+        }
         return;
       }
 
@@ -34,6 +44,24 @@ abstract class BaseController implements ControllerInterface
       echo json_encode([
         'erro' => $th->getMessage(),
         'mensagem' => 'Não foi possível realizar a inserção no sistema, contacte o suporte.'
+      ]);
+    }
+  }
+
+  public function checkExistance(): int
+  {
+    try {
+      $item = $this->service->getByUniqueKey($this->model);
+
+      if (empty($item)) {
+        return 0;
+      }
+      return 1;
+    } catch (\Throwable $th) {
+      http_response_code(500);
+      echo json_encode([
+        'erro' => $th->getMessage(),
+        'mensagem' => 'Não foi possível verificar se os dados já existem no sistema, contacte o suporte.'
       ]);
     }
   }
