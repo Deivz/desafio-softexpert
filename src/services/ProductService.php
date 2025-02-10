@@ -17,4 +17,9 @@ class ProductService extends BaseService
       return $product;
     }, $products);
   }
+
+  public function reduceAmount(): void
+  {
+    // TO DO
+  }
 }

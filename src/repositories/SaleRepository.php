@@ -46,7 +46,7 @@ class SaleRepository implements RepositoryInterface
     $this->connection->rollBack();
   }
 
-  public function findByUniqueKey(): array
+  public function findByUniqueKey(): int
   {
     $sql = "SELECT id FROM {$this->table}
       WHERE uuid = :uuid AND deleted = :deleted
@@ -58,10 +58,10 @@ class SaleRepository implements RepositoryInterface
     ]);
 
     if($stmt->fetch()){
-      return $stmt->fetch();
+      return 1;
     }
 
-    return [];
+    return 0;
   }
 
   public function findAll(int $limit, int $offset): array

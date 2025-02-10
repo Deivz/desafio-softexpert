@@ -20,22 +20,23 @@ class TaxRepository implements RepositoryInterface
     $this->table = $_ENV["TABLE_TAXES"];
   }
 
-  public function findByUniqueKey(): array
+  public function findByUniqueKey(): int
   {
     $sql = "SELECT id FROM {$this->table}
       WHERE product_type = :product_type AND deleted = :deleted
+      AND uuid != :uuid
       FOR UPDATE";
     $stmt = $this->connection->prepare($sql);
-    $stmt->execute([
-      ':deleted' => 0,
-      ':product_type' => $this->tax->getProductType(),
-    ]);
+    $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
+    $stmt->bindValue(':product_type', $this->tax->getProductType(), PDO::PARAM_INT);
+    $stmt->bindValue(':uuid', $this->tax->getUuid(), PDO::PARAM_STR);
+    $stmt->execute();
 
     if($stmt->fetch()){
-      return $stmt->fetch();
+      return 1;
     }
 
-    return [];
+    return 0;
   }
 
   public function save(): void
@@ -74,5 +75,39 @@ class TaxRepository implements RepositoryInterface
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function findByUuid(string $uuid): array
+  {
+    $sql = "SELECT * FROM {$this->table} t
+    WHERE t.uuid = :uuid AND t.active = 1";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function update(): void
+  {
+    $this->connection->beginTransaction();
+
+    $sql = "UPDATE {$this->table}
+    SET tax = :tax, product_type = :product_type, updated_at = :updated_at
+    WHERE uuid = :uuid AND active = 1";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->bindValue(':tax', $this->tax->getTax(), PDO::PARAM_INT);
+    $stmt->bindValue(':product_type', $this->tax->getProductType(), PDO::PARAM_INT);
+    $stmt->bindValue(':updated_at', $this->tax->getUpdatedAt(), PDO::PARAM_STR);
+    $stmt->bindValue(':uuid', $this->tax->getUuid(), PDO::PARAM_STR);
+
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      $this->connection->commit();
+      return;
+    }
+
+    $this->connection->rollBack();
   }
 }

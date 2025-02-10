@@ -93,7 +93,7 @@ class ProductRepository implements RepositoryInterface
     $sql = "SELECT * FROM {$this->table} p
     WHERE p.uuid = :uuid AND p.active = 1";
     $stmt = $this->connection->prepare($sql);
-    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_INT);
+    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
     $stmt->execute();
 
     return $stmt->fetch(PDO::FETCH_ASSOC);

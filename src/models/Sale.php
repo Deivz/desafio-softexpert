@@ -73,6 +73,11 @@ class Sale implements ModelInterface
 		return $this->updatedAt;
 	}
 
+	public function setUuid(string $uuid): void
+	{
+		$this->uuid = $uuid;
+	}
+
 	private function convertPrice($price): int
 	{
 		$price = str_replace(',', '.', $price);

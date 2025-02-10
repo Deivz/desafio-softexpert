@@ -66,6 +66,11 @@ class Tax implements ModelInterface
 		return $this->updatedAt;
 	}
 
+	public function setUuid(string $uuid): void
+	{
+		$this->uuid = $uuid;
+	}
+
 	private function convertTax($tax): int
 	{
 		$tax = str_replace(',', '.', $tax);

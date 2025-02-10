@@ -59,6 +59,11 @@ class ProductType implements ModelInterface
 		return $this->updatedAt;
 	}
 
+	public function setUuid(string $uuid): void
+	{
+		$this->uuid = $uuid;
+	}
+
 	public function validate(): bool
 	{
 		$productType = [
