@@ -52,7 +52,7 @@ class ProductController extends BaseController
       $resource = $uriParts[0];
 
 			$productTypes = $this->productTypeRepository->findAll(50, 1);
-      echo $this->renderPage("/produtos-novo", [
+      echo $this->renderPage("/new_produtos", [
 				'activePage' => $resource,
 				'productTypes' => $productTypes,
 			]);

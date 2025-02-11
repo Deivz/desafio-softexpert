@@ -5,7 +5,7 @@ require __DIR__ . '/../views/topo.php';
 <main class="container my-5">
 	<div class="d-flex justify-content-between align-items-center mb-4">
 		<h1 class="h2">Tipos de Produto</h1>
-		<a href="/tipos-produto/novo" class="btn btn-primary">
+		<a href="/tipos_produto/new" class="btn btn-primary">
 			<i class="bi bi-plus-circle"></i> Adicionar Novo Tipo
 		</a>
 	</div>
@@ -25,7 +25,7 @@ require __DIR__ . '/../views/topo.php';
 			<div class="col-md-4 mb-4">
 				<div class="card shadow-sm h-100 position-relative">
 					<!-- Botão de editar no topo direito -->
-					<a href="tipos-produto/<?= htmlspecialchars($item['uuid']); ?>" class="btn btn-primary btn-sm position-absolute top-0 end-0 m-2" aria-label="Editar">
+					<a href="tipos_produto/<?= htmlspecialchars($item['uuid']); ?>/edit" class="btn btn-primary btn-sm position-absolute top-0 end-0 m-2" aria-label="Editar">
 						<i class="fas fa-pen text-white"></i>
 					</a>
 					<div class="card-body">

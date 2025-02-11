@@ -72,8 +72,8 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <?= $activePage === 'tipos-produto' ? 'active' : '' ?>"
-              <?= $activePage === 'tipos-produto' ? 'aria-current="page"' : '' ?> href="/tipos-produto">
+            <a class="nav-link <?= $activePage === 'tipos_produto' ? 'active' : '' ?>"
+              <?= $activePage === 'tipos_produto' ? 'aria-current="page"' : '' ?> href="/tipos_produto">
               <i class="bi bi-tags me-1"></i> Tipos de Produto
             </a>
           </li>

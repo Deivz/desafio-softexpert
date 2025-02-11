@@ -5,7 +5,7 @@ require __DIR__ . '/../views/topo.php';
 <main class="container my-5">
 	<div class="d-flex justify-content-between align-items-center mb-4">
 		<h1 class="h2">Lista de Produtos</h1>
-		<a href="/produtos/novo" class="btn btn-primary">
+		<a href="/produtos/new" class="btn btn-primary">
 			<i class="bi bi-plus-circle"></i> Adicionar Novo Produto
 		</a>
 	</div>
