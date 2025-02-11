@@ -22,26 +22,20 @@ class SaleRepository
 
   public function save(): bool
   {
-    $sql = "INSERT INTO {$this->table} (uuid, deleted, active, id_product, sell_price, amount, created_at)
-      VALUES (:uuid, :deleted, :active, :id_product, :sell_price, :amount, :created_at
-    )";
+    $sql = "INSERT INTO {$this->table} (uuid, deleted, active, product_id, sell_price, amount, created_at)
+      VALUES (:uuid, :deleted, :active, :product_id, :sell_price, :amount, :created_at)";
     $stmt = $this->connection->prepare($sql);
     $stmt->bindValue(':uuid', $this->sale->getUuid(), PDO::PARAM_STR);
     $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
     $stmt->bindValue(':active', 1, PDO::PARAM_INT);
-    $stmt->bindValue(':product_id', $this->sale->getProductId(), PDO::PARAM_INT);
+    $stmt->bindValue(':product_id', $this->sale->getProductId(), PDO::PARAM_INT); // Corrigido
     $stmt->bindValue(':sell_price', $this->sale->getSellPrice(), PDO::PARAM_INT);
     $stmt->bindValue(':amount', $this->sale->getAmount(), PDO::PARAM_INT);
     $stmt->bindValue(':created_at', $this->sale->getCreatedAt(), PDO::PARAM_STR);
+
     $stmt->execute();
 
-    $insertedId = $this->connection->lastInsertId();
-
-    if ($insertedId > 0) {
-      return true;
-    }
-    
-    return false;
+    return $this->connection->lastInsertId() > 0;
   }
 
   public function findAll(int $limit, int $offset): array

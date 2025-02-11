@@ -31,63 +31,57 @@ class SaleController
 		$this->service = new SaleService($repository);
 
 		$this->product = new Product($request);
-		$this->productRepository = new ProductRepository($connection, $this->product);
+		$this->productRepository = new ProductRepository($this->connection, $this->product);
 		$this->productService = new ProductService($this->productRepository);
-
-		$this->connection = $connection->connect();
 	}
 
 	public function create(array $params): void
 	{
 		try {
 			$this->connection->beginTransaction();
+			$productUuid = $params["uuid"];
 
-			$saleCreated = $this->service->create();
+			$requestIsValid = $this->model->validate();
 
-			if (!$saleCreated) {
-				$this->connection->rollBack();
-				http_response_code(500);
-				echo json_encode(['errors' => 'Não foi possível salvar a venda.']);
+			if ($requestIsValid) {
+				$product = $this->productService->getByUuid($productUuid);
+
+				$this->product->setAmount($product["amount"]);
+				$amountChanged = $this->setProductAmount($product);
+				if (!$amountChanged) {
+					$this->connection->rollBack();
+					http_response_code(400);
+					echo json_encode(['errors' => 'Quantidade de produtos insuficiente!']);
+					return;
+				}
+
+				$sellPrice = $this->calculateSell($product);
+				$this->model->setSellPrice($sellPrice);
+				$this->model->setProductId($product["id"]);
+
+				$saleCreated = $this->service->create();
+				if (!$saleCreated) {
+					$this->connection->rollBack();
+					http_response_code(500);
+					echo json_encode([
+						'errors' => 'Algo deu errado, contacte o suporte.'
+					]);
+					return;
+				}
+
+				$this->connection->commit();
+				http_response_code(201);
+				echo json_encode([
+					'mensagem' => $this->model->getSuccessMessage()
+				]);
+				return;
 			}
 
-			$this->connection->commit();
-			http_response_code(201);
-			echo json_encode([
-				'mensagem' => $this->model->getSuccessMessage()
-			]);
-
-			// $productUuid = $params["uuid"];
-
-			// $requestIsValid = $this->model->validate();
-
-			// if ($requestIsValid) {
-			// 	$this->connection->beginTransaction();
-
-			// 	$product = $this->productService->getByUuid($productUuid);
-				
-			// 	$this->product->setAmount($product["amount"]);
-			// 	$amountChanged = $this->setProductAmount($product);
-			// 	if (!$amountChanged) {
-			// 		http_response_code(400);
-			// 		echo json_encode(['errors' => 'Quantidade de produtos insuficiente!']);
-			// 		return;
-			// 	}
-
-			// 	$sellPrice = $this->calculateSell($product);
-			// 	$this->model->setSellPrice($sellPrice);
-			// 	$this->model->setProductId($product["id"]);
-				
-			// 	$this->service->create();
-			// 	http_response_code(201);
-			// 	echo json_encode([
-			// 		'mensagem' => $this->model->getSuccessMessage()
-			// 	]);
-			// 	return;
-			// }
-
-			// http_response_code(400);
-			// echo json_encode(['errors' => Validator::getErrors()]);
+			$this->connection->rollBack();
+			http_response_code(400);
+			echo json_encode(['errors' => Validator::getErrors()]);
 		} catch (\Throwable $th) {
+			$this->connection->rollBack();
 			http_response_code(500);
 			echo json_encode([
 				'erro' => $th->getMessage(),
@@ -115,7 +109,6 @@ class SaleController
 		}
 
 		$newAmount = $productAmount - $soldAmount;
-		$this->productRepository->newAmount($product["id"], $newAmount);
-		return true;
+		return $this->productRepository->newAmount($product["id"], $newAmount);
 	}
 }

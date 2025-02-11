@@ -46,6 +46,7 @@ abstract class BaseController implements ControllerInterface
             break;
 
           default:
+            $this->connection->rollBack();
             http_response_code(409);
             echo json_encode([
               'mensagem' => $this->model->getAlreadyExistsMessage()
@@ -55,9 +56,11 @@ abstract class BaseController implements ControllerInterface
         return;
       }
 
+      $this->connection->rollBack();
       http_response_code(400);
       echo json_encode(['errors' => Validator::getErrors()]);
     } catch (\Throwable $th) {
+      $this->connection->rollBack();
       http_response_code(500);
       echo json_encode([
         'erro' => $th->getMessage(),
@@ -156,6 +159,7 @@ abstract class BaseController implements ControllerInterface
             break;
 
           default:
+            $this->connection->rollBack();
             http_response_code(409);
             echo json_encode([
               'erro' => $this->model->getAlreadyExistsMessage()
@@ -165,9 +169,11 @@ abstract class BaseController implements ControllerInterface
         return;
       }
 
+      $this->connection->rollBack();
       http_response_code(400);
       echo json_encode(['errors' => Validator::getErrors()]);
     } catch (\Throwable $th) {
+      $this->connection->rollBack();
       http_response_code(500);
       echo json_encode([
         'erro' => $th->getMessage(),

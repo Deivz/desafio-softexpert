@@ -126,8 +126,8 @@ class ProductRepository implements RepositoryInterface
   public function newAmount(int $productId, int $amount): bool
   {
     $sql = "UPDATE {$this->table}
-    SET amount = :amount, updated_at = :updated_at
-    WHERE id = :id AND active = 1";
+      SET amount = :amount, updated_at = :updated_at
+      WHERE id = :id AND active = 1";
     $stmt = $this->connection->prepare($sql);
     $stmt->bindValue(':amount', $amount, PDO::PARAM_INT);
     $stmt->bindValue(':updated_at', $this->product->getUpdatedAt(), PDO::PARAM_STR);
@@ -135,10 +135,6 @@ class ProductRepository implements RepositoryInterface
 
     $stmt->execute();
 
-    if ($stmt->rowCount() > 0) {
-      return true;
-    }
-
-    return false;
+    return $stmt->rowCount() > 0;
   }
 }
