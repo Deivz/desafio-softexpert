@@ -86,6 +86,8 @@ abstract class BaseController extends RendererController implements ControllerIn
     try {
       $uri = $_SERVER['REQUEST_URI'];
       $resource = parse_url($uri, PHP_URL_PATH);
+      $segments = explode('/', trim($resource, '/'));
+      $activePage = $segments[0] ?? '';
 
       $itemsPerPage = 9;
       $limit = isset($params["limit"]) ? (int) $params["limit"] : $itemsPerPage;
@@ -97,11 +99,14 @@ abstract class BaseController extends RendererController implements ControllerIn
       $items = $this->service->getAll($page, $limit);
 
       echo $this->renderPage($resource, [
+        'activePage' => $activePage,
         'items' => $items,
         'page' => $page,
         'limit' => $limit,
         'totalPages' => $totalPages
       ]);
+      //     http_response_code(200);
+      //     echo json_encode($items);
     } catch (\Throwable $th) {
       http_response_code(500);
       echo json_encode([
@@ -110,27 +115,6 @@ abstract class BaseController extends RendererController implements ControllerIn
       ]);
     }
   }
-
-  // public function read(array $params): void
-  // {
-  //   try {
-  //     $itemsPerPage = 9;
-  //     $limit = isset($params["limit"]) ? $params["limit"] : $itemsPerPage;
-  //     $page = isset($params["page"]) ? $params["page"] : 1;
-
-  //     $items = $this->service->getAll($page, $limit);
-
-  //     echo $this->renderPage($_SERVER['REQUEST_URI'], ['items' => $items]);
-  //     http_response_code(200);
-  //     echo json_encode($items);
-  //   } catch (\Throwable $th) {
-  //     http_response_code(500);
-  //     echo json_encode([
-  //       'erro' => $th->getMessage(),
-  //       'mensagem' => 'Não foi possível buscar os itens no sistema, entre em contato com o suporte.'
-  //     ]);
-  //   }
-  // }
 
   public function new(): void
   {

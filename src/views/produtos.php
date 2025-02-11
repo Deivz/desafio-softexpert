@@ -13,7 +13,7 @@ require __DIR__ . '/../views/topo.php';
 	<form method="GET" class="mb-3">
 		<label for="limit">Itens por página:</label>
 		<select name="limit" id="limit" class="form-select d-inline w-auto" onchange="this.form.submit()">
-			<option value="5" <?= $limit == 6 ? 'selected' : '' ?>>6</option>
+			<option value="6" <?= $limit == 6 ? 'selected' : '' ?>>6</option>
 			<option value="9" <?= $limit == 9 ? 'selected' : '' ?>>9</option>
 			<option value="12" <?= $limit == 12 ? 'selected' : '' ?>>12</option>
 		</select>
@@ -27,8 +27,9 @@ require __DIR__ . '/../views/topo.php';
 					<div class="card-body">
 						<h5 class="card-title"><?= htmlspecialchars($item['name']); ?></h5>
 						<p class="card-text">
-							<strong>Preço:</strong> R$ <?= number_format($item['price_per_product'], 2, ',', '.'); ?><br>
-							<strong>Quantidade Disponível:</strong> <?= htmlspecialchars($item['amount']); ?>
+							<strong>Preço:</strong> R$<?= number_format($item['price_per_product'], 2, ',', '.'); ?><br>
+							<strong>Quantidade Disponível:</strong> <?= htmlspecialchars($item['amount']); ?><br>
+							<strong>Tipo de produto:</strong> <?= htmlspecialchars($item['product_type']); ?>
 						</p>
 					</div>
 					<div class="card-footer bg-transparent">
