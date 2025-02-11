@@ -16,7 +16,7 @@ $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 $controllerNameSpace = "Deivz\DesafioSoftexpert\controllers\\";
 
-header('Content-type: application/json; charset = UTF-8');
+// header('Content-type: application/json; charset = UTF-8');
 
 $routes = require __DIR__ . '/../src/routes.php';
 

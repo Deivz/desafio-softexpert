@@ -5,10 +5,7 @@ $routes = [
 		'/produtos' => 'ProductController@read',
 		'/tipos-produto' => 'ProductTypeController@read',
 		'/impostos' => 'TaxController@read',
-		// '/' => 'HomeController@index',
-		// '/about' => 'AboutController@index',
-		// '/user/{id}' => 'UserController@show', // Rota dinâmica
-		// '/user/{id}/produtos' => 'UserController@prod', // Rota dinâmica
+		'/produtos/{uuid}/venda' => 'ProductController@readByUuid',
 	],
 	'POST' => [
 		'/produtos' => 'ProductController@create',

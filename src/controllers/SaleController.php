@@ -96,13 +96,18 @@ class SaleController
 		$pricePerProduct = $product["price_per_product"];
 		$sellPrice = $productAmount * $pricePerProduct;
 
-		return $sellPrice;
+		return intval($sellPrice * 100);
 	}
 
 	private function setProductAmount(array $product): bool
 	{
 		$productAmount = $this->product->getAmount();
 		$soldAmount = $this->model->getAmount();
+
+
+		if ($soldAmount <= 0) {
+			return false;
+		}
 
 		if ($productAmount < $soldAmount) {
 			return false;

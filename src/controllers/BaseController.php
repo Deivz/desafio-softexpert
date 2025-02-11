@@ -8,7 +8,7 @@ use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
 use Deivz\DesafioSoftexpert\services\BaseService;
 use PDO;
 
-abstract class BaseController implements ControllerInterface
+abstract class BaseController extends RendererController implements ControllerInterface
 {
   protected ModelInterface $model;
   protected BaseService $service;
@@ -90,8 +90,10 @@ abstract class BaseController implements ControllerInterface
       $page = isset($params["page"]) ? $params["page"] : 1;
 
       $items = $this->service->getAll($page, $limit);
-      http_response_code(200);
-      echo json_encode($items);
+
+      echo $this->renderPage($_SERVER['REQUEST_URI'], ['items' => $items]);
+      // http_response_code(200);
+      // echo json_encode($items);
     } catch (\Throwable $th) {
       http_response_code(500);
       echo json_encode([
@@ -101,7 +103,7 @@ abstract class BaseController implements ControllerInterface
     }
   }
 
-  protected function readByUuid(string $uuid): array
+  protected function findByUuid(string $uuid): array
   {
     try {
       $item = $this->service->getByUuid($uuid);
@@ -123,7 +125,7 @@ abstract class BaseController implements ControllerInterface
     try {
       $uuid = $params["uuid"];
 
-      $item = $this->readByUuid($uuid);
+      $item = $this->findByUuid($uuid);
 
       if (empty($item)) {
         http_response_code(404);

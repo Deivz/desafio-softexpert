@@ -20,17 +20,21 @@ endif;
 <main>
 	<form class="mt-3 container" action="cadastro" method="post">
 		<div class="mb-3">
-			<label for="nome" class="form-label">Nome*</label>
+			<label for="nome" class="form-label">Ovos*</label>
+			<input name="nome" type="text" class="form-control" id="nome" placeholder="Nome do produto" maxlength="100" value="<?= $nome ?>">
+			<label for="nome" class="form-label">Preço*</label>
+			<input name="nome" type="text" class="form-control" id="nome" placeholder="Nome do produto" maxlength="100" value="<?= $nome ?>">
+			<label for="nome" class="form-label">Tipo*</label>
 			<input name="nome" type="text" class="form-control" id="nome" placeholder="Nome do produto" maxlength="100" value="<?= $nome ?>">
 		</div>
-		<div class="mb-3">
+		<!-- <div class="mb-3">
 			<label for="cpf" class="form-label">Preço*</label>
 			<input name="cpf" type="text" class="form-control" id="cpf" placeholder="CPF somente números" maxlength="14" value="<?= $cpf ?>">
 		</div>
 		<div class="mb-3">
 			<label for="email" class="form-label">Tipo*</label>
 			<input name="email" type="email" class="form-control" id="email" placeholder="nome@exemplo.com" maxlength="50" value="<?= $email ?>">
-		</div>
+		</div> -->
 		<button type="submit" id="submit" class="btn btn-primary">Cadastrar</button>
 
 	</form>
