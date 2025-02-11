@@ -55,4 +55,13 @@ class SaleRepository
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  public function countTotal(): int
+  {
+    $sql = "SELECT COUNT(id) FROM {$this->table} WHERE active = 1";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchColumn();
+  }
 }

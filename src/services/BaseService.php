@@ -39,4 +39,9 @@ class BaseService implements ServiceInterface
 
     return $items;
   }
+
+  public function getTotal(): int
+  {
+    return $this->repository->countTotal();
+  }
 }
