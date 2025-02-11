@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <title>Lista de Produtos</title>
   <style>
     /* Estilos personalizados */
@@ -66,19 +67,19 @@
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link <?= $activePage === 'produtos' ? 'active' : '' ?>"
-            <?= $activePage === 'produtos' ? 'aria-current="page"' : '' ?> href="/produtos">
+              <?= $activePage === 'produtos' ? 'aria-current="page"' : '' ?> href="/produtos">
               <i class="bi bi-box-seam me-1"></i> Produtos
             </a>
           </li>
           <li class="nav-item">
-          <a class="nav-link <?= $activePage === 'tipos-produto' ? 'active' : '' ?>"
-          <?= $activePage === 'tipos-produto' ? 'aria-current="page"' : '' ?> href="/tipos-produto">
+            <a class="nav-link <?= $activePage === 'tipos-produto' ? 'active' : '' ?>"
+              <?= $activePage === 'tipos-produto' ? 'aria-current="page"' : '' ?> href="/tipos-produto">
               <i class="bi bi-tags me-1"></i> Tipos de Produto
             </a>
           </li>
           <li class="nav-item">
-          <a class="nav-link <?= $activePage === 'impostos' ? 'active' : '' ?>"
-          <?= $activePage === 'impostos' ? 'aria-current="page"' : '' ?> href="/impostos">
+            <a class="nav-link <?= $activePage === 'impostos' ? 'active' : '' ?>"
+              <?= $activePage === 'impostos' ? 'aria-current="page"' : '' ?> href="/impostos">
               <i class="bi bi-percent me-1"></i> Impostos
             </a>
           </li>

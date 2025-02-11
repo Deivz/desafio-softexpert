@@ -123,7 +123,9 @@ abstract class BaseController extends RendererController implements ControllerIn
       $uriParts = explode('/', trim($uri, '/'));
       $resource = $uriParts[0];
 
-      echo $this->renderPage("/{$resource}-novo");
+      echo $this->renderPage("/{$resource}-novo", [
+        'activePage' => $resource
+      ]);
     } catch (\Throwable $th) {
       http_response_code(500);
       echo json_encode([

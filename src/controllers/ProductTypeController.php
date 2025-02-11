@@ -18,4 +18,21 @@ class ProductTypeController extends BaseController
 		$repository = new ProductTypeRepository($this->connection, $this->model);
 		$this->service = new ProductTypeService($repository);
 	}
+
+	public function readByUuid(array $params): void
+	{
+		try {
+			$item = $this->service->getByUuid($params['uuid']);
+			echo $this->renderPage("/tipo-produto", [
+				'activePage' => 'tipo-produto',
+				'item' => $item,
+			]);
+		} catch (\Throwable $th) {
+			http_response_code(500);
+			echo json_encode([
+				'erro' => $th->getMessage(),
+				'mensagem' => 'Não foi possível buscar os itens no sistema, entre em contato com o suporte.'
+			]);
+		}
+	}
 }
