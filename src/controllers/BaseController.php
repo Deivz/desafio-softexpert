@@ -22,14 +22,13 @@ abstract class BaseController extends RendererController implements ControllerIn
   public function create(): void
   {
     try {
+      $this->connection->beginTransaction();
       $requestIsValid = $this->model->validate();
 
       if ($requestIsValid) {
         switch ($this->checkExistance()) {
           case 0:
-            $this->connection->beginTransaction();
             $itemCreated = $this->service->create($this->model);
-
             if (!$itemCreated) {
               $this->connection->rollBack();
               http_response_code(500);
@@ -94,6 +93,23 @@ abstract class BaseController extends RendererController implements ControllerIn
       echo $this->renderPage($_SERVER['REQUEST_URI'], ['items' => $items]);
       // http_response_code(200);
       // echo json_encode($items);
+    } catch (\Throwable $th) {
+      http_response_code(500);
+      echo json_encode([
+        'erro' => $th->getMessage(),
+        'mensagem' => 'Não foi possível buscar os itens no sistema, entre em contato com o suporte.'
+      ]);
+    }
+  }
+
+  public function new(): void
+  {
+    try {
+      $uri = $_SERVER['REQUEST_URI'];
+      $uriParts = explode('/', trim($uri, '/'));
+      $resource = $uriParts[0];
+
+      echo $this->renderPage("/{$resource}-novo");
     } catch (\Throwable $th) {
       http_response_code(500);
       echo json_encode([

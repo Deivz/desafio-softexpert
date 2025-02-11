@@ -3,6 +3,7 @@
 $routes = [
 	'GET' => [
 		'/produtos' => 'ProductController@read',
+		'/produtos/novo' => 'ProductController@new',
 		'/tipos-produto' => 'ProductTypeController@read',
 		'/impostos' => 'TaxController@read',
 		'/produtos/{uuid}/venda' => 'ProductController@readByUuid',

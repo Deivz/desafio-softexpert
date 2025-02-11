@@ -29,7 +29,7 @@ require __DIR__ . '/../views/topo.php';
 						<p>
 							<strong>Total de Impostos:</strong> R$<span id="total-tax"><?php echo number_format($item['tax_price'], 2, ',', '.'); ?></span>
 						</p>
-						<button class="btn btn-primary w-100" onclick="finalizarCompra()" id="comprarButton" <?php echo $item['amount'] == 0 ? 'disabled' : ''; ?>>
+						<button class="btn btn-primary w-100" onclick="buy()" id="buyButton" <?php echo $item['amount'] == 0 ? 'disabled' : ''; ?>>
 							<?php if ($item['amount'] == 0): ?>
 								Produto Indisponível
 							<?php else: ?>
@@ -85,12 +85,12 @@ require __DIR__ . '/../views/topo.php';
 		document.querySelector('.btn-outline-success').disabled = amount >= maxAmount;
 	}
 
-	function finalizarCompra() {
-		const comprarButton = document.getElementById('comprarButton');
+	function buy() {
+		const buyButton = document.getElementById('buyButton');
 		const buttonText = document.getElementById('buttonText');
 		const buttonSpinner = document.getElementById('buttonSpinner');
 
-		comprarButton.disabled = true;
+		buyButton.disabled = true;
 		buttonText.innerText = 'Processando...';
 		buttonSpinner.classList.remove('d-none');
 
@@ -128,7 +128,7 @@ require __DIR__ . '/../views/topo.php';
 				messageModal.show();
 			})
 			.finally(() => {
-				comprarButton.disabled = false;
+				buyButton.disabled = false;
 				buttonText.innerText = 'Comprar';
 				buttonSpinner.classList.add('d-none');
 			});
