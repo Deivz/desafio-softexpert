@@ -21,6 +21,21 @@ require __DIR__ . '/../views/topo.php';
 							<input type="number" class="form-control" id="tax" name="tax" step="0.01" min="0" required aria-required="true">
 							<div class="invalid-feedback" id="taxError"></div>
 						</div>
+						<div class="mb-3">
+							<label for="product_type" class="form-label">Tipo de Produto*</label>
+							<select class="form-select" id="product_type" name="product_type" required aria-required="true">
+								<?php if (empty($productTypes)): ?>
+									<option value="" disabled selected>Nenhum tipo de produto encontrado</option>
+								<?php endif; ?>
+								<?php if (!empty($productTypes)): ?>
+									<option value="" disabled selected>Selecione um tipo</option>
+									<?php foreach ($productTypes as $type): ?>
+										<option value="<?= htmlspecialchars($type['id']); ?>"><?= htmlspecialchars($type['name']); ?></option>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</select>
+							<div class="invalid-feedback" id="product_typeError"></div>
+						</div>
 						<div class="d-flex justify-content-end">
 							<button type="submit" class="btn btn-primary" id="submitButton">
 								<span id="buttonText">Salvar</span>
@@ -57,6 +72,7 @@ require __DIR__ . '/../views/topo.php';
 	const validations = {
 		required: (value) => !value ? "Este campo é obrigatório." : null,
 		maxLength: (value) => value.length > 255 ? "Este campo deve possuir no máximo 255 caracteres." : null,
+		int: (value) => !Number.isInteger(Number(value)) ? "O valor deste campo deve ser um número inteiro." : null,
 		positiveNumber: (value) => value < 0 ? "O valor deste campo deve ser um número maior que 0." : null,
 		maxTax: (value) => value > 20000 ? "Este campo não deve possuir valor maior que 200%" : null,
 		maxNumber: (value) => value > 100000000 ? "Este campo não deve possuir valor maior que 100.000.000." : null,
@@ -88,14 +104,17 @@ require __DIR__ . '/../views/topo.php';
 	}
 
 	function validateForm() {
-		const fields = [
-			{
+		const fields = [{
 				id: 'name',
 				rules: ['required', 'maxLength']
 			},
 			{
 				id: 'tax',
 				rules: ['required', 'positiveNumber', 'maxNumber', 'maxTax']
+			},
+			{
+				id: 'product_type',
+				rules: ['required', 'int', 'positiveNumber']
 			},
 		];
 

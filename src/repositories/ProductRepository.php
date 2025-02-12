@@ -71,7 +71,7 @@ class ProductRepository implements RepositoryInterface
 
   public function findAll(int $limit, int $offset): array
   {
-    $sql = "SELECT p.uuid, p.name, p.price, p.amount, pt.product_type, t.tax
+    $sql = "SELECT p.uuid, p.name, p.price, p.amount, pt.name, t.tax
     FROM {$this->table} p
     INNER JOIN {$this->tableJoin[0]} pt ON (p.product_type = pt.id and pt.active = 1)
     INNER JOIN {$this->tableJoin[1]} t ON (pt.id = t.product_type and t.active = 1)
@@ -89,10 +89,10 @@ class ProductRepository implements RepositoryInterface
 
   public function findByUuid(string $uuid): array
   {
-    $sql = "SELECT p.id, p.uuid, p.name, p.price, p.amount, pt.product_type, t.tax
+    $sql = "SELECT p.id, p.uuid, p.name, p.price, p.amount, pt.name, t.tax
     FROM {$this->table} p
     INNER JOIN {$this->tableJoin[0]} pt (p.product_type = pt.id and pt.active = 1)
-    INNER JOIN {$this->tableJoin[1]} t ON (pt.id = t.product_type and t.active = 1)
+    INNER JOIN {$this->tableJoin[1]} t ON pt.id = t.product_type
     WHERE p.active = 1
     AND p.uuid = :uuid";
 

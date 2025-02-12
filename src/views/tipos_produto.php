@@ -24,7 +24,7 @@ require __DIR__ . '/../views/topo.php';
 		<?php if (empty($items)): ?>
 			<div class="col-12 w-100">
 				<div class="alert alert-info" role="alert">
-					Nenhum imposto cadastrado.
+					Nenhum tipo de produto cadastrado.
 				</div>
 			</div>
 		<?php endif; ?>

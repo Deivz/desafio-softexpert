@@ -29,10 +29,15 @@ require __DIR__ . '/../views/topo.php';
 						<div class="mb-3">
 							<label for="product_type" class="form-label">Tipo de Produto*</label>
 							<select class="form-select" id="product_type" name="product_type" required aria-required="true">
-								<option value="" disabled selected>Selecione um tipo</option>
-								<?php foreach ($productTypes as $type): ?>
-									<option value="<?= htmlspecialchars($type['id']); ?>"><?= htmlspecialchars($type['product_type']); ?></option>
-								<?php endforeach; ?>
+								<?php if (empty($productTypes)): ?>
+									<option value="" disabled selected>Nenhum tipo de produto encontrado</option>
+								<?php endif; ?>
+								<?php if (!empty($productTypes)): ?>
+									<option value="" disabled selected>Selecione um tipo</option>
+									<?php foreach ($productTypes as $type): ?>
+										<option value="<?= htmlspecialchars($type['id']); ?>"><?= htmlspecialchars($type['name']); ?></option>
+									<?php endforeach; ?>
+								<?php endif; ?>
 							</select>
 							<div class="invalid-feedback" id="product_typeError"></div>
 						</div>

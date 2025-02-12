@@ -66,7 +66,7 @@ class ProductTypeRepository implements RepositoryInterface
   {
     $sql = "SELECT * FROM {$this->table} pt
     WHERE pt.active = 1
-    ORDER BY pt.product_type ASC
+    ORDER BY pt.name ASC
     LIMIT :limit OFFSET :offset";
 
     $stmt = $this->connection->prepare($sql);
@@ -81,7 +81,7 @@ class ProductTypeRepository implements RepositoryInterface
   {
     $sql = "SELECT * FROM {$this->table} pt
     WHERE pt.active = 1
-    ORDER BY pt.product_type ASC";
+    ORDER BY pt.name ASC";
 
     $stmt = $this->connection->prepare($sql);
     $stmt->execute();

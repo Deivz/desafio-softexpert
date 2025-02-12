@@ -68,11 +68,11 @@ class TaxRepository implements RepositoryInterface
 
   public function findAll(int $limit, int $offset): array
   {
-    $sql = "SELECT t.uuid, t.name, t.tax, pt.product_type
+    $sql = "SELECT t.uuid, t.name, t.tax, pt.name
     FROM {$this->table} t
     INNER JOIN {$this->tableJoin[0]} pt ON (pt.id = t.product_type AND pt.active = 1)
     WHERE t.active = 1
-    ORDER BY pt.product_type ASC
+    ORDER BY pt.name ASC
     LIMIT :limit OFFSET :offset";
 
     $stmt = $this->connection->prepare($sql);
