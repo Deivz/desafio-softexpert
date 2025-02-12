@@ -12,6 +12,7 @@ class ProductType implements ModelInterface
 	private int $deleted;
 	private int $active;
 	private string $productType;
+	private int $taxId;
 	private string $createdAt;
 	private string $updatedAt;
 
@@ -25,6 +26,7 @@ class ProductType implements ModelInterface
 		$this->deleted = 0;
 		$this->active = 1;
 		$this->productType = isset($request['product_type']) ? $request['product_type'] : "";
+		$this->taxId = isset($request['tax_id']) ? $this->convertInt($request['tax_id']) : 0;
 		$this->createdAt = $createdAt;
 		$this->updatedAt = $updatedAt;
 	}
@@ -49,6 +51,11 @@ class ProductType implements ModelInterface
 		return $this->productType;
 	}
 
+	public function getTaxId(): int
+	{
+		return $this->taxId;
+	}
+
 	public function getCreatedAt(): string
 	{
 		return $this->createdAt;
@@ -64,14 +71,25 @@ class ProductType implements ModelInterface
 		$this->uuid = $uuid;
 	}
 
+	private function convertInt($numericalString): int
+	{
+		return intval($numericalString) ? intval($numericalString) : -1;
+	}
+
 	public function validate(): bool
 	{
 		$productType = [
 			'product_type' => $this->productType,
+			'tax_id' => $this->taxId
 		];
 
 		$validationRules = [
 			'product_type' => ['RequiredValidation', 'MaxLengthValidation'],
+			'tax_id' => [
+				'RequiredValidation',
+				'IntValidation',
+				'PositiveNumberValidation',
+			],
 		];
 
 		return Validator::validate($productType, $validationRules);
@@ -84,7 +102,7 @@ class ProductType implements ModelInterface
 
 	public function getAlreadyExistsMessage(): string
 	{
-		return 'Este tipo de produto já foi cadastrado!';
+		return 'Já existe um tipo de produto com este nome!';
 	}
 
 	public function getNotFoundMessage(): string
