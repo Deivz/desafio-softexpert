@@ -12,12 +12,16 @@ class TaxRepository implements RepositoryInterface
   private PDO $connection;
   private string $table;
   private Tax $tax;
+  private array $tableJoin = [];
 
   public function __construct(PDO $connection, Tax $tax)
   {
     $this->connection = $connection;
     $this->tax = $tax;
     $this->table = $_ENV["TABLE_TAXES"];
+    $this->tableJoin = [
+      $_ENV["TABLE_PRODUCT_TYPES"],
+    ];
   }
 
   public function findByUniqueKey(): int
@@ -32,7 +36,7 @@ class TaxRepository implements RepositoryInterface
     $stmt->bindValue(':uuid', $this->tax->getUuid(), PDO::PARAM_STR);
     $stmt->execute();
 
-    if($stmt->fetch()){
+    if ($stmt->fetch()) {
       return 1;
     }
 
@@ -58,14 +62,17 @@ class TaxRepository implements RepositoryInterface
     if ($insertedId > 0) {
       return true;
     }
-    
+
     return false;
   }
 
   public function findAll(int $limit, int $offset): array
   {
-    $sql = "SELECT * FROM {$this->table} t
+    $sql = "SELECT t.uuid, t.tax, pt.product_type
+    FROM {$this->table} t
+    INNER JOIN {$this->tableJoin[0]} pt ON pt.id = t.product_type
     WHERE t.active = 1
+    ORDER BY pt.product_type ASC
     LIMIT :limit OFFSET :offset";
 
     $stmt = $this->connection->prepare($sql);
@@ -97,6 +104,26 @@ class TaxRepository implements RepositoryInterface
     $stmt->bindValue(':product_type', $this->tax->getProductType(), PDO::PARAM_INT);
     $stmt->bindValue(':updated_at', $this->tax->getUpdatedAt(), PDO::PARAM_STR);
     $stmt->bindValue(':uuid', $this->tax->getUuid(), PDO::PARAM_STR);
+
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public function delete(string $uuid): bool
+  {
+    $sql = "UPDATE {$this->table}
+    SET deleted = :deleted, active = :active, updated_at = :updated_at
+    WHERE uuid = :uuid";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->bindValue(':deleted', 1, PDO::PARAM_INT);
+    $stmt->bindValue(':active', 0, PDO::PARAM_INT);
+    $stmt->bindValue(':updated_at', $this->tax->getUpdatedAt(), PDO::PARAM_STR);
+    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
 
     $stmt->execute();
 

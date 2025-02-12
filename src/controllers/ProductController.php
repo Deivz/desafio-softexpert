@@ -11,8 +11,8 @@ use Deivz\DesafioSoftexpert\services\ProductService;
 class ProductController extends BaseController
 {
 
-	public ProductType $productType;
-	public ProductTypeRepository $productTypeRepository;
+	protected ProductType $productType;
+	protected ProductTypeRepository $productTypeRepository;
 
 	public function __construct(ConnectionController $connection)
 	{

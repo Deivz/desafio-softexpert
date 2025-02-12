@@ -12,12 +12,16 @@ class ProductTypeRepository implements RepositoryInterface
   private PDO $connection;
   private string $table;
   private ProductType $productType;
+  private array $tableJoin = [];
 
   public function __construct(PDO $connection, ProductType $productType)
   {
     $this->connection = $connection;
     $this->productType = $productType;
     $this->table = $_ENV["TABLE_PRODUCT_TYPES"];
+    $this->tableJoin = [
+      $_ENV["TABLE_TAXES"]
+    ];
   }
 
   public function save(): bool
@@ -81,6 +85,21 @@ class ProductTypeRepository implements RepositoryInterface
   {
     $sql = "SELECT * FROM {$this->table} pt
     WHERE pt.active = 1
+    ORDER BY pt.product_type ASC";
+
+    $stmt = $this->connection->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function findTypesWithoutTaxes(): array
+  {
+    $sql = "SELECT pt.*
+    FROM {$this->table} pt
+    LEFT JOIN {$this->tableJoin[0]} t ON (pt.id = t.product_type AND t.active = 1)
+    WHERE t.id IS NULL
+    AND pt.active = 1
     ORDER BY pt.product_type ASC";
 
     $stmt = $this->connection->prepare($sql);

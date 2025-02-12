@@ -11,6 +11,8 @@ $routes = [
 		'/tipos_produto/{uuid}/edit' => 'ProductTypeController@edit',
 
 		'/impostos' => 'TaxController@read',
+		'/impostos/new' => 'TaxController@new',
+		'/impostos/{uuid}/edit' => 'TaxController@edit',
 	],
 	'POST' => [
 		'/produtos' => 'ProductController@create',
@@ -21,18 +23,10 @@ $routes = [
 		'/impostos' => 'TaxController@create',
 	],
 	'PATCH' => [
-		'/produtos/{uuid}' => 'ProductController@update',
-
 		'/tipos_produto/{uuid}' => 'ProductTypeController@update',
-
-		'/impostos/{uuid}' => 'TaxController@update',
 	],
 	'DELETE' => [
-		'/produtos' => 'ProductController@delete',
-
-		'/tipos_produto' => 'ProductTypeController@delete',
-
-		'/impostos' => 'TaxController@delete',
+		'/impostos/{uuid}' => 'TaxController@delete',
 	],
 ];
 
