@@ -16,16 +16,6 @@ require __DIR__ . '/../views/topo.php';
               <input type="text" class="form-control" id="product_type" name="product_type" required aria-required="true">
               <div class="invalid-feedback" id="product_typeError"></div>
             </div>
-            <div class="mb-3">
-              <label for="tax" class="form-label">Tipo de Produto*</label>
-              <select class="form-select" id="tax" name="tax" required aria-required="true">
-                <option value="" disabled selected>Selecione um tipo</option>
-                <?php foreach ($taxes as $tax): ?>
-                  <option value="<?= htmlspecialchars($tax['id']); ?>"><?= htmlspecialchars($tax['name']); ?></option>
-                <?php endforeach; ?>
-              </select>
-              <div class="invalid-feedback" id="product_typeError"></div>
-            </div>
             <div class="d-flex justify-content-end">
               <button type="submit" class="btn btn-primary" id="submitButton">
                 <span id="buttonText">Salvar</span>
@@ -62,8 +52,6 @@ require __DIR__ . '/../views/topo.php';
   const validations = {
     required: (value) => !value ? "Este campo é obrigatório." : null,
     maxLength: (value) => value.length > 255 ? "Este campo deve possuir no máximo 255 caracteres." : null,
-    int: (value) => !Number.isInteger(Number(value)) ? "O valor deste campo deve ser um número inteiro." : null,
-    positiveNumber: (value) => value < 0 ? "O valor deste campo deve ser um número maior que 0." : null,
   };
 
   function validateField(field, rules) {
@@ -93,14 +81,9 @@ require __DIR__ . '/../views/topo.php';
 
   function validateForm() {
     const fields = [{
-        id: 'product_type',
-        rules: ['required', 'maxLength']
-      },
-      {
-        id: 'tax',
-        rules: ['required', 'int', 'positiveNumber', ]
-      },
-    ];
+      id: 'product_type',
+      rules: ['required', 'maxLength']
+    }];
 
     let isValid = true;
 

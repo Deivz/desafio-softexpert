@@ -11,8 +11,7 @@ class ProductType implements ModelInterface
 	private string $uuid;
 	private int $deleted;
 	private int $active;
-	private string $productType;
-	private int $taxId;
+	private string $name;
 	private string $createdAt;
 	private string $updatedAt;
 
@@ -25,8 +24,7 @@ class ProductType implements ModelInterface
 		$this->uuid = UUIDGenerator::uuidv4();
 		$this->deleted = 0;
 		$this->active = 1;
-		$this->productType = isset($request['product_type']) ? $request['product_type'] : "";
-		$this->taxId = isset($request['tax_id']) ? $this->convertInt($request['tax_id']) : 0;
+		$this->name = isset($request['name']) ? $request['name'] : "";
 		$this->createdAt = $createdAt;
 		$this->updatedAt = $updatedAt;
 	}
@@ -46,14 +44,9 @@ class ProductType implements ModelInterface
 		return $this->active;
 	}
 
-	public function getProductType(): string
+	public function getName(): string
 	{
-		return $this->productType;
-	}
-
-	public function getTaxId(): int
-	{
-		return $this->taxId;
+		return $this->name;
 	}
 
 	public function getCreatedAt(): string
@@ -71,28 +64,17 @@ class ProductType implements ModelInterface
 		$this->uuid = $uuid;
 	}
 
-	private function convertInt($numericalString): int
-	{
-		return intval($numericalString) ? intval($numericalString) : -1;
-	}
-
 	public function validate(): bool
 	{
-		$productType = [
-			'product_type' => $this->productType,
-			'tax_id' => $this->taxId
+		$name = [
+			'name' => $this->name,
 		];
 
 		$validationRules = [
-			'product_type' => ['RequiredValidation', 'MaxLengthValidation'],
-			'tax_id' => [
-				'RequiredValidation',
-				'IntValidation',
-				'PositiveNumberValidation',
-			],
+			'name' => ['RequiredValidation', 'MaxLengthValidation'],
 		];
 
-		return Validator::validate($productType, $validationRules);
+		return Validator::validate($name, $validationRules);
 	}
 
 	public function getSuccessMessage(): string

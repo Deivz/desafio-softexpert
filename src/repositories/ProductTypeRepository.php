@@ -12,29 +12,25 @@ class ProductTypeRepository implements RepositoryInterface
   private PDO $connection;
   private string $table;
   private ProductType $productType;
-  private array $tableJoin = [];
 
   public function __construct(PDO $connection, ProductType $productType)
   {
     $this->connection = $connection;
     $this->productType = $productType;
     $this->table = $_ENV["TABLE_PRODUCT_TYPES"];
-    $this->tableJoin = [
-      $_ENV["TABLE_TAXES"]
-    ];
   }
 
   public function save(): bool
   {
-    $sql = "INSERT INTO {$this->table} (uuid, deleted, active, product_type, created_at)
-      VALUES (:uuid, :deleted, :active, :product_type, :created_at
+    $sql = "INSERT INTO {$this->table} (uuid, deleted, active, name, created_at)
+      VALUES (:uuid, :deleted, :active, :name, :created_at
     )";
     $stmt = $this->connection->prepare($sql);
     $stmt->execute([
       ':uuid' => $this->productType->getUuid(),
       ':deleted' => 0,
       ':active' => 1,
-      ':product_type' => $this->productType->getProductType(),
+      ':name' => $this->productType->getName(),
       ':created_at' => $this->productType->getCreatedAt()
     ]);
 
@@ -50,12 +46,12 @@ class ProductTypeRepository implements RepositoryInterface
   public function findByUniqueKey(): int
   {
     $sql = "SELECT id FROM {$this->table}
-      WHERE product_type = :product_type AND deleted = :deleted
+      WHERE name = :name AND deleted = :deleted
       AND uuid != :uuid
       FOR UPDATE";
     $stmt = $this->connection->prepare($sql);
     $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
-    $stmt->bindValue(':product_type', $this->productType->getProductType(), PDO::PARAM_STR);
+    $stmt->bindValue(':name', $this->productType->getName(), PDO::PARAM_STR);
     $stmt->bindValue(':uuid', $this->productType->getUuid(), PDO::PARAM_STR);
     $stmt->execute();
 
@@ -93,21 +89,6 @@ class ProductTypeRepository implements RepositoryInterface
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function findTypesWithoutTaxes(): array
-  {
-    $sql = "SELECT pt.*
-    FROM {$this->table} pt
-    LEFT JOIN {$this->tableJoin[0]} t ON (pt.id = t.product_type AND t.active = 1)
-    WHERE t.id IS NULL
-    AND pt.active = 1
-    ORDER BY pt.product_type ASC";
-
-    $stmt = $this->connection->prepare($sql);
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-  }
-
   public function findByUuid(string $uuid): array
   {
     $sql = "SELECT * FROM {$this->table} pt
@@ -122,10 +103,10 @@ class ProductTypeRepository implements RepositoryInterface
   public function update(): bool
   {
     $sql = "UPDATE {$this->table}
-    SET product_type = :product_type, updated_at = :updated_at
+    SET name = :name, updated_at = :updated_at
     WHERE uuid = :uuid AND active = 1";
     $stmt = $this->connection->prepare($sql);
-    $stmt->bindValue(':product_type', $this->productType->getProductType(), PDO::PARAM_STR);
+    $stmt->bindValue(':name', $this->productType->getName(), PDO::PARAM_STR);
     $stmt->bindValue(':updated_at', $this->productType->getUpdatedAt(), PDO::PARAM_STR);
     $stmt->bindValue(':uuid', $this->productType->getUuid(), PDO::PARAM_STR);
 

@@ -12,9 +12,6 @@ use PDO;
 
 class ProductTypeController extends BaseController
 {
-	protected Tax $tax;
-	protected TaxRepository $taxRepository;
-
 	public function __construct(ConnectionController $connection)
 	{
 		parent::__construct($connection);
@@ -22,9 +19,6 @@ class ProductTypeController extends BaseController
 		$this->model = new ProductType($request);
 		$repository = new ProductTypeRepository($this->connection, $this->model);
 		$this->service = new ProductTypeService($repository);
-
-		$this->tax = new Tax($request);
-		$this->taxRepository = new TaxRepository($this->connection, $this->tax);
 	}
 
 	public function readByUuid(array $params): void
@@ -43,25 +37,4 @@ class ProductTypeController extends BaseController
 			]);
 		}
 	}
-
-	public function new(): void
-  {
-    try {
-			$uri = $_SERVER['REQUEST_URI'];
-      $uriParts = explode('/', trim($uri, '/'));
-      $resource = $uriParts[0];
-
-			$taxes = $this->taxRepository->findAllNoPagination();
-      echo $this->renderPage("/new_tipos_produto", [
-				'activePage' => $resource,
-				'taxes' => $taxes,
-			]);
-    } catch (\Throwable $th) {
-      http_response_code(500);
-      echo json_encode([
-        'erro' => $th->getMessage(),
-        'mensagem' => 'Não foi possível buscar os impostos no sistema, entre em contato com o suporte.'
-      ]);
-    }
-  }
 }
