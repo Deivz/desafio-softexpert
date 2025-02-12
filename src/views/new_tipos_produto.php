@@ -12,9 +12,9 @@ require __DIR__ . '/../views/topo.php';
         <div class="card-body">
           <form id="formTipoProduto" novalidate>
             <div class="mb-3">
-              <label for="product_type" class="form-label">Nome do Tipo de Produto*</label>
-              <input type="text" class="form-control" id="product_type" name="product_type" required aria-required="true">
-              <div class="invalid-feedback" id="product_typeError"></div>
+              <label for="name" class="form-label">Nome do Tipo de Produto*</label>
+              <input type="text" class="form-control" id="name" name="name" required aria-required="true">
+              <div class="invalid-feedback" id="nameError"></div>
             </div>
             <div class="d-flex justify-content-end">
               <button type="submit" class="btn btn-primary" id="submitButton">
@@ -81,7 +81,7 @@ require __DIR__ . '/../views/topo.php';
 
   function validateForm() {
     const fields = [{
-      id: 'product_type',
+      id: 'name',
       rules: ['required', 'maxLength']
     }];
 
