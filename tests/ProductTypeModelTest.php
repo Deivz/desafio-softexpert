@@ -13,11 +13,11 @@ class ProductTypeModelTest extends TestCase
   {
     // ARRANGE
     $requestOk = [
-      'product_type' => 'Eletroeletrônicos'
+      'name' => 'Eletroeletrônicos'
     ];
 
     $requestInvalid = [
-      'product_type' => 'Quero que tenha mais de 255 caracteres
+      'name' => 'Quero que tenha mais de 255 caracteres
       Quero que tenha mais de 255 caracteres
       Quero que tenha mais de 255 caracteres
       Quero que tenha mais de 255 caracteres

@@ -13,6 +13,7 @@ class Tax implements ModelInterface
 	private int $active;
 	private string $name;
 	private int $tax;
+	private int $productType;
 	private string $createdAt;
 	private string $updatedAt;
 
@@ -27,6 +28,7 @@ class Tax implements ModelInterface
 		$this->active = 1;
 		$this->name = isset($request['name']) ? $request['name'] : "";
 		$this->tax = isset($request['tax']) ? $this->convertTax($request['tax']) : 0;
+		$this->productType = isset($request['product_type']) ? $this->convertInt($request['product_type']) : 0;
 		$this->createdAt = $createdAt;
 		$this->updatedAt = $updatedAt;
 	}
@@ -54,6 +56,11 @@ class Tax implements ModelInterface
 	public function getName(): string
 	{
 		return $this->name;
+	}
+
+	public function getProductType(): int
+	{
+		return $this->productType;
 	}
 
 	public function getCreatedAt(): string
@@ -85,11 +92,17 @@ class Tax implements ModelInterface
 		return $convertedTax;
 	}
 
+	private function convertInt($numericalString): int
+	{
+		return intval($numericalString) ? intval($numericalString) : -1;
+	}
+
 	public function validate(): bool
 	{
 		$product = [
 			'name' => $this->name,
 			'tax' => $this->tax,
+			'product_type' => $this->productType
 		];
 
 		$validationRules = [
@@ -100,6 +113,11 @@ class Tax implements ModelInterface
 				'MaxTaxValidation',
 				'PositiveNumberValidation',
 				'PriceConvertionValidation',
+			],
+			'product_type' => [
+				'RequiredValidation',
+				'IntValidation',
+				'PositiveNumberValidation',
 			],
 		];
 
@@ -113,7 +131,7 @@ class Tax implements ModelInterface
 
 	public function getAlreadyExistsMessage(): string
 	{
-		return 'Já existe uma taxa cadastrada para este imposto!';
+		return 'Já existe um imposto cadastrado com este nome!';
 	}
 
 	public function getNotFoundMessage(): string
