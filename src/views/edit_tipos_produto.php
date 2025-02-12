@@ -1,8 +1,5 @@
 <?php
 require __DIR__ . '/../views/topo.php';
-
-$uuid = $_GET['uuid'] ?? null;
-$productType = $item['product_type'] ?? ''; // Valor prévio do tipo de produto
 ?>
 
 <main class="container my-5">
@@ -10,28 +7,29 @@ $productType = $item['product_type'] ?? ''; // Valor prévio do tipo de produto
     <div class="col-md-8">
       <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-          <h5 class="card-title mb-0">Editar Tipo de Produto</h5>
+          <h5 class="card-title mb-0">Cadastrar Novo Tipo de Produto</h5>
         </div>
         <div class="card-body">
           <form id="formTipoProduto" novalidate>
             <div class="mb-3">
-              <label for="product_type" class="form-label">Nome do Tipo de Produto*</label>
-              <input
-                type="text"
-                class="form-control"
-                id="product_type"
-                name="product_type"
-                value="<?= htmlspecialchars($productType) ?>"
-                required
-                aria-required="true">
-              <div class="invalid-feedback" id="product_typeError"></div>
-            </div>
-            <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary" id="submitButton">
-                <span id="buttonText">Salvar Alterações</span>
-                <span id="buttonSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-              </button>
-            </div>
+              <div class="mb-3">
+                <label for="product_type" class="form-label">Nome do Tipo de Produto*</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="product_type"
+                  name="product_type"
+                  value="<?= htmlspecialchars($item['product_type']) ?>"
+                  required
+                  aria-required="true">
+                <div class="invalid-feedback" id="product_typeError"></div>
+              </div>
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary" id="submitButton">
+                  <span id="buttonText">Salvar</span>
+                  <span id="buttonSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+              </div>
           </form>
         </div>
       </div>
@@ -51,14 +49,15 @@ $productType = $item['product_type'] ?? ''; // Valor prévio do tipo de produto
         <p id="successMessage"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="redirectButton">OK</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  // Funções de validação (iguais ao formulário de cadastro)
+  const uuid = '<?php echo $item['uuid']; ?>';
+  // Funções de validação
   const validations = {
     required: (value) => !value ? "Este campo é obrigatório." : null,
     maxLength: (value) => value.length > 255 ? "Este campo deve possuir no máximo 255 caracteres." : null,
@@ -118,7 +117,6 @@ $productType = $item['product_type'] ?? ''; // Valor prévio do tipo de produto
     inputElements.forEach(element => element.classList.remove('is-invalid'));
   }
 
-  // Submissão do formulário
   document.getElementById('formTipoProduto').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -132,7 +130,6 @@ $productType = $item['product_type'] ?? ''; // Valor prévio do tipo de produto
       buttonSpinner.classList.remove('d-none');
 
       const formData = new FormData(this);
-      const uuid = '<?= $uuid ?>';
 
       fetch(`/tipos_produto/${uuid}`, {
           method: 'PATCH',
@@ -150,10 +147,15 @@ $productType = $item['product_type'] ?? ''; // Valor prévio do tipo de produto
             });
           } else {
             const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-            document.getElementById('successMessage').textContent = 'Tipo de produto atualizado com sucesso!';
+            document.getElementById('successMessage').textContent = 'Tipo de produto cadastrado com sucesso!';
             successModal.show();
 
             clearForm();
+
+            const redirectButton = document.getElementById('redirectButton');
+            redirectButton.onclick = () => {
+              window.location.href = '/tipos_produto';
+            };
           }
         })
         .catch(error => {
@@ -161,7 +163,7 @@ $productType = $item['product_type'] ?? ''; // Valor prévio do tipo de produto
         })
         .finally(() => {
           submitButton.disabled = false;
-          buttonText.textContent = 'Salvar Alterações';
+          buttonText.textContent = 'Salvar';
           buttonSpinner.classList.add('d-none');
         });
     }
