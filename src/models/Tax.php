@@ -11,8 +11,8 @@ class Tax implements ModelInterface
 	private string $uuid;
 	private int $deleted;
 	private int $active;
+	private string $name;
 	private int $tax;
-	private int $productType;
 	private string $createdAt;
 	private string $updatedAt;
 
@@ -25,8 +25,8 @@ class Tax implements ModelInterface
 		$this->uuid = UUIDGenerator::uuidv4();
 		$this->deleted = 0;
 		$this->active = 1;
+		$this->name = isset($request['name']) ? $request['name'] : "";
 		$this->tax = isset($request['tax']) ? $this->convertTax($request['tax']) : 0;
-		$this->productType = isset($request['product_type']) ? $this->convertInt($request['product_type']) : 0;
 		$this->createdAt = $createdAt;
 		$this->updatedAt = $updatedAt;
 	}
@@ -51,9 +51,9 @@ class Tax implements ModelInterface
 		return $this->tax;
 	}
 
-	public function getProductType(): int
+	public function getName(): string
 	{
-		return $this->productType;
+		return $this->name;
 	}
 
 	public function getCreatedAt(): string
@@ -85,30 +85,21 @@ class Tax implements ModelInterface
 		return $convertedTax;
 	}
 
-	private function convertInt($numericalString): int
-	{
-		return intval($numericalString) ? intval($numericalString) : -1;
-	}
-
 	public function validate(): bool
 	{
 		$product = [
-			'product_type' => $this->productType,
+			'name' => $this->name,
 			'tax' => $this->tax,
 		];
 
 		$validationRules = [
+			'name' => ['RequiredValidation', 'MaxLengthValidation'],
 			'tax' => [
 				'RequiredValidation',
 				'IntValidation',
 				'MaxTaxValidation',
 				'PositiveNumberValidation',
 				'PriceConvertionValidation',
-			],
-			'product_type' => [
-				'RequiredValidation',
-				'IntValidation',
-				'PositiveNumberValidation',
 			],
 		];
 
@@ -122,7 +113,7 @@ class Tax implements ModelInterface
 
 	public function getAlreadyExistsMessage(): string
 	{
-		return 'Já existe uma taxa cadastrada para este produto!';
+		return 'Já existe uma taxa cadastrada para este imposto!';
 	}
 
 	public function getNotFoundMessage(): string

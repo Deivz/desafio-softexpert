@@ -13,13 +13,13 @@ class TaxModelTest extends TestCase
   {
     // ARRANGE
     $requestOk = [
+      'name' => 'Teste',
       'tax' => '10,50',
-      'product_type' => '1'
     ];
 
     $requestInvalid = [
+      'name' => '',
       'tax' => 'invalid',
-      'product_type' => 'invalid'
     ];
 
     $tax = new Tax($requestOk);
@@ -46,24 +46,6 @@ class TaxModelTest extends TestCase
 
     // ASSERT
     $this->assertEquals(-1, $tax);
-  }
-
-  public function testProductTypeShouldBeConvertedToInt()
-  {
-    // ACT
-    $productType = $this->taxOk->getProductType();
-
-    // ASSERT
-    $this->assertEquals(1, $productType);
-  }
-
-  public function testProductTypeShouldBeMinusOne()
-  {
-    // ACT
-    $productType = $this->taxInvalid->getProductType();
-
-    // ASSERT
-    $this->assertEquals(-1, $productType);
   }
 
   public function testValidateReturnsTrueForValidTax()
