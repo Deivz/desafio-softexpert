@@ -35,7 +35,7 @@ require __DIR__ . '/../views/topo.php';
 						<i class="fas fa-trash text-white"></i>
 					</button>
 					<div class="card-body">
-						<h5 class="card-title"><?= htmlspecialchars($item['product_type']); ?></h5>
+						<h5 class="card-title"><?= htmlspecialchars($item['name']); ?></h5>
 						<p>
 							<strong>Taxa por produto:</strong> <span id="total-shop"><?php echo number_format($item['tax'] / 100, 1, ',', '.') . "%"; ?></span>
 						</p>
