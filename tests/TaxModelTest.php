@@ -66,7 +66,7 @@ class TaxModelTest extends TestCase
     $this->assertEquals(-1, $productType);
   }
 
-  public function testValidateReturnsTrueForValidsFields()
+  public function testValidateReturnsTrueForValidTax()
   {
     // ACT
     $validation = $this->taxOk->validate();
@@ -75,7 +75,7 @@ class TaxModelTest extends TestCase
     $this->assertTrue($validation);
   }
 
-  public function testValidateReturnsFalseForInvalidsFields()
+  public function testValidateReturnsFalseForInvalidTax()
   {
     // ACT
     $validation = $this->taxInvalid->validate();

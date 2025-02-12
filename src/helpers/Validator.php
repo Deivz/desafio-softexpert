@@ -10,6 +10,7 @@ class Validator
 
   public static function validate(array $data, array $rules): bool
   {
+    self::$errors = [];
     foreach ($rules as $field => $strategies) {
       foreach ($strategies as $strategy) {
         $class = "Deivz\\DesafioSoftexpert\\helpers\\" . $strategy;
