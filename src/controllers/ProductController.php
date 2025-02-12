@@ -51,7 +51,7 @@ class ProductController extends BaseController
       $uriParts = explode('/', trim($uri, '/'));
       $resource = $uriParts[0];
 
-			$productTypes = $this->productTypeRepository->findAll(50, 1);
+			$productTypes = $this->productTypeRepository->findAllNoPagination();
       echo $this->renderPage("/new_produtos", [
 				'activePage' => $resource,
 				'productTypes' => $productTypes,
