@@ -62,6 +62,8 @@ require __DIR__ . '/../views/topo.php';
   const validations = {
     required: (value) => !value ? "Este campo é obrigatório." : null,
     maxLength: (value) => value.length > 255 ? "Este campo deve possuir no máximo 255 caracteres." : null,
+    int: (value) => !Number.isInteger(Number(value)) ? "O valor deste campo deve ser um número inteiro." : null,
+    positiveNumber: (value) => value < 0 ? "O valor deste campo deve ser um número maior que 0." : null,
   };
 
   function validateField(field, rules) {
@@ -91,9 +93,14 @@ require __DIR__ . '/../views/topo.php';
 
   function validateForm() {
     const fields = [{
-      id: 'product_type',
-      rules: ['required', 'maxLength']
-    }];
+        id: 'product_type',
+        rules: ['required', 'maxLength']
+      },
+      {
+        id: 'tax',
+        rules: ['required', 'int', 'positiveNumber', ]
+      },
+    ];
 
     let isValid = true;
 
