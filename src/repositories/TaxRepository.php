@@ -26,13 +26,12 @@ class TaxRepository implements RepositoryInterface
   public function findByUniqueKey(): int
   {
     $sql = "SELECT id FROM {$this->table}
-      WHERE name = :name AND deleted = :deleted
-      AND uuid != :uuid
+      WHERE name = :name AND product_type = :product_type AND deleted = :deleted
       FOR UPDATE";
     $stmt = $this->connection->prepare($sql);
     $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
     $stmt->bindValue(':name', $this->tax->getName(), PDO::PARAM_STR);
-    $stmt->bindValue(':uuid', $this->tax->getUuid(), PDO::PARAM_STR);
+    $stmt->bindValue(':product_type', $this->tax->getProductType(), PDO::PARAM_INT);
     $stmt->execute();
 
     if ($stmt->fetch()) {
@@ -45,7 +44,7 @@ class TaxRepository implements RepositoryInterface
   public function save(): bool
   {
     $sql = "INSERT INTO {$this->table} (uuid, deleted, active, name, tax, product_type, created_at)
-      VALUES (:uuid, :deleted, :active, name, :tax, :product_type, :created_at)";
+      VALUES (:uuid, :deleted, :active, :name, :tax, :product_type, :created_at)";
     $stmt = $this->connection->prepare($sql);
     $stmt->execute([
       ':uuid' => $this->tax->getUuid(),

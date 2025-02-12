@@ -131,7 +131,7 @@ class Tax implements ModelInterface
 
 	public function getAlreadyExistsMessage(): string
 	{
-		return 'Já existe um imposto cadastrado com este nome!';
+		return 'Já existe um imposto cadastrado com este nome para este tipo de produto!';
 	}
 
 	public function getNotFoundMessage(): string
