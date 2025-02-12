@@ -78,6 +78,18 @@ class TaxRepository implements RepositoryInterface
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function findAllNoPagination(): array
+  {
+    $sql = "SELECT * FROM {$this->table} t
+    WHERE t.active = 1
+    ORDER BY t.name ASC";
+
+    $stmt = $this->connection->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function findByUuid(string $uuid): array
   {
     $sql = "SELECT * FROM {$this->table} t

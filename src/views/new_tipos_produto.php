@@ -16,6 +16,16 @@ require __DIR__ . '/../views/topo.php';
               <input type="text" class="form-control" id="product_type" name="product_type" required aria-required="true">
               <div class="invalid-feedback" id="product_typeError"></div>
             </div>
+            <div class="mb-3">
+              <label for="tax" class="form-label">Tipo de Produto*</label>
+              <select class="form-select" id="tax" name="tax" required aria-required="true">
+                <option value="" disabled selected>Selecione um tipo</option>
+                <?php foreach ($taxes as $tax): ?>
+                  <option value="<?= htmlspecialchars($tax['id']); ?>"><?= htmlspecialchars($tax['name']); ?></option>
+                <?php endforeach; ?>
+              </select>
+              <div class="invalid-feedback" id="product_typeError"></div>
+            </div>
             <div class="d-flex justify-content-end">
               <button type="submit" class="btn btn-primary" id="submitButton">
                 <span id="buttonText">Salvar</span>
