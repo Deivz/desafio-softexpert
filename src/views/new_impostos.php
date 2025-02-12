@@ -12,19 +12,14 @@ require __DIR__ . '/../views/topo.php';
 				<div class="card-body">
 					<form id="formTax" novalidate>
 						<div class="mb-3">
+							<label for="name" class="form-label">Nome do Imposto*</label>
+							<input type="text" class="form-control" id="name" name="name" required aria-required="true">
+							<div class="invalid-feedback" id="nameError"></div>
+						</div>
+						<div class="mb-3">
 							<label for="tax" class="form-label">Alíquota do Imposto(%)*</label>
 							<input type="number" class="form-control" id="tax" name="tax" step="0.01" min="0" required aria-required="true">
 							<div class="invalid-feedback" id="taxError"></div>
-						</div>
-						<div class="mb-3">
-							<label for="product_type" class="form-label">Tipo de Produto*</label>
-							<select class="form-select" id="product_type" name="product_type" required aria-required="true">
-								<option value="" disabled selected>Selecione um tipo</option>
-								<?php foreach ($productTypes as $type): ?>
-									<option value="<?= htmlspecialchars($type['id']); ?>"><?= htmlspecialchars($type['product_type']); ?></option>
-								<?php endforeach; ?>
-							</select>
-							<div class="invalid-feedback" id="product_typeError"></div>
 						</div>
 						<div class="d-flex justify-content-end">
 							<button type="submit" class="btn btn-primary" id="submitButton">
@@ -61,7 +56,7 @@ require __DIR__ . '/../views/topo.php';
 	// Funções de validação
 	const validations = {
 		required: (value) => !value ? "Este campo é obrigatório." : null,
-		int: (value) => !Number.isInteger(Number(value)) ? "O valor deste campo deve ser um número inteiro." : null,
+		maxLength: (value) => value.length > 255 ? "Este campo deve possuir no máximo 255 caracteres." : null,
 		positiveNumber: (value) => value < 0 ? "O valor deste campo deve ser um número maior que 0." : null,
 		maxTax: (value) => value > 20000 ? "Este campo não deve possuir valor maior que 200%" : null,
 		maxNumber: (value) => value > 100000000 ? "Este campo não deve possuir valor maior que 100.000.000." : null,
@@ -93,13 +88,14 @@ require __DIR__ . '/../views/topo.php';
 	}
 
 	function validateForm() {
-		const fields = [{
-				id: 'tax',
-				rules: ['required', 'positiveNumber', 'maxNumber', 'maxTax']
+		const fields = [
+			{
+				id: 'name',
+				rules: ['required', 'maxLength']
 			},
 			{
-				id: 'product_type',
-				rules: ['required', 'int', 'positiveNumber']
+				id: 'tax',
+				rules: ['required', 'positiveNumber', 'maxNumber', 'maxTax']
 			},
 		];
 

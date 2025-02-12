@@ -21,6 +21,13 @@ require __DIR__ . '/../views/topo.php';
 	</form>
 
 	<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+		<?php if (empty($items)): ?>
+			<div class="col-12 w-100">
+				<div class="alert alert-info" role="alert">
+					Nenhum produto cadastrado.
+				</div>
+			</div>
+		<?php endif; ?>
 		<?php foreach ($items as $item): ?>
 			<div class="col">
 				<div class="card h-100 shadow-sm" onclick="window.location='produtos/<?= htmlspecialchars($item['uuid']); ?>/venda'" style="cursor: pointer;">

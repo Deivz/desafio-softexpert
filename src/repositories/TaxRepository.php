@@ -67,7 +67,7 @@ class TaxRepository implements RepositoryInterface
     $sql = "SELECT t.uuid, t.name, t.tax
     FROM {$this->table} t
     WHERE t.active = 1
-    ORDER BY pt.product_type ASC
+    ORDER BY t.name ASC
     LIMIT :limit OFFSET :offset";
 
     $stmt = $this->connection->prepare($sql);
