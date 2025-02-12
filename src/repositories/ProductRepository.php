@@ -91,8 +91,8 @@ class ProductRepository implements RepositoryInterface
   {
     $sql = "SELECT p.id, p.uuid, p.name, p.price, p.amount, pt.product_type, t.tax
     FROM {$this->table} p
-    INNER JOIN {$this->tableJoin[0]} pt ON p.product_type = pt.id
-    INNER JOIN {$this->tableJoin[1]} t ON pt.id = t.product_type
+    INNER JOIN {$this->tableJoin[0]} pt (p.product_type = pt.id and pt.active = 1)
+    INNER JOIN {$this->tableJoin[1]} t ON (pt.id = t.product_type and t.active = 1)
     WHERE p.active = 1
     AND p.uuid = :uuid";
 
