@@ -2,13 +2,17 @@
 
 namespace Deivz\DesafioSoftexpert\controllers;
 
+use Deivz\DesafioSoftexpert\models\ProductType;
 use Deivz\DesafioSoftexpert\models\Tax;
+use Deivz\DesafioSoftexpert\repositories\ProductTypeRepository;
 use Deivz\DesafioSoftexpert\repositories\TaxRepository;
 use Deivz\DesafioSoftexpert\services\TaxService;
 
 class TaxController extends BaseController
 {
 	protected TaxRepository $repository;
+	protected ProductType $productType;
+	protected ProductTypeRepository $productTypeRepository;
 
 	public function __construct(ConnectionController $connection)
 	{
@@ -17,6 +21,9 @@ class TaxController extends BaseController
 		$this->model = new Tax($request);
 		$this->repository = new TaxRepository($this->connection, $this->model);
 		$this->service = new TaxService($this->repository);
+
+		$this->productType = new ProductType($request);
+		$this->productTypeRepository = new ProductTypeRepository($this->connection, $this->productType);
 	}
 
 	public function readByUuid(array $params): void
@@ -31,7 +38,7 @@ class TaxController extends BaseController
 			http_response_code(500);
 			echo json_encode([
 				'erro' => $th->getMessage(),
-				'mensagem' => 'Não foi possível buscar os impostos no sistema, entre em contato com o suporte.'
+				'mensagem' => 'Não foi possível buscar o imposto no sistema, entre em contato com o suporte.'
 			]);
 		}
 	}
@@ -43,14 +50,16 @@ class TaxController extends BaseController
 			$uriParts = explode('/', trim($uri, '/'));
 			$resource = $uriParts[0];
 
+			$productTypes = $this->productTypeRepository->findAllNoPagination();
 			echo $this->renderPage("/new_impostos", [
 				'activePage' => $resource,
+				'productTypes' => $productTypes,
 			]);
 		} catch (\Throwable $th) {
 			http_response_code(500);
 			echo json_encode([
 				'erro' => $th->getMessage(),
-				'mensagem' => 'Não foi possível renderizar a página de impostos, entre em contato com o suporte.'
+				'mensagem' => 'Não foi possível buscar os tipos de produto no sistema, entre em contato com o suporte.'
 			]);
 		}
 	}
