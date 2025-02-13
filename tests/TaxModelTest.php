@@ -6,8 +6,7 @@ use Deivz\DesafioSoftexpert\models\Tax;
 class TaxModelTest extends TestCase
 {
 
-  private Tax $taxOk;
-  private Tax $taxInvalid;
+  private Tax $tax;
 
   protected function setUp(): void
   {
@@ -18,79 +17,102 @@ class TaxModelTest extends TestCase
       'product_type' => '1',
     ];
 
-    $requestInvalid = [
-      'name' => '',
-      'tax' => 'invalid',
-      'product_type' => 'invalid',
-    ];
-
     $tax = new Tax($requestOk);
-    $this->taxOk = $tax;
-
-    $tax = new Tax($requestInvalid);
-    $this->taxInvalid = $tax;
+    $this->tax = $tax;
   }
 
-  public function testTaxShouldBeConvertedToInt()
+  public static function taxDataProvider(): array
   {
-    // ACT
-    $tax = $this->taxOk->getTax();
+    return [
+      'should be converted and return the converted number' => [
+        [
+          'name' => "Taxa vai virar numero inteiro",
+          'tax' => '10,50',
+          'product_type' => 'Não está sendo avaliado',
+        ],
+        1050,
+      ],
+      'should not be converted and return -1' => [
+        [
+          'name' => "Taxa vai virar menos um",
+          'tax' => 'invalid',
+          'product_type' => 'Não está sendo avaliado',
+        ],
+        -1,
+      ],
+      'should return 0' => [
+        [
+          'name' => 'Sem taxa vai virar zero',
+          'product_type' => 'Não está sendo avaliado',
+        ],
+        0,
+      ],
+    ];
+  }
 
+  public static function productTypeDataProvider(): array
+  {
+    return [
+      'should be converted to int and return the number' => [
+        [
+          'name' => 'Product type vai virar numero inteiro',
+          'tax' => 'Não está sendo avaliado',
+          'product_type' => '15',
+        ],
+        15,
+      ],
+      'should not be converted and return -1' => [
+        [
+          'name' => 'Product type vai virar menos um',
+          'tax' => 'Não está sendo avaliado',
+          'product_type' => 'invalid',
+        ],
+        -1,
+      ],
+      'should return 0' => [
+        [
+          'name' => 'Sem product type retorna 0',
+          'tax' => 'Não está sendo avaliado',
+        ],
+        0,
+      ],
+    ];
+  }
+
+  /**
+   * @dataProvider taxDataProvider
+   */
+  public function test_tax_convertions($request, $valueExpected): void
+  {
+    // ARRANGE
+    $this->tax = new Tax($request);
+
+    // ACT
+    $tax = $this->tax->getTax();
 
     // ASSERT
-    $this->assertEquals(1050, $tax);
+    $this->assertEquals($valueExpected, $tax);
   }
 
-  public function testTaxShouldBeMinusOne()
+  /**
+   * @dataProvider productTypeDataProvider
+   */
+  public function test_product_type_convertions($request, $valueExpected): void
   {
+    // ARRANGE
+    $this->tax = new Tax($request);
+
     // ACT
-    $tax = $this->taxInvalid->getTax();
+    $tax = $this->tax->getProductType();
 
     // ASSERT
-    $this->assertEquals(-1, $tax);
+    $this->assertEquals($valueExpected, $tax);
   }
 
-  public function testProductTypeShouldBeConvertedToInt()
+  public function test_uuid_matches_regex(): void
   {
     // ACT
-    $tax = $this->taxOk->getProductType();
-
-
-    // ASSERT
-    $this->assertEquals(1050, $tax);
-  }
-
-  public function testProductTypeShouldBeMinusOne()
-  {
-    // ACT
-    $tax = $this->taxInvalid->getProductType();
-
-    // ASSERT
-    $this->assertEquals(-1, $tax);
-  }
-
-  public function testValidateReturnsTrueForValidTax()
-  {
-    // ACT
-    $validation = $this->taxOk->validate();
-    
-    // ASSERT
-    $this->assertTrue($validation);
-  }
-
-  public function testValidateReturnsFalseForInvalidTax()
-  {
-    // ACT
-    $validation = $this->taxInvalid->validate();
-    
-    // ASSERT
-    $this->assertFalse($validation);
-  }
-
-  public function testUuidMatchesRegex()
-  {
-    // ACT
-    $uuid = $this->taxOk->getUuid();
+    $uuid = $this->tax->getUuid();
     $regexUuid = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/';
 
     // ASSERT
