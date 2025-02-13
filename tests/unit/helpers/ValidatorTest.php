@@ -7,7 +7,36 @@ use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase
 {
-  public static function validatorDataProvider(): array
+  public static function validRequestCase(): array
+  {
+    return [
+      'should pass through validation' => [
+        [
+          'name' => 'Teste Ok',
+          'price' => 1555,
+          'tax' => 255,
+        ],
+        [
+          'name' => ['RequiredValidation', 'MaxLengthValidation'],
+          'price' => [
+            'RequiredValidation',
+            'IntValidation',
+            'MaxNumberValidation',
+            'PositiveNumberValidation',
+            'PriceConvertionValidation',
+          ],
+          'tax' => [
+            'RequiredValidation',
+            'IntValidation',
+            'MaxTaxValidation',
+            'PositiveNumberValidation',
+          ],
+        ],
+      ],
+    ];
+  }
+
+  public static function invalidRequestCases(): array
   {
     return [
       'should return Required error message' => [
@@ -90,16 +119,29 @@ class ValidatorTest extends TestCase
     ];
   }
 
-  #[DataProvider('validatorDataProvider')]
+  #[DataProvider('invalidRequestCases')]
   public function test_validation_error($data, $validationRules, $valueExpected): void
   {
     // ARRANGE
     $isValid = Validator::validate($data, $validationRules);
-    
+
     // ACT
     $errorsArray = Validator::getErrors();
 
     // ASSERT
     $this->assertEquals($valueExpected, $errorsArray);
+  }
+
+  #[DataProvider('validRequestCase')]
+  public function test_valid_data($data, $validationRules): void
+  {
+    // ARRANGE
+    $isValid = Validator::validate($data, $validationRules);
+
+    // ACT
+    $errorsArray = Validator::getErrors();
+
+    // ASSERT
+    $this->assertEquals([], $errorsArray);
   }
 }
