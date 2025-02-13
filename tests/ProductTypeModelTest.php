@@ -6,8 +6,7 @@ use PHPUnit\Framework\TestCase;
 class ProductTypeModelTest extends TestCase
 {
 
-  private ProductType $productTypeOk;
-  private ProductType $productTypeInvalid;
+  private ProductType $productType;
 
   protected function setUp(): void
   {
@@ -16,37 +15,36 @@ class ProductTypeModelTest extends TestCase
       'name' => 'Eletroeletrônicos'
     ];
 
-    $requestInvalid = [
-      'name' => 'Quero que tenha mais de 255 caracteres
-      Quero que tenha mais de 255 caracteres
-      Quero que tenha mais de 255 caracteres
-      Quero que tenha mais de 255 caracteres
-      Quero que tenha mais de 255 caracteres
-      Quero que tenha mais de 255 caracteres
-      Quero que tenha mais de 255 caracteres'
-    ];
-
     $productType = new ProductType($requestOk);
-    $this->productTypeOk = $productType;
+    $this->productType = $productType;
+  }
 
-    $productType = new ProductType($requestInvalid);
-    $this->productTypeInvalid = $productType;
+  public static function invalidProductTypeDataProvider()
+  {
+    return [
+      [['name' => str_repeat('A', 300)]], // Mais de 255 caracteres
+      [['name' => ""]],
+    ];
   }
 
   public function testValidateReturnsTrueForValidProductType()
   {
     // ACT
-    $validation = $this->productTypeOk->validate();
-    
+    $validation = $this->productType->validate();
+
     // ASSERT
     $this->assertTrue($validation);
   }
 
-  public function testValidateReturnsFalseForInvalidProductType()
+  /**
+   * @dataProvider invalidProductTypeDataProvider
+   */
+  public function testValidateReturnsFalseForInvalidProductType(array $invalidDataArray)
   {
     // ACT
-    $validation = $this->productTypeInvalid->validate();
-    
+    $productType = new ProductType($invalidDataArray);
+    $validation = $productType->validate();
+
     // ASSERT
     $this->assertFalse($validation);
   }
@@ -54,7 +52,7 @@ class ProductTypeModelTest extends TestCase
   public function testUuidMatchesRegex()
   {
     // ACT
-    $uuid = $this->productTypeOk->getUuid();
+    $uuid = $this->productType->getUuid();
     $regexUuid = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/';
 
     // ASSERT
