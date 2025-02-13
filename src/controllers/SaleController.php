@@ -46,15 +46,6 @@ class SaleController
 			if ($requestIsValid) {
 				$product = $this->productService->getByUuid($productUuid);
 
-				$this->product->setAmount($product["amount"]);
-				$amountChanged = $this->setProductAmount($product);
-				if (!$amountChanged) {
-					$this->connection->rollBack();
-					http_response_code(400);
-					echo json_encode(['errors' => 'Quantidade de produtos insuficiente!']);
-					return;
-				}
-
 				$sellPrice = $this->calculateSell($product);
 				$this->model->setSellPrice($sellPrice);
 				$this->model->setProductId($product["id"]);
@@ -66,6 +57,15 @@ class SaleController
 					echo json_encode([
 						'errors' => 'Algo deu errado, contacte o suporte.'
 					]);
+					return;
+				}
+
+				$this->product->setAmount($product["amount"]);
+				$amountChanged = $this->setProductAmount($product);
+				if (!$amountChanged) {
+					$this->connection->rollBack();
+					http_response_code(400);
+					echo json_encode(['errors' => 'Quantidade de produtos insuficiente!']);
 					return;
 				}
 
