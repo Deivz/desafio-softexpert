@@ -105,8 +105,8 @@ abstract class BaseController extends RendererController implements ControllerIn
         'limit' => $limit,
         'totalPages' => $totalPages
       ]);
-      //     http_response_code(200);
-      //     echo json_encode($items);
+      // http_response_code(200);
+      // echo json_encode($items);
     } catch (\Throwable $th) {
       http_response_code(500);
       echo json_encode([

@@ -7,6 +7,7 @@ interface RepositoryInterface
 	public function save(): bool;
 	public function findByUniqueKey(): int;
 	public function findAll(int $page, int $limit): array;
+	public function findAllNoPagination(): array;
 	public function findByUuid(string $uuid): array;
 	public function countTotal(): int;
 	public function update(): bool;

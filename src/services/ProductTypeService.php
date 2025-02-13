@@ -2,8 +2,26 @@
 
 namespace Deivz\DesafioSoftexpert\services;
 
-class ProductTypeService extends BaseService
+use Deivz\DesafioSoftexpert\interfaces\ProductTypeServiceInterface;
+use Deivz\DesafioSoftexpert\repositories\ProductTypeRepository;
+
+class ProductTypeService extends BaseService implements ProductTypeServiceInterface
 {
+  public function __construct(ProductTypeRepository $repository)
+  {
+    parent::__construct($repository);
+  }
+
+  private function getProductTypeRepository(): ProductTypeRepository
+  {
+    return $this->repository;
+  }
+
+  public function getAllNoPaginationOnlyIfHasTax(): array
+  {
+    return $this->getProductTypeRepository()->findAllNoPaginationOnlyIfHasTax();
+  }
+
   public function getAll(int $page, int $limit): array
   {
     $offset = ($page - 1) * $limit;
@@ -12,11 +30,10 @@ class ProductTypeService extends BaseService
     return $this->groupProducts($products);
   }
 
-  public function getByUuid(string $uuid): array
-  {
-    $products = $this->repository->findByUuid($uuid);
-    return $this->groupProducts([$products])[0] ?? [];
-  }
+  // public function getByUuid(string $uuid): array
+  // {
+  //   return $this->repository->findByUuid($uuid);
+  // }
 
   private function groupProducts(array $products): array
   {

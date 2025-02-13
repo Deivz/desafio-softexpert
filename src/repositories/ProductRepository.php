@@ -90,6 +90,23 @@ class ProductRepository implements RepositoryInterface
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function findAllNoPagination(): array
+  {
+    $sql = "SELECT p.uuid, p.name, p.price, p.amount,
+    pt.name as product_type,
+    t.tax, t.name as tax_name
+    FROM {$this->table} p
+    INNER JOIN {$this->tableJoin[0]} pt ON (p.product_type = pt.id and pt.active = 1)
+    INNER JOIN {$this->tableJoin[1]} t ON (pt.id = t.product_type and t.active = 1)
+    WHERE p.active = 1
+    ORDER BY p.name ASC";
+
+    $stmt = $this->connection->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function findByUuid(string $uuid): array
   {
     $sql = "SELECT p.id, p.uuid, p.name, p.price, p.amount,

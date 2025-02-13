@@ -6,13 +6,13 @@ use Deivz\DesafioSoftexpert\models\ProductType;
 use Deivz\DesafioSoftexpert\models\Tax;
 use Deivz\DesafioSoftexpert\repositories\ProductTypeRepository;
 use Deivz\DesafioSoftexpert\repositories\TaxRepository;
+use Deivz\DesafioSoftexpert\services\ProductTypeService;
 use Deivz\DesafioSoftexpert\services\TaxService;
 
 class TaxController extends BaseController
 {
 	protected TaxRepository $repository;
-	protected ProductType $productType;
-	protected ProductTypeRepository $productTypeRepository;
+	protected ProductTypeService $productTypeService;
 
 	public function __construct(ConnectionController $connection)
 	{
@@ -22,8 +22,9 @@ class TaxController extends BaseController
 		$this->repository = new TaxRepository($this->connection, $this->model);
 		$this->service = new TaxService($this->repository);
 
-		$this->productType = new ProductType($request);
-		$this->productTypeRepository = new ProductTypeRepository($this->connection, $this->productType);
+		$productType = new ProductType($request);
+		$productTypeRepository = new ProductTypeRepository($this->connection, $productType);
+		$this->productTypeService = new ProductTypeService($productTypeRepository);
 	}
 
 	public function readByUuid(array $params): void
@@ -50,7 +51,7 @@ class TaxController extends BaseController
 			$uriParts = explode('/', trim($uri, '/'));
 			$resource = $uriParts[0];
 
-			$productTypes = $this->productTypeRepository->findAllNoPagination();
+			$productTypes = $this->productTypeService->getAllNoPagination();
 			$productTypes = $this->groupProducts($productTypes);
 			echo $this->renderPage("/new_impostos", [
 				'activePage' => $resource,

@@ -40,6 +40,11 @@ class BaseService implements ServiceInterface
     return $items;
   }
 
+  public function getAllNoPagination(): array
+  {
+    return $this->repository->findAllNoPagination();
+  }
+
   public function getTotal(): int
   {
     return $this->repository->countTotal();

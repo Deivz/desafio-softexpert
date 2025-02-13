@@ -7,12 +7,12 @@ use Deivz\DesafioSoftexpert\models\ProductType;
 use Deivz\DesafioSoftexpert\repositories\ProductRepository;
 use Deivz\DesafioSoftexpert\repositories\ProductTypeRepository;
 use Deivz\DesafioSoftexpert\services\ProductService;
+use Deivz\DesafioSoftexpert\services\ProductTypeService;
 
 class ProductController extends BaseController
 {
 
-	protected ProductType $productType;
-	protected ProductTypeRepository $productTypeRepository;
+	protected ProductTypeService $productTypeService;
 
 	public function __construct(ConnectionController $connection)
 	{
@@ -22,8 +22,9 @@ class ProductController extends BaseController
 		$repository = new ProductRepository($this->connection, $this->model);
 		$this->service = new ProductService($repository);
 
-		$this->productType = new ProductType($request);
-		$this->productTypeRepository = new ProductTypeRepository($this->connection, $this->productType);
+		$productType = new ProductType($request);
+		$productTypeRepository = new ProductTypeRepository($this->connection, $productType);
+    $this->productTypeService = new ProductTypeService($productTypeRepository);
 	}
 
 
@@ -51,7 +52,7 @@ class ProductController extends BaseController
       $uriParts = explode('/', trim($uri, '/'));
       $resource = $uriParts[0];
 
-			$productTypes = $this->productTypeRepository->findAllNoPaginationOnlyWithTax();
+			$productTypes = $this->productTypeService->getAllNoPaginationOnlyIfHasTax();
       $productTypes = $this->groupProducts($productTypes);
       echo $this->renderPage("/new_produtos", [
 				'activePage' => $resource,

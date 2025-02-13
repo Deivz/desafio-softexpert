@@ -2,12 +2,12 @@
 
 namespace Deivz\DesafioSoftexpert\repositories;
 
-use Deivz\DesafioSoftexpert\controllers\ConnectionController;
+use Deivz\DesafioSoftexpert\interfaces\ProductTypeRepositoryInterface;
 use Deivz\DesafioSoftexpert\interfaces\RepositoryInterface;
 use Deivz\DesafioSoftexpert\models\ProductType;
 use PDO;
 
-class ProductTypeRepository implements RepositoryInterface
+class ProductTypeRepository implements RepositoryInterface, ProductTypeRepositoryInterface
 {
   private PDO $connection;
   private string $table;
@@ -84,7 +84,7 @@ class ProductTypeRepository implements RepositoryInterface
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function findAllNoPaginationOnlyWithTax(): array
+  public function findAllNoPaginationOnlyIfHasTax(): array
   {
     $sql = "SELECT pt.id, pt.uuid, pt.name,
     t.name AS tax_name
@@ -116,16 +116,14 @@ class ProductTypeRepository implements RepositoryInterface
 
   public function findByUuid(string $uuid): array
   {
-    $sql = "SELECT pt.uuid, pt.name,
-    t.name AS tax_name
+    $sql = "SELECT pt.uuid, pt.name
     FROM {$this->table} pt
-    INNER JOIN {$this->tableJoin[0]} t ON (pt.id = t.product_type AND t.active = 1)
     WHERE pt.uuid = :uuid AND pt.active = 1";
     $stmt = $this->connection->prepare($sql);
     $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
     $stmt->execute();
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
   public function update(): bool

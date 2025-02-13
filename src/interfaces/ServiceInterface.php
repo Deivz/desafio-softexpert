@@ -8,6 +8,7 @@ interface ServiceInterface
 	public function getByUniqueKey(): int;
 	public function getByUuid(string $uuid): array;
 	public function getAll(int $page, int $limit): array;
+	public function getAllNoPagination(): array;
 	public function getTotal(): int;
 	public function edit(): bool;
 }
