@@ -1,5 +1,6 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Deivz\DesafioSoftexpert\models\ProductType;
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +28,7 @@ class ProductTypeModelTest extends TestCase
     ];
   }
 
-  public function testValidateReturnsTrueForValidProductType()
+  public function test_validate_returns_true_for_valid_product_type(): void
   {
     // ACT
     $validation = $this->productType->validate();
@@ -36,10 +37,8 @@ class ProductTypeModelTest extends TestCase
     $this->assertTrue($validation);
   }
 
-  /**
-   * @dataProvider invalidProductTypeDataProvider
-   */
-  public function testValidateReturnsFalseForInvalidProductType(array $invalidDataArray)
+  #[DataProvider('invalidProductTypeDataProvider')]
+  public function test_validate_returns_false_for_invalid_product_type(array $invalidDataArray): void
   {
     // ACT
     $productType = new ProductType($invalidDataArray);
@@ -49,7 +48,7 @@ class ProductTypeModelTest extends TestCase
     $this->assertFalse($validation);
   }
 
-  public function testUuidMatchesRegex()
+  public function test_uuid_matches_regex()
   {
     // ACT
     $uuid = $this->productType->getUuid();

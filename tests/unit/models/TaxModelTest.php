@@ -1,5 +1,6 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Deivz\DesafioSoftexpert\models\Tax;
 
@@ -79,9 +80,7 @@ class TaxModelTest extends TestCase
     ];
   }
 
-  /**
-   * @dataProvider taxDataProvider
-   */
+  #[DataProvider('taxDataProvider')]
   public function test_tax_convertions($request, $valueExpected): void
   {
     // ARRANGE
@@ -94,9 +93,7 @@ class TaxModelTest extends TestCase
     $this->assertEquals($valueExpected, $tax);
   }
 
-  /**
-   * @dataProvider productTypeDataProvider
-   */
+  #[DataProvider('productTypeDataProvider')]
   public function test_product_type_convertions($request, $valueExpected): void
   {
     // ARRANGE
