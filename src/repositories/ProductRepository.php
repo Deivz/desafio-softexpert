@@ -53,12 +53,13 @@ class ProductRepository implements RepositoryInterface
   public function findByUniqueKey(): int
   {
     $sql = "SELECT id FROM {$this->table}
-      WHERE name = :name AND deleted = :deleted
+      WHERE name = :name AND product_type = :product_type AND deleted = :deleted
       AND uuid != :uuid
       FOR UPDATE";
     $stmt = $this->connection->prepare($sql);
     $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
     $stmt->bindValue(':name', $this->product->getName(), PDO::PARAM_STR);
+    $stmt->bindValue(':product_type', $this->product->getProductType(), PDO::PARAM_INT);
     $stmt->bindValue(':uuid', $this->product->getUuid(), PDO::PARAM_STR);
     $stmt->execute();
 
@@ -71,7 +72,9 @@ class ProductRepository implements RepositoryInterface
 
   public function findAll(int $limit, int $offset): array
   {
-    $sql = "SELECT p.uuid, p.name, p.price, p.amount, pt.name as product_type, t.tax
+    $sql = "SELECT p.uuid, p.name, p.price, p.amount,
+    pt.name as product_type,
+    t.tax, t.name as tax_name
     FROM {$this->table} p
     INNER JOIN {$this->tableJoin[0]} pt ON (p.product_type = pt.id and pt.active = 1)
     INNER JOIN {$this->tableJoin[1]} t ON (pt.id = t.product_type and t.active = 1)
@@ -89,10 +92,12 @@ class ProductRepository implements RepositoryInterface
 
   public function findByUuid(string $uuid): array
   {
-    $sql = "SELECT p.id, p.uuid, p.name, p.price, p.amount, pt.name, t.tax
+    $sql = "SELECT p.uuid, p.name, p.price, p.amount,
+    pt.name as product_type,
+    t.tax, t.name as tax_name
     FROM {$this->table} p
-    INNER JOIN {$this->tableJoin[0]} pt (p.product_type = pt.id and pt.active = 1)
-    INNER JOIN {$this->tableJoin[1]} t ON pt.id = t.product_type
+    INNER JOIN {$this->tableJoin[0]} pt ON (p.product_type = pt.id and pt.active = 1)
+    INNER JOIN {$this->tableJoin[1]} t ON (pt.id = t.product_type and t.active = 1)
     WHERE p.active = 1
     AND p.uuid = :uuid";
 
@@ -100,7 +105,7 @@ class ProductRepository implements RepositoryInterface
     $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
     $stmt->execute();
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public function update(): bool

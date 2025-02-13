@@ -72,6 +72,24 @@ require __DIR__ . '/../views/topo.php';
 	</div>
 </div>
 
+<!-- Modal de Aviso -->
+<div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-warning text-white">
+				<h5 class="modal-title" id="warningModalLabel">Aviso</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p id="warningMessage"></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fechar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script>
 	// Funções de validação
 	const validations = {
@@ -100,10 +118,10 @@ require __DIR__ . '/../views/topo.php';
 
 		if (error) {
 			errorElement.innerHTML = error.split('. ').join('.<br>');
-			inputElement.classList.add('is-invalid');
+			if (inputElement) inputElement.classList.add('is-invalid');
 		} else {
 			errorElement.textContent = '';
-			inputElement.classList.remove('is-invalid');
+			if (inputElement) inputElement.classList.remove('is-invalid');
 		}
 	}
 
@@ -170,23 +188,37 @@ require __DIR__ . '/../views/topo.php';
 					},
 					body: JSON.stringify(Object.fromEntries(formData)),
 				})
-				.then(response => response.json())
-				.then(data => {
-					if (data.errors) {
-						// Exibir erros do back-end
-						Object.entries(data.errors).forEach(([field, errors]) => {
-							showError(field, errors.join(' '));
+				.then(response => {
+					if (!response.ok) {
+						return response.json().then(data => {
+							throw {
+								status: response.status,
+								data
+							};
 						});
-					} else {
-						const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-						document.getElementById('successMessage').textContent = 'Produto cadastrado com sucesso!';
-						successModal.show();
-
-						clearForm();
 					}
+					return response.json();
+				})
+				.then(data => {
+					const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+					document.getElementById('successMessage').textContent = 'Produto cadastrado com sucesso!';
+					successModal.show();
+
+					clearForm();
 				})
 				.catch(error => {
-					console.error('Erro:', error);
+					if (error.status === 409) {
+						// Exibir erro 409 (Conflito) no modal de aviso e no campo do nome
+						const warningModal = new bootstrap.Modal(document.getElementById('warningModal'));
+						const errorMessage = error.data.mensagem || 'Erro ao cadastrar produto.';
+						document.getElementById('warningMessage').textContent = errorMessage;
+						warningModal.show();
+
+						// Exibir a mesma mensagem no campo do nome
+						showError('name', errorMessage);
+					} else {
+						console.error('Erro:', error);
+					}
 				})
 				.finally(() => {
 					submitButton.disabled = false;
