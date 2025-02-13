@@ -51,6 +51,7 @@ class TaxController extends BaseController
 			$resource = $uriParts[0];
 
 			$productTypes = $this->productTypeRepository->findAllNoPagination();
+			$productTypes = $this->groupProducts($productTypes);
 			echo $this->renderPage("/new_impostos", [
 				'activePage' => $resource,
 				'productTypes' => $productTypes,
@@ -89,5 +90,32 @@ class TaxController extends BaseController
 				'mensagem' => 'Não foi possível deletar o imposto do sistema, entre em contato com o suporte.'
 			]);
 		}
+	}
+
+	private function groupProducts(array $products): array
+	{
+		$groupedProducts = [];
+
+		foreach ($products as $product) {
+			$uuid = $product['uuid'];
+
+			if (!isset($groupedProducts[$uuid])) {
+				$groupedProducts[$uuid] = [
+					'id' => $product['id'],
+					'uuid' => $product['uuid'],
+					'name' => $product['name'],
+					'taxes' => [],
+				];
+			}
+
+			$groupedProducts[$uuid]['taxes'][] = $product['tax_name'];
+		}
+
+		// Remove duplicatas na lista de taxas
+		foreach ($groupedProducts as &$product) {
+			$product['taxes'] = array_unique($product['taxes']);
+		}
+
+		return array_values($groupedProducts);
 	}
 }

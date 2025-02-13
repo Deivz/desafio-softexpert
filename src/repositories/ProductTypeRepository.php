@@ -12,12 +12,16 @@ class ProductTypeRepository implements RepositoryInterface
   private PDO $connection;
   private string $table;
   private ProductType $productType;
+  private array $tableJoin = [];
 
   public function __construct(PDO $connection, ProductType $productType)
   {
     $this->connection = $connection;
     $this->productType = $productType;
     $this->table = $_ENV["TABLE_PRODUCT_TYPES"];
+    $this->tableJoin = [
+      $_ENV["TABLE_TAXES"],
+    ];
   }
 
   public function save(): bool
@@ -64,7 +68,10 @@ class ProductTypeRepository implements RepositoryInterface
 
   public function findAll(int $limit, int $offset): array
   {
-    $sql = "SELECT * FROM {$this->table} pt
+    $sql = "SELECT pt.uuid, pt.name,
+    t.name AS tax_name
+    FROM {$this->table} pt
+    LEFT JOIN {$this->tableJoin[0]} t ON (pt.id = t.product_type AND t.active = 1)
     WHERE pt.active = 1
     ORDER BY pt.name ASC
     LIMIT :limit OFFSET :offset";
@@ -77,9 +84,27 @@ class ProductTypeRepository implements RepositoryInterface
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function findAllNoPaginationOnlyWithTax(): array
+  {
+    $sql = "SELECT pt.id, pt.uuid, pt.name,
+    t.name AS tax_name
+    FROM {$this->table} pt
+    INNER JOIN {$this->tableJoin[0]} t ON (pt.id = t.product_type AND t.active = 1)
+    WHERE pt.active = 1
+    ORDER BY pt.name ASC";
+
+    $stmt = $this->connection->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function findAllNoPagination(): array
   {
-    $sql = "SELECT * FROM {$this->table} pt
+    $sql = "SELECT pt.id, pt.uuid, pt.name,
+    t.name AS tax_name
+    FROM {$this->table} pt
+    LEFT JOIN {$this->tableJoin[0]} t ON (pt.id = t.product_type AND t.active = 1)
     WHERE pt.active = 1
     ORDER BY pt.name ASC";
 
@@ -91,13 +116,16 @@ class ProductTypeRepository implements RepositoryInterface
 
   public function findByUuid(string $uuid): array
   {
-    $sql = "SELECT * FROM {$this->table} pt
+    $sql = "SELECT pt.uuid, pt.name,
+    t.name AS tax_name
+    FROM {$this->table} pt
+    INNER JOIN {$this->tableJoin[0]} t ON (pt.id = t.product_type AND t.active = 1)
     WHERE pt.uuid = :uuid AND pt.active = 1";
     $stmt = $this->connection->prepare($sql);
     $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
     $stmt->execute();
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public function update(): bool

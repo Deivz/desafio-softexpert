@@ -37,7 +37,17 @@ require __DIR__ . '/../views/topo.php';
 					</a>
 					<div class="card-body">
 						<h5 class="card-title"><?= htmlspecialchars($item['name']); ?></h5>
-						<!-- <p class="card-text text-muted">Descrição ou detalhes adicionais podem ser colocados aqui.</p> -->
+						<div class="card-footer bg-transparent">
+							<small class="card-text text-muted">Impostos:</small><br>
+							<?php foreach ($item['taxes'] as $tax): ?>
+								<?php if (empty($tax)): ?>
+									<small class="card-text text-muted">- É preciso cadastrar os impostos para este tipo.</small>
+								<?php endif; ?>
+								<?php if (!empty($tax)): ?>
+									<small class="card-text text-muted">- <?= htmlspecialchars($tax); ?></small><br>
+								<?php endif; ?>
+							<?php endforeach; ?>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -51,7 +51,8 @@ class ProductController extends BaseController
       $uriParts = explode('/', trim($uri, '/'));
       $resource = $uriParts[0];
 
-			$productTypes = $this->productTypeRepository->findAllNoPagination();
+			$productTypes = $this->productTypeRepository->findAllNoPaginationOnlyWithTax();
+      $productTypes = $this->groupProducts($productTypes);
       echo $this->renderPage("/new_produtos", [
 				'activePage' => $resource,
 				'productTypes' => $productTypes,
@@ -63,5 +64,32 @@ class ProductController extends BaseController
         'mensagem' => 'Não foi possível buscar os itens no sistema, entre em contato com o suporte.'
       ]);
     }
+  }
+
+  private function groupProducts(array $products): array
+  {
+    $groupedProducts = [];
+
+    foreach ($products as $product) {
+      $uuid = $product['uuid'];
+
+      if (!isset($groupedProducts[$uuid])) {
+        $groupedProducts[$uuid] = [
+          'id' => $product['id'],
+          'uuid' => $product['uuid'],
+          'name' => $product['name'],
+          'taxes' => [],
+        ];
+      }
+
+      $groupedProducts[$uuid]['taxes'][] = $product['tax_name'];
+    }
+
+    // Remove duplicatas na lista de taxas
+    foreach ($groupedProducts as &$product) {
+      $product['taxes'] = array_unique($product['taxes']);
+    }
+
+    return array_values($groupedProducts);
   }
 }
