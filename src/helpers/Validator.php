@@ -38,14 +38,6 @@ class RequiredValidation implements ValidationInterface
   }
 }
 
-class EmailValidation implements ValidationInterface
-{
-  public function validate(mixed $value): ?string
-  {
-    return filter_var($value, FILTER_VALIDATE_EMAIL) ? null : "O email é inválido.";
-  }
-}
-
 class IntValidation implements ValidationInterface
 {
   public function validate(mixed $value): ?string
@@ -74,7 +66,7 @@ class PriceConvertionValidation implements ValidationInterface
 {
   public function validate(mixed $value): ?string
   {
-    return $value === -1 ? "O preço precisa ser um número valido." : null;
+    return $value === -1 ? "O preço precisa ser um número válido." : null;
   }
 }
 
@@ -82,7 +74,7 @@ class MaxNumberValidation implements ValidationInterface
 {
   public function validate(mixed $value): ?string
   {
-    return $value > 100000000 ? "Este campo não deve possuir valor maior que 100.000.000" : null;
+    return $value > 100000000 ? "Este campo não deve possuir valor maior que 100.000.000." : null;
   }
 }
 
@@ -90,6 +82,6 @@ class MaxTaxValidation implements ValidationInterface
 {
   public function validate(mixed $value): ?string
   {
-    return $value > 20000 ? "Este campo não deve possuir valor maior que 200%" : null;
+    return $value > 20000 ? "Este campo não deve possuir valor maior que 200%." : null;
   }
 }
