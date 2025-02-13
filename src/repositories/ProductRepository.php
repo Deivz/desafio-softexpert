@@ -92,7 +92,7 @@ class ProductRepository implements RepositoryInterface
 
   public function findByUuid(string $uuid): array
   {
-    $sql = "SELECT p.uuid, p.name, p.price, p.amount,
+    $sql = "SELECT p.id, p.uuid, p.name, p.price, p.amount,
     pt.name as product_type,
     t.tax, t.name as tax_name
     FROM {$this->table} p

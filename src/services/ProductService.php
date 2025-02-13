@@ -52,6 +52,7 @@ class ProductService extends BaseService
     }
 
     $groupedProduct = [
+      'id' => $products[0]['id'],
       'uuid' => $products[0]['uuid'],
       'name' => $products[0]['name'],
       'price' => ($products[0]['price'] / 100),
