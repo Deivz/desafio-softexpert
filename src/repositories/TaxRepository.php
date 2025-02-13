@@ -67,7 +67,7 @@ class TaxRepository implements RepositoryInterface
 
   public function findAll(int $limit, int $offset): array
   {
-    $sql = "SELECT t.uuid, t.name, t.tax, pt.name
+    $sql = "SELECT t.uuid, t.name, t.tax, pt.name as product_type
     FROM {$this->table} t
     INNER JOIN {$this->tableJoin[0]} pt ON (pt.id = t.product_type AND pt.active = 1)
     WHERE t.active = 1

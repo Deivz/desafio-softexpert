@@ -36,8 +36,14 @@ require __DIR__ . '/../views/topo.php';
 					</button>
 					<div class="card-body">
 						<h5 class="card-title"><?= htmlspecialchars($item['name']); ?></h5>
+					</div>
+					<div class="card-footer bg-transparent">
+						<br>
 						<p>
-							<strong>Taxa por produto:</strong> <span id="total-shop"><?php echo number_format($item['tax'] / 100, 1, ',', '.') . "%"; ?></span>
+							<strong>Taxa por produto: </strong><span id="total-shop"><?php echo number_format($item['tax'] / 100, 1, ',', '.') . "%"; ?></span>
+						</p>
+						<p>
+							<strong>Tipo de produto: </strong><span id="total-shop"><?= htmlspecialchars($item['product_type']); ?></span><br>
 						</p>
 					</div>
 				</div>

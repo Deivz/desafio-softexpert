@@ -71,7 +71,7 @@ class ProductRepository implements RepositoryInterface
 
   public function findAll(int $limit, int $offset): array
   {
-    $sql = "SELECT p.uuid, p.name, p.price, p.amount, pt.name, t.tax
+    $sql = "SELECT p.uuid, p.name, p.price, p.amount, pt.name as product_type, t.tax
     FROM {$this->table} p
     INNER JOIN {$this->tableJoin[0]} pt ON (p.product_type = pt.id and pt.active = 1)
     INNER JOIN {$this->tableJoin[1]} t ON (pt.id = t.product_type and t.active = 1)

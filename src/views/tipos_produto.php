@@ -36,7 +36,7 @@ require __DIR__ . '/../views/topo.php';
 						<i class="fas fa-pen text-white"></i>
 					</a>
 					<div class="card-body">
-						<h5 class="card-title"><?= htmlspecialchars($item['product_type']); ?></h5>
+						<h5 class="card-title"><?= htmlspecialchars($item['name']); ?></h5>
 						<!-- <p class="card-text text-muted">Descrição ou detalhes adicionais podem ser colocados aqui.</p> -->
 					</div>
 				</div>
