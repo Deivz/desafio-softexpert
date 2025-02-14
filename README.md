@@ -126,6 +126,8 @@ Em seguida acessar a pasta public, onde esta contido o "entry point" do projeto.
 
 ### `php -S localhost:8080`
 
-Outro ponto importante, alguns dos testes para serem realizados precisam que o servidor do PHP esteja rodando.
+Outro ponto importante, alguns dos testes para serem realizados precisam que o servidor do PHP esteja rodando. Para os testes, criei tabelas 
+diferentes para que não corra risco de quebrar o que está em produção (o mais indicado seria um outro banco, nesses casos). Alterando o nome das tabelas 
+(ou do banco, caso seja criado um banco de homologação) no arquivo .env já é suficiente para alterar nos testes também.
 
 Muito obrigado!
