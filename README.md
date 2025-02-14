@@ -52,6 +52,10 @@ Para validação de dados no front-end, bem como realização das requisições 
 ### `Bootstrap`
 Para implementação das views foi utilizado a biblioteca Bootstrap, por conta de sua simplicidade e facilidade na implementação.
 
+### `POSTGRESQL`
+O banco de dados escolhido para este projeto foi o POSTGRESQL, uma vez que era uma das escolhas possíveis por conta do requisito, era o SGBD de minha maior afinidade, 
+além de ser gratuito.
+
 
 ## Decisões de projeto
 ### `Arquitetura`
