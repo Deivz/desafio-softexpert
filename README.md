@@ -106,6 +106,8 @@ Clonar reste repositório e utilizar o comando abaixo para fazer o download das 
 
 ### `composer install`
 
+Lembrando que o php.ini precisa extension=zip descomentado (só remover o ";", caso a linha esteja com ";extension=zip").
+
 É preciso também ter um .env configurado na raiz do projeto, uma vez que os dados do BD bem como os nomes das tabelas são coletados de lá. 
 As informações que precisam estar contidas são:
 
