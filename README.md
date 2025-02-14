@@ -130,4 +130,7 @@ Outro ponto importante, alguns dos testes para serem realizados precisam que o s
 diferentes para que não corra risco de quebrar o que está em produção (o mais indicado seria um outro banco, nesses casos). Alterando o nome das tabelas 
 (ou do banco, caso seja criado um banco de homologação) no arquivo .env já é suficiente para alterar nos testes também.
 
+Para rodar os testes, utilizar o comando:
+### `./vendor/bin/phpunit --testdox tests/`
+
 Muito obrigado!
