@@ -94,18 +94,53 @@ class ProductTypeRouteTest extends TestCase
 
   public function test_read_product_type(): void
   {
+    // ARRANGE
+
+    // ACT
     $response = $this->client->get('/tipos_produto');
 
+    // ASSERT
     $this->assertEquals(200, $response->getStatusCode());
   }
 
-  // public function testReadProductTypeByUuid(): void
-  // {
-  //   $uuid = '03a934b4-f06f-43f1-b2ce-a5ab93115703';
-  //   $response = $this->client->get("/tipos_produto/$uuid");
+  public function test_read_product_type_by_uuid(): void
+  {
+    // ARRANGE
+    $this->controller->create();
 
-  //   $this->assertEquals(200, $response->getStatusCode());
-  //   $data = json_decode($response->getBody(), true);
-  //   $this->assertArrayHasKey('item', $data);
-  // }
+    // ACT
+    $response = $this->client->get("/tipos_produto/{$this->model->getUuid()}/edit");
+
+    // ASSERT
+    $this->assertEquals(200, $response->getStatusCode());
+  }
+
+  public function test_update_product_type(): void
+  {
+    // ARRANGE
+    $this->controller->create();
+    $updatedData = [
+      'name' => 'Updated Product Type',
+    ];
+
+    // ACT
+    $response = $this->client->patch("/tipos_produto/{$this->model->getUuid()}", [
+      'json' => $updatedData,
+    ]);
+
+    // ASSERT
+    $this->assertEquals(200, $response->getStatusCode());
+    $data = json_decode($response->getBody(), true);
+    $this->assertArrayHasKey('mensagem', $data);
+    $this->assertEquals('Tipo de produto cadastrado com sucesso!', $data['mensagem']);
+
+    $stmt = $this->connection->query(
+      "SELECT * FROM {$_ENV["TABLE_PRODUCT_TYPES"]}
+        WHERE uuid = '{$this->model->getUuid()}'"
+    );
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $this->assertNotEmpty($result);
+    $this->assertEquals($updatedData['name'], $result['name']);
+  }
 }

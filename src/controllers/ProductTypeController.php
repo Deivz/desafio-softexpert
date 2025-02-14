@@ -30,6 +30,7 @@ class ProductTypeController extends BaseController
 			$activePage = $segments[0] ?? '';
 
 			$item = $this->service->getByUuid($params['uuid']);
+			http_response_code(200);
 			echo $this->renderPage("/edit_$activePage", [
 				'activePage' => $activePage,
 				'item' => $item,

@@ -64,6 +64,11 @@ class ProductType implements ModelInterface
 		$this->uuid = $uuid;
 	}
 
+	public function setName(string $name): void
+	{
+		$this->name = $name;
+	}
+
 	public function validate(): bool
 	{
 		$name = [
