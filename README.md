@@ -77,6 +77,8 @@ que aquele item foi excluído, para casos de futuras necessidades de recuperaç�
 - Como o projeto não tinha uma previsão de escala, optei por instanciar os controladores manualmente. Antes eles eram identificados conforme rota acessada. Entretanto, quando
 algum controlador precisava receber algum parâmetro diferente no construtor passou a existir um acomplamento maior, dificultando a implementação dos testes. Algumas das formas
 de contornar esta situação seria utilizando containers de injeção de dependências ou utilizar o padrão de projeto Factory.
+- Um outro ponto de melhoria seria com relação aos tipos de produtos, apesar de não ter sido solicitado nos requisitos explicitamente, o ideal é que o produto
+possa ter vários tipos de produtos. Exemplo: Celular, poderia se enquadrar em eletrônicos, telefonia, portáteis, etc.. Atualmente está implementado 1:1, mas poderia ser 1:n.
 
 ## Desafios, dificuldades e superação
 - Apesar de ser um sistema relativamente simples, a implementação dele trouxe alguns desafios. Desde a implementação da arquitetura e utilização dos design patterns, bem como 
