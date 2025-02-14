@@ -103,7 +103,6 @@ Clonar reste repositório e utilizar o comando abaixo para fazer o download das 
 As informações que precisam estar contidas são:
 
 - DB_HOST
-- DB_ID
 - DB_PORT
 - DB_PASS
 - DB_USER
