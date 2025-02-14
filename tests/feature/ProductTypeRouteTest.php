@@ -29,6 +29,7 @@ class ProductTypeRouteTest extends TestCase
 
     $connection = new ConnectionController(
       $_ENV['DB_HOST'],
+      $_ENV['DB_PORT'],
       $_ENV['DB_USER'],
       $_ENV['DB_PASS'],
       $_ENV['DB_NAME']
@@ -37,7 +38,7 @@ class ProductTypeRouteTest extends TestCase
     $this->connection = $connection->connect();
 
     $request = [
-      'name' => 'Product Type Test',
+      'name' => 'Test Product Type Two',
     ];
 
     $this->model = new ProductType($request);
@@ -89,7 +90,7 @@ class ProductTypeRouteTest extends TestCase
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $this->assertNotEmpty($result);
-    $this->assertEquals('Product Type Test', $result['name']);
+    $this->assertEquals($this->model->getName(), $result['name']);
   }
 
   public function test_read_product_type(): void
@@ -120,7 +121,7 @@ class ProductTypeRouteTest extends TestCase
     // ARRANGE
     $this->controller->create();
     $updatedData = [
-      'name' => 'Updated Product Type',
+      'name' => 'Test Updated Product Type',
     ];
 
     // ACT

@@ -32,6 +32,7 @@ class TaxRouteTest extends TestCase
 
     $connection = new ConnectionController(
       $_ENV['DB_HOST'],
+      $_ENV['DB_PORT'],
       $_ENV['DB_USER'],
       $_ENV['DB_PASS'],
       $_ENV['DB_NAME']
@@ -40,7 +41,7 @@ class TaxRouteTest extends TestCase
     $this->connection = $connection->connect();
 
     $request = [
-      'name' => 'Tax Test Two',
+      'name' => 'Test Tax Two',
       'tax' => '15',
       'product_type' => '1',
     ];
@@ -98,7 +99,7 @@ class TaxRouteTest extends TestCase
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $this->assertNotEmpty($result);
-    $this->assertEquals('Tax Test Two', $result['name']);
+    $this->assertEquals($this->model->getName(), $result['name']);
   }
 
   public function test_read_tax(): void
