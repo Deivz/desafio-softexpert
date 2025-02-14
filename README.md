@@ -120,4 +120,6 @@ Em seguida acessar a pasta public, onde esta contido o "entry point" do projeto.
 
 ### `php -S localhost:8080`
 
+Outro ponto importante, alguns dos testes para serem realizados precisam que o servidor do PHP esteja rodando.
+
 Muito obrigado!
