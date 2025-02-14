@@ -72,6 +72,11 @@ que aquele item foi excluído, para casos de futuras necessidades de recuperaç�
 ### `Paginação`
 - Para fins didáticos e de boa prática, implementei paginação na exibição dos dados no front-end.
 
+  ### `Armazenamento de dados em inteiro`
+- Por se tratar de um sistema que realiza operações financeiras, optei por armazenar todos os valores em inteiro, para evitar arredondamentos que possam vir a ser salvos com "incoerências",
+podendo acarretar em problemas judiciais em sistemas comerciais em produção. Outra opção seria decimal com uma boa quantidade de algarismos significativos. Quanto as taxas, estas poderiam ser
+armazenadas com decimal(5,2), mas preferi manter em inteiro também pra seguir no mesmo padrão.
+
 ## Pontos de melhoria
 ### Implementação de Containers DI ou padrão de design Factory
 - Como o projeto não tinha uma previsão de escala, optei por instanciar os controladores manualmente. Antes eles eram identificados conforme rota acessada. Entretanto, quando
