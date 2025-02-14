@@ -2,14 +2,16 @@
 
 namespace Deivz\DesafioSoftexpert\services;
 
-use Deivz\DesafioSoftexpert\models\Product;
-
 class ProductService extends BaseService
 {
   public function getAll(int $page, int $limit): array
   {
     $offset = ($page - 1) * $limit;
-    $products = $this->repository->findAll($limit, $offset);
+    $productsUuid = $this->repository->findAll($limit, $offset);
+
+    $uuidList = array_column($productsUuid, 'uuid');
+
+    $products = $this->repository->findAllNoPagination($uuidList);
 
     $groupedProducts = [];
 

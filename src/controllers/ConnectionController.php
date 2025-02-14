@@ -2,9 +2,10 @@
 
 namespace Deivz\DesafioSoftexpert\controllers;
 
+use Deivz\DesafioSoftexpert\interfaces\ConnectionInterface;
 use PDO;
 
-class ConnectionController
+class ConnectionController implements ConnectionInterface
 {
   public function __construct(
     private string $host,

@@ -5,18 +5,19 @@ namespace Deivz\DesafioSoftexpert\controllers;
 use Deivz\DesafioSoftexpert\helpers\Validator;
 use Deivz\DesafioSoftexpert\interfaces\ControllerInterface;
 use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
-use Deivz\DesafioSoftexpert\services\BaseService;
+use Deivz\DesafioSoftexpert\interfaces\ServiceInterface;
 use PDO;
 
 abstract class BaseController extends RendererController implements ControllerInterface
 {
-  protected ModelInterface $model;
-  protected BaseService $service;
-  protected PDO $connection;
-
-  public function __construct(ConnectionController $connection)
-  {
-    $this->connection = $connection->connect();
+  public function __construct(
+    protected PDO $connection,
+    protected ModelInterface $model,
+    protected ServiceInterface $service,
+  ) {
+    $this->connection = $connection;
+    $this->model = $model;
+    $this->service = $service;
   }
 
   public function create(): void
@@ -144,11 +145,10 @@ abstract class BaseController extends RendererController implements ControllerIn
       $activePage = $segments[0] ?? '';
 
       $item = $this->service->getByUuid($params['uuid']);
-			echo $this->renderPage("/edit_$activePage", [
-				'activePage' => $activePage,
-				'item' => $item,
-			]);
-
+      echo $this->renderPage("/edit_$activePage", [
+        'activePage' => $activePage,
+        'item' => $item,
+      ]);
     } catch (\Throwable $th) {
       http_response_code(500);
       echo json_encode([

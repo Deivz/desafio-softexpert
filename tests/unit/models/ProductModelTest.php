@@ -23,7 +23,7 @@ class ProductModelTest extends TestCase
     $this->product = $product;
   }
 
-  public static function priceDataProvider(): array
+  public static function priceRequestCases(): array
   {
     return [
       'should be converted and return the converted number' => [
@@ -55,7 +55,7 @@ class ProductModelTest extends TestCase
     ];
   }
 
-  public static function productTypeDataProvider(): array
+  public static function productTypeRequestCases(): array
   {
     return [
       'should be converted to int and return the number' => [
@@ -87,7 +87,7 @@ class ProductModelTest extends TestCase
     ];
   }
 
-  public static function amountDataProvider(): array
+  public static function amountRequestCases(): array
   {
     return [
       'should be converted to int and return the number' => [
@@ -119,7 +119,7 @@ class ProductModelTest extends TestCase
     ];
   }
 
-  #[DataProvider('priceDataProvider')]
+  #[DataProvider('priceRequestCases')]
   public function test_price_convertions($request, $valueExpected): void
   {
     // ARRANGE
@@ -132,7 +132,7 @@ class ProductModelTest extends TestCase
     $this->assertEquals($valueExpected, $product);
   }
 
-  #[DataProvider('productTypeDataProvider')]
+  #[DataProvider('productTypeRequestCases')]
   public function test_product_type_convertions($request, $valueExpected): void
   {
     // ARRANGE
@@ -145,7 +145,7 @@ class ProductModelTest extends TestCase
     $this->assertEquals($valueExpected, $product);
   }
 
-  #[DataProvider('amountDataProvider')]
+  #[DataProvider('amountRequestCases')]
   public function test_amount_convertions($request, $valueExpected): void
   {
     // ARRANGE

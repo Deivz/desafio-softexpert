@@ -2,30 +2,22 @@
 
 namespace Deivz\DesafioSoftexpert\controllers;
 
-use Deivz\DesafioSoftexpert\models\Product;
-use Deivz\DesafioSoftexpert\models\ProductType;
-use Deivz\DesafioSoftexpert\repositories\ProductRepository;
-use Deivz\DesafioSoftexpert\repositories\ProductTypeRepository;
-use Deivz\DesafioSoftexpert\services\ProductService;
+use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
+use Deivz\DesafioSoftexpert\interfaces\ServiceInterface;
 use Deivz\DesafioSoftexpert\services\ProductTypeService;
+use PDO;
 
 class ProductController extends BaseController
 {
-
-	protected ProductTypeService $productTypeService;
-
-	public function __construct(ConnectionController $connection)
-	{
-		parent::__construct($connection);
-		$request = (array) json_decode(file_get_contents("php://input"), true);
-		$this->model = new Product($request);
-		$repository = new ProductRepository($this->connection, $this->model);
-		$this->service = new ProductService($repository);
-
-		$productType = new ProductType($request);
-		$productTypeRepository = new ProductTypeRepository($this->connection, $productType);
-    $this->productTypeService = new ProductTypeService($productTypeRepository);
-	}
+  public function __construct(
+    protected PDO $connection,
+    protected ModelInterface $model,
+    protected ServiceInterface $service,
+    protected ProductTypeService $productTypeService,
+  ) {
+    parent::__construct($connection, $model, $service);
+    $this->productTypeService = $productTypeService;
+  }
 
 
   public function readByUuid(array $params): void
@@ -45,19 +37,19 @@ class ProductController extends BaseController
     }
   }
 
-	public function new(): void
+  public function new(): void
   {
     try {
-			$uri = $_SERVER['REQUEST_URI'];
+      $uri = $_SERVER['REQUEST_URI'];
       $uriParts = explode('/', trim($uri, '/'));
       $resource = $uriParts[0];
 
-			$productTypes = $this->productTypeService->getAllNoPaginationOnlyIfHasTax();
+      $productTypes = $this->productTypeService->getAllNoPaginationOnlyIfHasTax();
       $productTypes = $this->groupProducts($productTypes);
       echo $this->renderPage("/new_produtos", [
-				'activePage' => $resource,
-				'productTypes' => $productTypes,
-			]);
+        'activePage' => $resource,
+        'productTypes' => $productTypes,
+      ]);
     } catch (\Throwable $th) {
       http_response_code(500);
       echo json_encode([

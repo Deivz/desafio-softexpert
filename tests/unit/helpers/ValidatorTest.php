@@ -2,7 +2,6 @@
 
 use Deivz\DesafioSoftexpert\helpers\Validator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Deivz\DesafioSoftexpert\models\Product;
 use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase

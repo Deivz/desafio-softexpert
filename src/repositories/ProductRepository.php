@@ -72,12 +72,7 @@ class ProductRepository implements RepositoryInterface
 
   public function findAll(int $limit, int $offset): array
   {
-    $sql = "SELECT p.uuid, p.name, p.price, p.amount,
-    pt.name as product_type,
-    t.tax, t.name as tax_name
-    FROM {$this->table} p
-    INNER JOIN {$this->tableJoin[0]} pt ON (p.product_type = pt.id and pt.active = 1)
-    INNER JOIN {$this->tableJoin[1]} t ON (pt.id = t.product_type and t.active = 1)
+    $sql = "SELECT p.uuid FROM {$this->table} p
     WHERE p.active = 1
     ORDER BY p.name ASC
     LIMIT :limit OFFSET :offset";
@@ -90,7 +85,7 @@ class ProductRepository implements RepositoryInterface
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function findAllNoPagination(): array
+  public function findAllNoPagination(array $uuidList): array
   {
     $sql = "SELECT p.uuid, p.name, p.price, p.amount,
     pt.name as product_type,
@@ -99,10 +94,11 @@ class ProductRepository implements RepositoryInterface
     INNER JOIN {$this->tableJoin[0]} pt ON (p.product_type = pt.id and pt.active = 1)
     INNER JOIN {$this->tableJoin[1]} t ON (pt.id = t.product_type and t.active = 1)
     WHERE p.active = 1
+    AND p.uuid IN (" . implode(',', array_fill(0, count($uuidList), '?')) . ")
     ORDER BY p.name ASC";
 
     $stmt = $this->connection->prepare($sql);
-    $stmt->execute();
+    $stmt->execute($uuidList);
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
@@ -168,5 +164,25 @@ class ProductRepository implements RepositoryInterface
     $stmt->execute();
 
     return $stmt->fetchColumn();
+  }
+
+  public function delete(string $uuid): bool
+  {
+    $sql = "UPDATE {$this->table}
+    SET deleted = :deleted, active = :active, updated_at = :updated_at
+    WHERE uuid = :uuid";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->bindValue(':deleted', 1, PDO::PARAM_INT);
+    $stmt->bindValue(':active', 0, PDO::PARAM_INT);
+    $stmt->bindValue(':updated_at', $this->product->getUpdatedAt(), PDO::PARAM_STR);
+    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
+
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return true;
+    }
+
+    return false;
   }
 }

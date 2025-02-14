@@ -3,36 +3,34 @@
 namespace Deivz\DesafioSoftexpert\controllers;
 
 use Deivz\DesafioSoftexpert\helpers\Validator;
+use Deivz\DesafioSoftexpert\interfaces\ConnectionInterface;
+use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
+use Deivz\DesafioSoftexpert\interfaces\ServiceInterface;
 use Deivz\DesafioSoftexpert\models\Sale;
 use Deivz\DesafioSoftexpert\repositories\SaleRepository;
 use Deivz\DesafioSoftexpert\services\SaleService;
 use Deivz\DesafioSoftexpert\repositories\ProductRepository;
 use Deivz\DesafioSoftexpert\models\Product;
 use Deivz\DesafioSoftexpert\services\ProductService;
+use Deivz\DesafioSoftexpert\services\ProductTypeService;
 use PDO;
 
 class SaleController
 {
-	private Sale $model;
-	private SaleService $service;
-
-	private Product $product;
-	private ProductRepository $productRepository;
-	private ProductService $productService;
-
-	private PDO $connection;
-
-	public function __construct(ConnectionController $connection)
-	{
-		$this->connection = $connection->connect();
-		$request = (array) json_decode(file_get_contents("php://input"), true);
-		$this->model = new Sale($request);
-		$repository = new SaleRepository($this->connection, $this->model);
-		$this->service = new SaleService($repository);
-
-		$this->product = new Product($request);
-		$this->productRepository = new ProductRepository($this->connection, $this->product);
-		$this->productService = new ProductService($this->productRepository);
+	public function __construct(
+		protected PDO $connection,
+    protected Sale $model,
+    protected SaleService $service,
+		protected Product $product,
+		protected ProductRepository $productRepository,
+		protected ProductService $productService
+	) {
+		$this->connection = $connection;
+		$this->model = $model;
+		$this->service = $service;
+		$this->product = $product;
+		$this->productRepository = $productRepository;
+		$this->productService = $productService;
 	}
 
 	public function create(array $params): void

@@ -99,7 +99,7 @@ class ProductTypeRepository implements RepositoryInterface, ProductTypeRepositor
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function findAllNoPagination(): array
+  public function findAllNoPagination(array $uuidList): array
   {
     $sql = "SELECT pt.id, pt.uuid, pt.name,
     t.name AS tax_name
@@ -152,5 +152,25 @@ class ProductTypeRepository implements RepositoryInterface, ProductTypeRepositor
     $stmt->execute();
 
     return $stmt->fetchColumn();
+  }
+
+  public function delete(string $uuid): bool
+  {
+    $sql = "UPDATE {$this->table}
+    SET deleted = :deleted, active = :active, updated_at = :updated_at
+    WHERE uuid = :uuid";
+    $stmt = $this->connection->prepare($sql);
+    $stmt->bindValue(':deleted', 1, PDO::PARAM_INT);
+    $stmt->bindValue(':active', 0, PDO::PARAM_INT);
+    $stmt->bindValue(':updated_at', $this->productType->getUpdatedAt(), PDO::PARAM_STR);
+    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
+
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+      return true;
+    }
+
+    return false;
   }
 }

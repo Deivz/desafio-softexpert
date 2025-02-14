@@ -2,29 +2,21 @@
 
 namespace Deivz\DesafioSoftexpert\controllers;
 
-use Deivz\DesafioSoftexpert\models\ProductType;
-use Deivz\DesafioSoftexpert\models\Tax;
-use Deivz\DesafioSoftexpert\repositories\ProductTypeRepository;
-use Deivz\DesafioSoftexpert\repositories\TaxRepository;
+use Deivz\DesafioSoftexpert\interfaces\ModelInterface;
+use Deivz\DesafioSoftexpert\interfaces\ServiceInterface;
 use Deivz\DesafioSoftexpert\services\ProductTypeService;
-use Deivz\DesafioSoftexpert\services\TaxService;
+use PDO;
 
 class TaxController extends BaseController
 {
-	protected TaxRepository $repository;
-	protected ProductTypeService $productTypeService;
-
-	public function __construct(ConnectionController $connection)
-	{
-		parent::__construct($connection);
-		$request = (array) json_decode(file_get_contents("php://input"), true);
-		$this->model = new Tax($request);
-		$this->repository = new TaxRepository($this->connection, $this->model);
-		$this->service = new TaxService($this->repository);
-
-		$productType = new ProductType($request);
-		$productTypeRepository = new ProductTypeRepository($this->connection, $productType);
-		$this->productTypeService = new ProductTypeService($productTypeRepository);
+	public function __construct(
+		protected PDO $connection,
+    protected ModelInterface $model,
+    protected ServiceInterface $service,
+		protected ProductTypeService $productTypeService,
+	) {
+		parent::__construct($connection, $model, $service);
+		$this->productTypeService = $productTypeService;
 	}
 
 	public function readByUuid(array $params): void
@@ -73,7 +65,7 @@ class TaxController extends BaseController
 
 			$this->connection->beginTransaction();
 
-			$itemDeleted = $this->repository->delete($uuid);
+			$itemDeleted = $this->service->delete($uuid);
 			if (!$itemDeleted) {
 				$this->connection->rollBack();
 				http_response_code(500);

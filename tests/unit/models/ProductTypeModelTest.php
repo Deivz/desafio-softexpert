@@ -20,7 +20,7 @@ class ProductTypeModelTest extends TestCase
     $this->productType = $productType;
   }
 
-  public static function invalidProductTypeDataProvider()
+  public static function invalidNameRequestCases()
   {
     return [
       [['name' => str_repeat('A', 300)]], // Mais de 255 caracteres
@@ -37,7 +37,7 @@ class ProductTypeModelTest extends TestCase
     $this->assertTrue($validation);
   }
 
-  #[DataProvider('invalidProductTypeDataProvider')]
+  #[DataProvider('invalidNameRequestCases')]
   public function test_validate_returns_false_for_invalid_product_type(array $invalidDataArray): void
   {
     // ACT

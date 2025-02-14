@@ -82,7 +82,7 @@ class TaxRepository implements RepositoryInterface
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function findAllNoPagination(): array
+  public function findAllNoPagination(array $uuidList): array
   {
     $sql = "SELECT t.uuid, t.name, t.tax, pt.name as product_type
     FROM {$this->table} t

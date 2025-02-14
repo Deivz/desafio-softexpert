@@ -11,4 +11,5 @@ interface ServiceInterface
 	public function getAllNoPagination(): array;
 	public function getTotal(): int;
 	public function edit(): bool;
+	public function delete(string $uuid): bool;
 }
