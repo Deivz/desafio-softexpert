@@ -87,6 +87,10 @@ class ProductRepository implements RepositoryInterface
 
   public function findAllNoPagination(array $uuidList): array
   {
+    if (empty($uuidList)) {
+      return [];
+    }
+
     $sql = "SELECT p.uuid, p.name, p.price, p.amount,
     pt.name as product_type,
     t.tax, t.name as tax_name
