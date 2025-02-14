@@ -95,10 +95,25 @@ Clonar reste repositório e utilizar o comando abaixo para fazer o download das 
 
 ### `composer install`
 
-Em seguida pode-se iniciar o projeto através do:
+É preciso também ter um .env configurado na raiz do projeto, uma vez que os dados do BD bem como os nomes das tabelas são coletados de lá. 
+As informações que precisam estar contidas são:
 
-### `npm run dev`
+- DB_HOST
+- DB_ID
+- DB_PORT
+- DB_PASS
+- DB_USER
+- DB_NAME
+- TABLE_PRODUCTS
+- TABLE_PRODUCT_TYPES
+- TABLE_TAXES
+- TABLE_SALES
 
-A porta padrão que está sendo utilizada é a 3000 [http://localhost:3000](http://localhost:3000).
+A conexão é passada pras classes que a utilizarão através de injeção de dependência da interface PDO, caso seja necessário pode-se somente 
+mudar o ConnectionController para a realização da conexão de sua preferência.
+
+Em seguida acessar a pasta public, onde esta contido o "entry point" do projeto. Pode-se iniciar o projeto através do comando no terminal:
+
+### `php -S localhost:8080`
 
 Muito obrigado!
